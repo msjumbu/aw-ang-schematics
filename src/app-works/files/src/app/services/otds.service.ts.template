@@ -1,0 +1,42 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+import { map, mergeMap, shareReplay } from 'rxjs/operators';
+import { Config, ConfigService } from '../config/config.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OtdsService {
+
+  constructor(private http: HttpClient, private config: ConfigService) { }
+
+  private otdsTicket$!: Observable<OTDSTicket>;
+
+  public otdsTicket: OTDSTicket | undefined;
+
+  authenticate(username: string, password: string): Observable<OTDSTicket> {
+    const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
+    const body = '{"userName":"' + username + '", "password":"' + password + '"}';
+    return this.config.getConfig().pipe(mergeMap((data: Config) => {
+      if (this.otdsTicket$)
+        return this.otdsTicket$;
+      this.otdsTicket$ = this.http.post<OTDSTicket>(data.OTDS_URL, body, { 'headers': headers }).pipe(shareReplay(1));
+      return this.otdsTicket$;
+    }));
+  }
+}
+
+export interface OTDSTicket {
+  token: string;
+  userId: string;
+  ticket: string;
+  resourceID: string;
+  failureReason: string;
+  passwordExpirationTime: string;
+  continuation: string;
+  continuationContext: string;
+  continuationData: string;
+  samlArt?: string;
+}

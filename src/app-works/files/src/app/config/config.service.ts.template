@@ -1,0 +1,27 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, shareReplay } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ConfigService {
+
+  constructor(private http: HttpClient) { }
+
+  private config$: Observable<Config> | undefined;
+  configUrl = 'assets/config.json';
+
+  getConfig(): Observable<Config> {
+    if (!this.config$)
+      this.config$ = this.http.get<Config>(this.configUrl).pipe(shareReplay(1));
+      
+    return this.config$;
+  }
+}
+
+export interface Config {
+  OTDS_URL: string;
+  GATEWAY_URL: string;
+  ORG_DN: string;
+}

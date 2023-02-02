@@ -1,0 +1,56 @@
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Parser, Builder } from "xml2js";
+import { OtdsService } from "<%= rPath %>services/otds.service";
+import { Subject } from "rxjs";
+import { <%= inMsg %> } from "<%= typesFile %>";
+import { <%= outMsg %> } from "<%= typesFile %>";
+@Injectable({
+    providedIn: "root"
+})
+export class <%= classify(name) %>Service {
+    private xmlParser = new Parser({
+        attrkey: "meta",
+        explicitArray: false
+    });
+    constructor(private http: HttpClient, private otds: OtdsService) { }
+    callService(param: <%= inMsg %>): Subject<<%= outMsg %>> {
+        let o: Subject<<%= outMsg %>> = new Subject();
+        if (!this.otds.otdsTicket) {
+            throw new Error("User not logged in");
+        }
+        let req = {
+            "SOAP:Envelope": {
+                "meta": {
+                    "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
+                },
+                "SOAP:Header": {
+                    "OTAuthentication": {
+                        "meta": {
+                            "xmlns": "urn:api.bpm.opentext.com"
+                        },
+                        "AuthenticationToken": this.otds.otdsTicket.ticket
+                    }
+                },
+                "SOAP:Body": {
+                    "GetOrganizationsOfUser": {
+                        "meta": {
+                            "xmlns": "http://schemas.cordys.com/UserManagement/1.0/User"
+                        },
+                        ...param
+                    }
+                }
+            }
+        };
+        let builder = new Builder({ attrkey: "meta" });
+        let xml = builder.buildObject(req);
+        this.http.post("http://10.96.75.123:81/home/SCM/com.eibus.web.soap.Gateway.wcp?organization=o=SCM,cn=cordys,cn=defaultInst,o=lab.opentext.com", xml, { responseType: "text" }).subscribe((data => {
+            this.xmlParser.parseString(data, (err, result) => {
+                let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["GetOrganizationsOfUserResponse"];
+                o.next(g);
+                o.complete();
+            });
+        }));
+        return o;
+    }
+}

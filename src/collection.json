@@ -1,0 +1,20 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Add my library to the project.",
+      "factory": "./ng-add/index#ngAdd",
+      "schema": "./app-works/schema.json"
+    },
+    "app-works": {
+      "description": "Schematic to configure AppWorks environment",
+      "factory": "./app-works/index#appWorks",
+      "schema": "./app-works/schema.json"
+    },
+    "service": {
+      "description": "Schematic to add AppWorks webservice",
+      "factory": "./service/index#service",
+      "schema": "./service/schema.json"
+    }
+  }
+}
