@@ -5,4 +5,5 @@ export interface ConfigSchema {
     project?: string;
     path?: string;
     root: string;
+    config_path?: string;
   }

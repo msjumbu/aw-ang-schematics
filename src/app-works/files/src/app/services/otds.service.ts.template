@@ -19,12 +19,10 @@ export class OtdsService {
   authenticate(username: string, password: string): Observable<OTDSTicket> {
     const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
     const body = '{"userName":"' + username + '", "password":"' + password + '"}';
-    return this.config.getConfig().pipe(mergeMap((data: Config) => {
-      if (this.otdsTicket$)
-        return this.otdsTicket$;
-      this.otdsTicket$ = this.http.post<OTDSTicket>(data.OTDS_URL, body, { 'headers': headers }).pipe(shareReplay(1));
+    if (this.otdsTicket$)
       return this.otdsTicket$;
-    }));
+    this.otdsTicket$ = this.http.post<OTDSTicket>(this.config.config.OTDS_URL, body, { 'headers': headers }).pipe(shareReplay(1));
+    return this.otdsTicket$;
   }
 }
 

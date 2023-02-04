@@ -6,18 +6,23 @@
     "properties": {
       "otds_url": {
         "type": "string",
-        "description": "OTDS URL",
-        "x-prompt": "Please enter your OTDS URL"
+        "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
+        "x-prompt": "Please enter your OTDS authentication rest service URL."
       },
       "gateway_url": {
         "type": "string",
-        "description": "AppWorks Gateway URL",
+        "description": "AppWorks Gateway URL (ex: http://<< host/ip >>:<< port >>/home/<< organization >>/com.eibus.web.soap.Gateway.wcp)",
         "x-prompt": "Please enter your AppWorks Gateway URL"
       },
       "org_dn": {
         "type": "string",
-        "description": "Org DN",
-        "x-prompt": "Please enter your Org DN"
+        "description": "Organization DN",
+        "x-prompt": "Please enter your organization DN"
+      },
+      "config_path": {
+        "type": "string",
+        "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
+        "x-prompt": "Please enter the relative path to config.json"
       },
       "project": {
         "type": "string",
