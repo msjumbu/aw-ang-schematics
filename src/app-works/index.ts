@@ -12,7 +12,7 @@ import {
 } from '@angular-devkit/schematics';
 import { normalize, virtualFs, workspaces } from '@angular-devkit/core';
 import { ConfigSchema as MyServiceSchema } from './schema';
-import { addImportToModule, addSymbolToNgModuleMetadata, findNodes, insertAfterLastOccurrence, insertImport } from '@schematics/angular/utility/ast-utils';
+import { addImportToModule, addSymbolToNgModuleMetadata, findNodes, insertAfterLastOccurrence, insertImport, isImported } from '@schematics/angular/utility/ast-utils';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { InsertChange } from '@schematics/angular/utility/change';
 
@@ -78,44 +78,19 @@ function addImportToNgModule(_options: MyServiceSchema): Rule {
     }
     const source = ts.createSourceFile(modulePath, sourceText.toString(), ts.ScriptTarget.Latest, true);
 
-    const addHttpModule = addImportToModule(
+    let changes = addImportToModule(
       source,
       modulePath,
       'HttpClientModule',
       '@angular/common/http'
     );
 
-    const importAppInit = insertImport(
-      source,
-      modulePath,
-      'APP_INITIALIZER',
-      '@angular/core'
-    );
-    let changes = addHttpModule.concat(importAppInit);
-
-    const importHttpClient = insertImport(
-      source,
-      modulePath,
-      'HttpClient',
-      '@angular/common/http'
-    );
-    changes = changes.concat(importHttpClient);
-
-    const importrxjs = insertImport(
-      source,
-      modulePath,
-      'Observable, tap',
-      'rxjs'
-    );
-    changes = changes.concat(importrxjs);
-
-    const importConfig = insertImport(
-      source,
-      modulePath,
-      'Config, ConfigService',
-      './config/config.service'
-    );
-    changes = changes.concat(importConfig)
+    addImport('APP_INITIALIZER', '@angular/core');
+    addImport('HttpClient', '@angular/common/http');
+    addImport('Observable', 'rxjs');
+    addImport('tap', 'rxjs');
+    addImport('Config', './config/config.service');
+    addImport('ConfigService', './config/config.service');
 
     const providerChanges = addSymbolToNgModuleMetadata(source,
       modulePath,
@@ -136,10 +111,10 @@ function initializeAppFactory(httpClient: HttpClient, configService: ConfigServi
     );
  }
  `
- initializeAppFactory = initializeAppFactory.replace('##config_path##', _options.config_path || 'assets/config.json')
+    initializeAppFactory = initializeAppFactory.replace('##config_path##', _options.config_path || 'assets/config.json')
     let t = findNodes(source, ts.SyntaxKind.ClassDeclaration);
     let c = insertAfterLastOccurrence(t, initializeAppFactory, modulePath, 0);
-    changes.push(c)
+    changes = changes.concat(c)
     changes = changes.concat(providerChanges)
     const recorder = tree.beginUpdate(modulePath);
     changes.forEach(change => {
@@ -150,6 +125,18 @@ function initializeAppFactory(httpClient: HttpClient, configService: ConfigServi
     tree.commitUpdate(recorder);
 
     return tree;
+
+    function addImport(symbolName: string, fileName: string) {
+      if (!isImported(source, symbolName, fileName)) {
+        const importAppInit = insertImport(
+          source,
+          modulePath,
+          symbolName,
+          fileName
+        );
+        changes = changes.concat(importAppInit);
+      }
+    }
   };
 }
 

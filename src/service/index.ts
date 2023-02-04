@@ -64,9 +64,12 @@ function getRelativePathToApp(tree: Tree, movePath: string) : string {
 function createTypes(def: IDefinition, filePath: string, typeFileName: string): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     let typesGen: TypesGenerator = new TypesGenerator();
-    let res = typesGen.generateTypes(def);
-    tree.overwrite(normalize(filePath +
-      '/' + typeFileName+'.ts'), res);
+    const res = typesGen.generateTypes(def);
+    const file = normalize(filePath + '/' + typeFileName+'.ts');
+    if (tree.exists(file))
+      tree.overwrite(file, res);
+    else
+      tree.create(file, res);
     return tree;
   }
 }
