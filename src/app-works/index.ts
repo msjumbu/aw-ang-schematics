@@ -97,9 +97,22 @@ function addImportToNgModule(_options: MyServiceSchema): Rule {
       'providers',
       '{ provide: APP_INITIALIZER, useFactory: initializeAppFactory, deps: [HttpClient, ConfigService], multi: true }',
       null);
+    changes = changes.concat(providerChanges);
 
+    addAppInitializerFactory();
 
-    let initializeAppFactory = `
+    const recorder = tree.beginUpdate(modulePath);
+    changes.forEach(change => {
+      if (change instanceof InsertChange) {
+        recorder.insertLeft(change.pos, change.toAdd);
+      }
+    });
+    tree.commitUpdate(recorder);
+
+    return tree;
+
+    function addAppInitializerFactory() {
+      let initializeAppFactory = `
 
 function initializeAppFactory(httpClient: HttpClient, configService: ConfigService): () => Observable<any> {
   // Replace this path, if the config file location is changed
@@ -110,21 +123,23 @@ function initializeAppFactory(httpClient: HttpClient, configService: ConfigServi
         })
     );
  }
- `
-    initializeAppFactory = initializeAppFactory.replace('##config_path##', _options.config_path || 'assets/config.json')
-    let t = findNodes(source, ts.SyntaxKind.ClassDeclaration);
-    let c = insertAfterLastOccurrence(t, initializeAppFactory, modulePath, 0);
-    changes = changes.concat(c)
-    changes = changes.concat(providerChanges)
-    const recorder = tree.beginUpdate(modulePath);
-    changes.forEach(change => {
-      if (change instanceof InsertChange) {
-        recorder.insertLeft(change.pos, change.toAdd);
+ `;
+      initializeAppFactory = initializeAppFactory.replace('##config_path##', _options.config_path || 'assets/config.json');
+      let chk = findNodes(source, ts.SyntaxKind.Identifier);
+      let initFactoryFound = false;
+      for (let index = 0; index < chk.length; index++) {
+        const element = chk[index];
+        if (element.parent.kind == ts.SyntaxKind.FunctionDeclaration && element.getText() == 'initializeAppFactory') {
+          initFactoryFound = true;
+          break;
+        }
       }
-    });
-    tree.commitUpdate(recorder);
-
-    return tree;
+      if (!initFactoryFound) {
+        let t = findNodes(source, ts.SyntaxKind.ClassDeclaration);
+        let c = insertAfterLastOccurrence(t, initializeAppFactory, modulePath, 0);
+        changes = changes.concat(c);
+      }
+    }
 
     function addImport(symbolName: string, fileName: string) {
       if (!isImported(source, symbolName, fileName)) {
