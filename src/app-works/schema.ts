@@ -6,4 +6,5 @@ export interface ConfigSchema {
     path?: string;
     root: string;
     config_path?: string;
+    sourceRoot: string;
   }

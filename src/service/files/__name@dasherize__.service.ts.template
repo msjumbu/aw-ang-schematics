@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Parser, Builder } from "xml2js";
-import { OtdsService } from "<%= rPath %>services/otds.service";
-import { Utils } from "<%= rPath %>services/utils";
+import { OtdsService } from "<%= rPath %>/otds.service";
+import { Utils } from "<%= rPath %>/utils";
 import { Subject } from "rxjs";
-import { <%= inMsg %>, <%= outMsg %>, metadata } from "<%= typesFile %>";
+import { <%= inMsg %>, <%= outMsg %>, metadata } from "./<%= typesFile %>";
 
 @Injectable({
     providedIn: "root"
@@ -20,7 +20,7 @@ export class <%= classify(name) %>Service {
     });
 
     constructor(private http: HttpClient, private otds: OtdsService) { }
-    
+
     callService(param: <%= inMsg %>): Subject<<%= outMsg %>> {
         let o: Subject<<%= outMsg %>> = new Subject();
         if (!this.otds.otdsTicket) {

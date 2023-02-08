@@ -27,13 +27,18 @@ export function appWorks(_options: MyServiceSchema): Rule {
     if (!project) {
       throw new SchematicsException(`Invalid project name: ${_options.project}`);
     }
-
+    
     // const projectType = project.extensions.projectType === 'application' ? 'app' : 'lib';
     if (_options.path === undefined) {
       _options.path = `${project.sourceRoot}`;
-      _options.root = `${project.root}`
     }
-    const movePath = normalize(_options.path + '/');
+    _options.root = `${project.root}`
+    _options.sourceRoot = `${project.sourceRoot}`;
+
+    if (!tree.exists(`./angular.json`))
+    throw new SchematicsException(`angular.json file not found, are you sure you are running it from angular workspace?`);
+
+    const movePath = normalize(_options.sourceRoot + '/');
 
     let t = url('./files/src');
     console.log(t.toString())
@@ -71,7 +76,7 @@ function createHost(tree: Tree): workspaces.WorkspaceHost {
 
 function addImportToNgModule(_options: MyServiceSchema): Rule {
   return (tree: Tree) => {
-    const modulePath = `/${_options.root}/src/app/app.module.ts`;
+    const modulePath = `/${_options.root}/${_options.sourceRoot}/app/app.module.ts`;
     const sourceText = tree.read(modulePath);
     if (!sourceText) {
       throw new SchematicsException(`Could not find file for path: ${modulePath}`);
@@ -116,7 +121,7 @@ function addImportToNgModule(_options: MyServiceSchema): Rule {
 
 function initializeAppFactory(httpClient: HttpClient, configService: ConfigService): () => Observable<any> {
   // Replace this path, if the config file location is changed
-  return () => httpClient.get<Config>('##config_path##')
+  return () => httpClient.get<Config>('${_options.config_path || 'assets/config.json'}')
     .pipe(
        tap(config => { 
           configService.config = config;
@@ -124,7 +129,6 @@ function initializeAppFactory(httpClient: HttpClient, configService: ConfigServi
     );
  }
  `;
-      initializeAppFactory = initializeAppFactory.replace('##config_path##', _options.config_path || 'assets/config.json');
       let chk = findNodes(source, ts.SyntaxKind.Identifier);
       let initFactoryFound = false;
       for (let index = 0; index < chk.length; index++) {
