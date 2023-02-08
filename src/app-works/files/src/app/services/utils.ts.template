@@ -1,0 +1,34 @@
+export class Utils {
+    /**
+     *
+     */
+    constructor(private metadata: any) {}
+    
+    validator(xpath: string, currentValue: any, newValue: any) {
+        let parts = xpath.split('/');
+        if (!parts || parts.length <= 3)
+            return newValue;
+        if (isArrayElement(parts.slice(3).join('/'), this.metadata))
+            return [newValue]
+        return newValue;
+
+        function isArrayElement(path: string, obj: any): boolean {
+            if (!Array.isArray(obj) && obj.element)
+                obj = obj.element;
+            else if (!Array.isArray(obj))
+                return false;
+            if (path.includes('/')) {
+                let t = obj.find((item: { name: string; }) => item.name == path.split('/')[0]);
+                if (!t)
+                    return false;
+                return isArrayElement(path.substring(path.indexOf('/') + 1), t);
+            } else {
+                let t = obj.find((item: { name: string; }) => item.name == path);
+                if (t && t.maxOccurs && (t.maxOccurs == 'unbounded' || t.maxOccurs > 0))
+                    return true;
+                else
+                    return false
+            }
+        }
+    }
+}

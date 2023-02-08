@@ -2,18 +2,25 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Parser, Builder } from "xml2js";
 import { OtdsService } from "<%= rPath %>services/otds.service";
+import { Utils } from "<%= rPath %>services/utils";
 import { Subject } from "rxjs";
-import { <%= inMsg %> } from "<%= typesFile %>";
-import { <%= outMsg %> } from "<%= typesFile %>";
+import { <%= inMsg %>, <%= outMsg %>, metadata } from "<%= typesFile %>";
+
 @Injectable({
     providedIn: "root"
 })
+
 export class <%= classify(name) %>Service {
+    private util: Utils = new Utils(metadata);
+
     private xmlParser = new Parser({
         attrkey: "meta",
-        explicitArray: false
+        explicitArray: false,
+        validator: this.util.validator.bind(this.util)
     });
+
     constructor(private http: HttpClient, private otds: OtdsService) { }
+    
     callService(param: <%= inMsg %>): Subject<<%= outMsg %>> {
         let o: Subject<<%= outMsg %>> = new Subject();
         if (!this.otds.otdsTicket) {

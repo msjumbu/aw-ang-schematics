@@ -26,7 +26,7 @@ export function service(_options: MyServiceSchema): Rule {
     const movePath = normalize(_options.path + '/services/');
     
     // let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2F*&version=isv&resolveexternals=true';
-    let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2FGetUserDetails&resolveexternals=true';
+    let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2Fsalesorderdatabasemetadata%2FGetScmSoSalesDistrictPriceMasterObjects&resolveexternals=true';
     let wsdlService: WsdlService = new WsdlService();
     let def: IDefinition = await wsdlService.getWSDL(wsdlURL);
     let s = [];
@@ -88,8 +88,8 @@ function createService(pt: IPortType, filePath: string, typeFileName:string): Ru
         classify: strings.classify,
         dasherize: strings.dasherize,
         name: serviceName,
-        inMsg: inMsg,
-        outMsg: outMsg,
+        inMsg: 'I'+inMsg,
+        outMsg: 'I'+outMsg,
         typesFile: typesFile,
         rPath: rPath
       }),

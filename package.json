@@ -1,6 +1,6 @@
 {
   "name": "@msjumbu/app-works",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "AppWorks Schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -9,11 +9,11 @@
   "keywords": [
     "schematics"
   ],
-  "author": "",
+  "author": "Senthilkumar Murugesan",
   "license": "MIT",
   "schematics": "./src/collection.json",
   "ng-add": {
-    "save": false
+    "save": true
   },
   "dependencies": {
     "@angular-devkit/core": "^15.1.3",

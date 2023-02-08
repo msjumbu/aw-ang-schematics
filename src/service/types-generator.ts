@@ -59,8 +59,21 @@ export class TypesGenerator {
     const nodeArr = ts.factory.createNodeArray(Array.from(this.nodeArrMap.values()));
     const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
     const result = printer.printList(ts.ListFormat.MultiLine, nodeArr, sourceFile);
-    
-    return result;
+
+    let m = [];
+    for (let index = 0; index < definition.messages.length; index++) {
+      const msg = definition.messages[index];
+      for (let i = 0; i < msg.element.length; i++) {
+        const element = msg.element[i];
+        m.push(element);
+      }
+    }
+    let exportMetaData = `
+` + 'export const metadata = ' + JSON.stringify(m, undefined, 2) + `;
+`;
+
+    return result + exportMetaData;
+
   }
 
   private generateTypesForMessage(message: IMessage) {
@@ -68,31 +81,23 @@ export class TypesGenerator {
       this.generateMembers(message.element[0], '');
     }
     // the below is cover messages without any parameters/elements
-    if (!this.nodeArrMap.has(message.name)) {
+    if (!this.nodeArrMap.has('I' + message.name)) {
       const messageType = this.createInterface(message.name, []);
       this.nodeArrMap.set('I' + message.name, messageType);
-      const classDeclaration = this.createClass(message.name, 'I' + message.name, []);
-      this.nodeArrMap.set(message.name, classDeclaration);
     }
   }
 
-  private generateMembers(element: Element, _dataType: string): [ts.TypeElement, ts.PropertyDeclaration] {
+  private generateMembers(element: Element, _dataType: string): ts.TypeElement {
     let interfaceMembers: any[] = new Array();
-    let classMembers: any[] = new Array();
 
     if (element.attributes) {
       const assignments: ts.PropertySignature[] = [];
-      const classAssignments: ts.PropertyDeclaration[] = [];
       element.attributes.forEach(attr => {
         const propSign = this.createPropertySignatureWithType(attr.name, this.typeFromSOAP(''), false);
         assignments.push(propSign);
-        const propDec = this.createPropertyDeclarationWithType(attr.name, this.typeFromSOAP(''), false);
-        classAssignments.push(propDec);
       });
       let t = this.createPropertySignatureWithMembers('meta', assignments, false);
       interfaceMembers.push(t);
-      let c = this.createPropertyDeclarationWithMembers('meta', classAssignments, false);
-      classMembers.push(c);
       if (!element.element) {
         // it is a node with attributes like <Role application='' organization=''>Developer</Role>, in this case it will genrate the following code
         // export interface Role {
@@ -104,15 +109,12 @@ export class TypesGenerator {
         // }
         const propSign = this.createPropertySignatureWithType('text', this.typeFromSOAP(''), false);
         interfaceMembers.push(propSign);
-        const propDec = this.createPropertyDeclarationWithType('text', this.typeFromSOAP(''), false);
-        classAssignments.push(propDec);
       }
     }
     if (element.element) {
       element.element.forEach(child => {
         let props = this.generateMembers(child, element.eType);
-        interfaceMembers.push(props[0]);
-        classMembers.push(props[1]);
+        interfaceMembers.push(props);
       });
     }
     if ((element.attributes || element.element)) {
@@ -128,14 +130,10 @@ export class TypesGenerator {
         if (!this.nodeArrMap.has(element.name)) {
           const messageType = this.createInterface(element.name, interfaceMembers);
           this.nodeArrMap.set('I' + element.name, messageType);
-          const classDeclaration = this.createClass(element.name, 'I' + element.name, classMembers);
-          this.nodeArrMap.set(element.name, classDeclaration);
         }
-        return [this.createPropertySignatureWithType(element.name, ts.factory.createTypeReferenceNode('I' + element?.name + ''), isArray),
-        this.createPropertyDeclarationWithType(element.name, ts.factory.createTypeReferenceNode(element?.name + ''), isArray)];
+        return this.createPropertySignatureWithType(element.name, ts.factory.createTypeReferenceNode('I' + element?.name + ''), isArray);
       } else {
-        return [this.createPropertySignatureWithMembers(element.name, interfaceMembers, isArray),
-        this.createPropertyDeclarationWithMembers(element.name, classMembers, isArray)]
+        return this.createPropertySignatureWithMembers(element.name, interfaceMembers, isArray);
       }
     } else {
       let isArray = false;
@@ -144,8 +142,7 @@ export class TypesGenerator {
       if (element.maxOccurs == 'unbounded' || (Number(element.maxOccurs ?? 0) > 1)) {
         isArray = true;
       }
-      return [this.createPropertySignatureWithType(element.name, this.typeFromSOAP(element.eType), isArray),
-      this.createPropertyDeclarationWithType(element.name, this.typeFromSOAP(element.eType), isArray)]
+      return this.createPropertySignatureWithType(element.name, this.typeFromSOAP(element.eType), isArray);
     }
   }
 
@@ -160,22 +157,6 @@ export class TypesGenerator {
       members // interface attributes
     );
     return messageType;
-  }
-
-  createClass(name: string, interfaceName: string, members: any[]): ts.ClassDeclaration {
-    const interfaceSymbol = ts.factory.createIdentifier(name);
-    const classDeclaration = ts.factory.createClassDeclaration(undefined,
-      this.exportModifier(),
-      interfaceSymbol,
-      undefined,
-      [ts.factory.createHeritageClause(ts.SyntaxKind.ImplementsKeyword,
-        [ts.factory.createExpressionWithTypeArguments(
-          ts.factory.createIdentifier(interfaceName),
-          undefined
-        )]
-      )],
-      members);
-    return classDeclaration;
   }
 
   createPropertySignatureWithType(name: string, eType: ts.TypeReferenceNode, isArray: boolean): ts.PropertySignature {
@@ -198,31 +179,6 @@ export class TypesGenerator {
     }
   }
 
-  createPropertyDeclarationWithType(name: string, eType: ts.TypeReferenceNode, isArray: boolean): ts.PropertyDeclaration {
-    if (!isArray) {
-      const commentProp = ts.factory.createPropertyDeclaration(
-        undefined,
-        undefined,
-        name,
-        ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-        eType,
-        undefined
-      );
-      
-      return commentProp;
-    } else {
-      const commentProp = ts.factory.createPropertyDeclaration(
-        undefined,
-        undefined,
-        name,
-        ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-        ts.factory.createArrayTypeNode(eType),
-        undefined
-      );
-      return commentProp;
-    }
-  }
-
   createPropertySignatureWithMembers(name: string, members: any[], isArray: boolean): ts.PropertySignature {
     if (!isArray) {
       let t = ts.factory.createPropertySignature(
@@ -240,28 +196,4 @@ export class TypesGenerator {
       return t;
     }
   }
-
-  createPropertyDeclarationWithMembers(name: string, members: any[], isArray: boolean): ts.PropertyDeclaration {
-    if (!isArray) {
-      let t = ts.factory.createPropertyDeclaration(
-        undefined,
-        undefined,
-        ts.factory.createIdentifier(name),
-        ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-        ts.factory.createTypeLiteralNode(members),
-        undefined);
-      return t;
-    } else {
-      let t = ts.factory.createPropertyDeclaration(
-        undefined,
-        undefined,
-        ts.factory.createIdentifier(name),
-        ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-        ts.factory.createArrayTypeNode(ts.factory.createTypeLiteralNode(members)),
-        undefined);
-      return t;
-    }
-  }
-
-
 }
