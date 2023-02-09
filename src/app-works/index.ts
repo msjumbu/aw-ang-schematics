@@ -76,7 +76,9 @@ function createHost(tree: Tree): workspaces.WorkspaceHost {
 
 function addImportToNgModule(_options: MyServiceSchema): Rule {
   return (tree: Tree) => {
-    const modulePath = `/${_options.root}/${_options.sourceRoot}/app/app.module.ts`;
+    if (!_options.gateway_url) throw new SchematicsException('AppWorks Gateway URL is required');
+    // const modulePath = `/${_options.root}/${_options.sourceRoot}/app/app.module.ts`;
+    const modulePath = `/${_options.sourceRoot}/app/app.module.ts`;
     const sourceText = tree.read(modulePath);
     if (!sourceText) {
       throw new SchematicsException(`Could not find file for path: ${modulePath}`);

@@ -25,11 +25,12 @@ export function service(_options: MyServiceSchema): Rule {
     _options.root = `${project.root}`
     _options.sourceRoot = `${project.sourceRoot}`;
     const movePath = normalize(_options.path + '/services/');
-    
-    // let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2F*&version=isv&resolveexternals=true';
-    let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2Fsalesorderdatabasemetadata%2FGetScmSoSalesDistrictPriceMasterObjects&resolveexternals=true';
+    if (!_options.wsdl_url || _options.wsdl_url == 'test') {
+      // let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2F*&version=isv&resolveexternals=true';
+      _options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2Fsalesorderdatabasemetadata%2FGetScmSoSalesDistrictPriceMasterObjects&resolveexternals=true';
+    }
     let wsdlService: WsdlService = new WsdlService();
-    let def: IDefinition = await wsdlService.getWSDL(wsdlURL);
+    let def: IDefinition = await wsdlService.getWSDL(_options.wsdl_url);
     let s = [];
     let pts = def.portTypes;
     let typeFileName = dasherize(def.name.startsWith('Method_Set_') ? def.name.substring('Method_Set_'.length) : def.name) + '.types';
@@ -45,7 +46,7 @@ function createTypes(def: IDefinition, filePath: string, typeFileName: string): 
   return (tree: Tree, _context: SchematicContext) => {
     let typesGen: TypesGenerator = new TypesGenerator();
     const res = typesGen.generateTypes(def);
-    const file = normalize(filePath + '/' + typeFileName+'.ts');
+    const file = normalize(filePath + '/' + typeFileName + '.ts');
     if (tree.exists(file))
       tree.overwrite(file, res);
     else
@@ -54,7 +55,7 @@ function createTypes(def: IDefinition, filePath: string, typeFileName: string): 
   }
 }
 
-function createService(pt: IPortType, filePath: string, typeFileName:string, _options: MyServiceSchema): Rule {
+function createService(pt: IPortType, filePath: string, typeFileName: string, _options: MyServiceSchema): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
     const serviceName = pt.operation?.name;
     const inMsg = pt.operation?.input?.name;
@@ -69,8 +70,8 @@ function createService(pt: IPortType, filePath: string, typeFileName:string, _op
         classify: strings.classify,
         dasherize: strings.dasherize,
         name: serviceName,
-        inMsg: 'I'+inMsg,
-        outMsg: 'I'+outMsg,
+        inMsg: 'I' + inMsg,
+        outMsg: 'I' + outMsg,
         typesFile: typeFileName,
         rPath: rPath
       }),

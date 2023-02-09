@@ -1,13 +1,15 @@
 {
   "name": "@msjumbu/app-works",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "AppWorks Schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
   "keywords": [
-    "schematics"
+    "schematics",
+    "AppWorks",
+    "app-works"
   ],
   "author": "Senthilkumar Murugesan",
   "license": "MIT",
@@ -20,6 +22,7 @@
     "@angular-devkit/schematics": "^15.1.3",
     "@schematics/angular": "^13.0.0",
     "axios": "^1.2.6",
+    "axios-mock-adapter": "^1.21.2",
     "typescript": "~4.9.3",
     "xml2js": "^0.4.23"
   },

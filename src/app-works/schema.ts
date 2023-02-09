@@ -4,7 +4,7 @@ export interface ConfigSchema {
     org_dn: string;
     project?: string;
     path?: string;
-    root: string;
+    root?: string;
     config_path?: string;
-    sourceRoot: string;
+    sourceRoot?: string;
   }
