@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Parser, Builder } from "xml2js";
-import { OtdsService } from "<%= rPath %>/otds.service";
-import { Utils } from "<%= rPath %>/utils";
+import { OtdsService } from "<%= srPath %>/otds.service";
+import { ConfigService } from "<%= crPath %>/config.service";
+import { Utils } from "<%= srPath %>/utils";
 import { Subject } from "rxjs";
 import { <%= inMsg %>, <%= outMsg %>, metadata } from "./<%= typesFile %>";
 
@@ -19,7 +20,7 @@ export class <%= classify(name) %>Service {
         validator: this.util.validator.bind(this.util)
     });
 
-    constructor(private http: HttpClient, private otds: OtdsService) { }
+    constructor(private http: HttpClient, private otds: OtdsService, private configService: ConfigService) { }
 
     callService(param: <%= inMsg %>): Subject<<%= outMsg %>> {
         let o: Subject<<%= outMsg %>> = new Subject();
@@ -51,7 +52,8 @@ export class <%= classify(name) %>Service {
         };
         let builder = new Builder({ attrkey: "meta" });
         let xml = builder.buildObject(req);
-        this.http.post("http://10.96.75.123:81/home/SCM/com.eibus.web.soap.Gateway.wcp?organization=o=SCM,cn=cordys,cn=defaultInst,o=lab.opentext.com", xml, { responseType: "text" }).subscribe((data => {
+        let endpoint = this.configService.config.GATEWAY_URL+'?organization='+this.configService.config.ORG_DN;
+        this.http.post(endpoint, xml, { responseType: "text" }).subscribe((data => {
             this.xmlParser.parseString(data, (err, result) => {
                 let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["GetOrganizationsOfUserResponse"];
                 o.next(g);
