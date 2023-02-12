@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "ng-add": {
-      "description": "Add my library to the project.",
+      "description": "Add my AppWorks to the project.",
       "factory": "./ng-add/index#ngAdd",
       "schema": "./app-works/schema.json"
     },
@@ -15,6 +15,11 @@
       "description": "Schematic to add AppWorks webservice",
       "factory": "./service/index#service",
       "schema": "./service/schema.json"
+    },
+    "component": {
+      "description": "Create service for the wsdl and a component for the service",
+      "factory": "./component/index#component",
+      "schema": "./component/schema.json"
     }
   }
 }

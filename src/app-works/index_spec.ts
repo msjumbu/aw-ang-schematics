@@ -20,7 +20,6 @@ describe('app-works', () => {
     newProjectRoot: 'projects',
     version: '6.0.0',
   };
-
   describe('with project bar', () => {
 
     const appOptions: ApplicationOptions = {

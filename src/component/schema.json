@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "$id": "SchematicsAppWorksComponent",
+    "title": "AppWorks Component Schema",
+    "type": "object",
+    "properties": {
+      "wsdl_url": {
+        "type": "string",
+        "description": "WSDL URL",
+        "x-prompt": "Please enter WSDL URL"
+      },
+      "name": {
+        "type": "string",
+        "description": "Component name",
+        "x-prompt": "Please enter component name"
+      },
+      "project": {
+        "type": "string",
+        "description": "The name of the project.",
+        "$default": {
+          "$source": "projectName"
+        }
+      },
+      "path": {
+        "type": "string",
+        "format": "path",
+        "description": "The path to create the service.",
+        "visible": false
+      }
+    },
+    "required": ["wsdl_url", "name"]
+  }

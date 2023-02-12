@@ -1,0 +1,29 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { <%= serviceName %> as AWService} from '<%= servicePath %>';
+import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg} from '<%= typesPath %>';
+
+@Component({
+  selector: '<%= selector %>',
+  templateUrl: './<%= dasherize(name) %><%= type ? '.' + dasherize(type): '' %>.html',
+  styleUrls: ['./<%= dasherize(name) %><%= type ? '.' + dasherize(type): '' %>.<%= style %>']
+})
+export class <%= classify(name) %><%= classify(type) %> {
+  constructor(private fb: FormBuilder, 
+      private awService: AWService) { }
+
+  ngOnInit(): void {
+    
+  }
+
+  getData(input: InputMsg): void {
+    this.awService.callService(input).subscribe({
+      next: (g:OutputMsg) => {
+        console.log(g);
+      },
+      error: (err) => {
+        console.log(err);  
+      }
+    });
+  }
+}
