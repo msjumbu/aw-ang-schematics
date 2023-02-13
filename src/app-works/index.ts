@@ -27,8 +27,13 @@ export function appWorks(_options: MyServiceSchema): Rule {
     if (!project) {
       throw new SchematicsException(`Invalid project name: ${_options.project}`);
     }
-    
-    // const projectType = project.extensions.projectType === 'application' ? 'app' : 'lib';
+    // TODO: See if there is any other way
+    const angularJson = tree.read('/angular.json');
+    if (!angularJson) throw new SchematicsException(`Unable to find angular.json`);
+    const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
+    initialWorkspace.projects[_options.project??0].architect.build.options.styles.splice(0,0,"node_modules/@clr/ui/clr-ui.min.css")
+    tree.overwrite('/angular.json', JSON.stringify(initialWorkspace));
+
     if (_options.path === undefined) {
       _options.path = `${project.sourceRoot}`;
     }
@@ -96,6 +101,8 @@ function addImportToNgModule(_options: MyServiceSchema): Rule {
     addImport('HttpClient', '@angular/common/http');
     addImport('Observable', 'rxjs');
     addImport('tap', 'rxjs');
+    addImport('ClarityModule', '@clr/angular');
+    addImport('BrowserAnimationsModule', '@angular/platform-browser/animations');
     addImport('Config', './config/config.service');
     addImport('ConfigService', './config/config.service');
 

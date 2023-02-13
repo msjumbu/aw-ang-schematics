@@ -21,7 +21,7 @@ export function ngAdd(_options: MyServiceSchema): Rule {
 
 function addPackageJsonDependencies(): Rule {
     return (tree: Tree, _context: SchematicContext): Observable<Tree> => {        
-        return of('xml2js', '@types/xml2js').pipe(
+        return of('xml2js', '@types/xml2js', 'timers', 'stream', '@cds/core', '@clr/angular', '@clr/ui').pipe(
             concatMap(name => getLatestNodeVersion(name)),
             map((npmRegistryPackage: NpmRegistryPackage) => {
                 const nodeDependency: NodeDependency = {

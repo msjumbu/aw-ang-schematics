@@ -28,7 +28,7 @@ export function service(_options: MyServiceSchema): Rule {
     const movePath = normalize(_options.path + '/services/');
     if (!_options.wsdl_url || _options.wsdl_url == 'test') {
       // let wsdlURL = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2F*&version=isv&resolveexternals=true';
-      _options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2Fsalesorderdatabasemetadata%2FGetScmSoSalesDistrictPriceMasterObjects&resolveexternals=true';
+      _options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2FGetOrganizationsOfUser&resolveexternals=true';
     }
     let wsdlService: WsdlService = new WsdlService();
     let def: IDefinition = await wsdlService.getWSDL(_options.wsdl_url);
