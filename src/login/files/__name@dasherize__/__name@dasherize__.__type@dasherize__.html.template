@@ -1,0 +1,23 @@
+<div class="login-wrapper">
+    <form class="login" [formGroup]="loginForm">
+        <section class="title">
+            <h3 class="welcome">Welcome to</h3>
+            Senthil
+            <h5 class="hint">Use your Company ID to sign in or create one now</h5>
+        </section>
+        <div class="login-group">
+            <clr-input-container>
+                <label class="clr-sr-only">Username</label>
+                <input type="text" name="username" clrInput placeholder="Username" formControlName="userName"/>
+            </clr-input-container>
+            <clr-password-container>
+                <label class="clr-sr-only">Password</label>
+                <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+            </clr-password-container>
+            <div class="error active" *ngIf="invalidLogin">
+                Invalid user name or password
+            </div>
+            <button (click)="login()" class="btn btn-primary">Login</button>
+        </div>
+    </form>
+  </div>

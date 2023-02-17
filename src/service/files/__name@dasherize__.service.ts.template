@@ -41,9 +41,9 @@ export class <%= classify(name) %>Service {
                     }
                 },
                 "SOAP:Body": {
-                    "GetOrganizationsOfUser": {
+                    "<%= webServiceName %>": {
                         "meta": {
-                            "xmlns": "http://schemas.cordys.com/UserManagement/1.0/User"
+                            "xmlns": "<%= webServiceNS %>"
                         },
                         ...param
                     }
@@ -55,7 +55,7 @@ export class <%= classify(name) %>Service {
         let endpoint = this.configService.config.GATEWAY_URL+'?organization='+this.configService.config.ORG_DN;
         this.http.post(endpoint, xml, { responseType: "text" }).subscribe((data => {
             this.xmlParser.parseString(data, (err, result) => {
-                let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["GetOrganizationsOfUserResponse"];
+                let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["<%= webServiceResponse %>"];
                 o.next(g);
                 o.complete();
             });

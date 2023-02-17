@@ -16,6 +16,12 @@
           "$source": "projectName"
         }
       },
+      "skipService": {
+        "type": "boolean",
+        "description": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
+        "x-prompt": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
+        "default": false
+      },
       "path": {
         "type": "string",
         "format": "path",

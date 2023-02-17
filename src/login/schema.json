@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "$id": "SchematicsAppWorksComponent",
+    "title": "AppWorks Component Schema",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Component name",
+        "visible": false
+      },
+      "project": {
+        "type": "string",
+        "description": "The name of the project.",
+        "$default": {
+          "$source": "projectName"
+        }
+      },
+      "path": {
+        "type": "string",
+        "format": "path",
+        "description": "The path to create the service.",
+        "visible": false
+      }
+    },
+    "required": []
+  }

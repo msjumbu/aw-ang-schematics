@@ -1,14 +1,14 @@
 import { dasherize } from '@angular-devkit/core/src/utils/strings';
 import { apply, applyTemplates, chain, externalSchematic, MergeStrategy, mergeWith, move, Rule, schematic, SchematicContext, SchematicsException, strings, Tree, url } from '@angular-devkit/schematics';
 import { buildDefaultPath, getWorkspace } from "@schematics/angular/utility/workspace";
-import { ConfigSchema as MyServiceSchema } from './schema';
+import { ConfigSchema as ComponentSchema } from './schema';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { findNode, findNodes } from '@schematics/angular/utility/ast-utils';
 import { parseName } from '@schematics/angular/utility/parse-name';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-export function component(options: MyServiceSchema): Rule {
+export function component(options: ComponentSchema): Rule {
   return async (host: Tree, _context: SchematicContext) => {
     const workspace = await getWorkspace(host);
     const project = workspace.projects.get(options.project as string);
@@ -22,13 +22,13 @@ export function component(options: MyServiceSchema): Rule {
     options.name = parsedPath.name;
     options.path = parsedPath.path;
     console.log(options.path);
-    
+
     options.root = `${project.root}`
     options.sourceRoot = `${project.sourceRoot}`;
     options.selector =
       options.selector || buildSelector(options.name, (project && project.prefix) || '');
     return chain([externalSchematic('@schematics/angular', 'component',
-      { "name": options.name, "path": options.path }),
+      { "name": options.name, "path": options.path}),
     schematic('service',
       { "wsdl_url": options.wsdl_url, "path": options.path + '/' + dasherize(options.name) }),
     createComponent(options)]);
@@ -55,7 +55,7 @@ export function openSourceFileFromTree(tree: Tree, filename: string): ts.SourceF
   return openSourceFile(filename, () => tree.read(filename)?.toString('utf-8'));
 }
 
-function createComponent(options: MyServiceSchema): Rule {
+function createComponent(options: ComponentSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     let t = url('./files');
     let path = options.path;
@@ -67,6 +67,7 @@ function createComponent(options: MyServiceSchema): Rule {
     let servicePath, typesPath = '';
     let inMsg, outMsg = '';
     const componentPath = path + '/' + dasherize(options.name);
+    let metadata: any[] = [];
     tree.getDir(componentPath + '/services')
       .visit((filePath) => {
         let s = openSourceFileFromTree(tree, filePath);
@@ -87,15 +88,23 @@ function createComponent(options: MyServiceSchema): Rule {
           if (!metadataConst) throw new SchematicsException('Unable to get metadata const');
           let metadataValue = findNodes(metadataConst.parent, ts.SyntaxKind.ArrayLiteralExpression);
           if (!metadataValue[0]) throw new SchematicsException('Unable to get metadata ArrayLiteralExpression --> ' + metadataConst);
-          let metadata = JSON.parse(metadataValue[0].getText());
+          metadata = JSON.parse(metadataValue[0].getText());
           if (!metadata || metadata.length < 2) throw new SchematicsException('Unable to get messages from metadata --> ' + metadataValue[0]);
           inMsg = 'I' + metadata[0].name;
           outMsg = 'I' + metadata[1].name;
           typesPath = filePath.replace(componentPath, '.').replace(/.ts$/, '');
         }
       });
-
     if (!serviceName) throw new SchematicsException('Unable to get service ' + serviceName);
+    console.log(metadata[1].element[0].name);
+    
+    let outputs : any[] = []
+    if (metadata[1].element && metadata[1].element[0] && metadata[1].element[0].name=='tuple') {
+      // metadata.tuple.old.table_name.elements
+      outputs = metadata[1].element[0].element[0].element[0].element;
+    } else {
+      outputs = metadata[1].element;
+    }
     const templateSource = apply(t, [
       applyTemplates({
         ...options,
@@ -108,7 +117,9 @@ function createComponent(options: MyServiceSchema): Rule {
         outMsg: outMsg,
         typesPath: typesPath,
         type: "component",
-        style: "css"
+        style: "css",
+        inputs: metadata[0].element,
+        outputs: outputs
       }),
       move(path)
     ]);

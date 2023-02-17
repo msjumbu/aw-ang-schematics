@@ -10,28 +10,29 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import { normalize, virtualFs, workspaces } from '@angular-devkit/core';
-import { ConfigSchema as MyServiceSchema } from './schema';
+import { normalize } from '@angular-devkit/core';
+import { ConfigSchema as AWSchema } from './schema';
 import { addImportToModule, addSymbolToNgModuleMetadata, findNodes, insertAfterLastOccurrence, insertImport, isImported } from '@schematics/angular/utility/ast-utils';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { InsertChange } from '@schematics/angular/utility/change';
+import { getWorkspace } from '@schematics/angular/utility/workspace';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-export function appWorks(_options: MyServiceSchema): Rule {
+export function appWorks(_options: AWSchema): Rule {
   return async (tree: Tree) => {
-    const host = createHost(tree);
-    const { workspace } = await workspaces.readWorkspace('/', host);
-
+    // const host = createHost(tree);
+    // const { workspace } = await workspaces.readWorkspace('/', host);
+    const workspace = await getWorkspace(tree);
     const project = (_options.project != null) ? workspace.projects.get(_options.project) : null;
     if (!project) {
       throw new SchematicsException(`Invalid project name: ${_options.project}`);
     }
     // TODO: See if there is any other way
     const angularJson = tree.read('/angular.json');
-    if (!angularJson) throw new SchematicsException(`Unable to find angular.json`);
+    if (!angularJson) throw new SchematicsException('Unable to find angular.json');
     const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
-    initialWorkspace.projects[_options.project??0].architect.build.options.styles.splice(0,0,"node_modules/@clr/ui/clr-ui.min.css")
+    initialWorkspace.projects[_options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
     tree.overwrite('/angular.json', JSON.stringify(initialWorkspace));
 
     if (_options.path === undefined) {
@@ -41,7 +42,7 @@ export function appWorks(_options: MyServiceSchema): Rule {
     _options.sourceRoot = `${project.sourceRoot}`;
 
     if (!tree.exists(`./angular.json`))
-    throw new SchematicsException(`angular.json file not found, are you sure you are running it from angular workspace?`);
+      throw new SchematicsException(`angular.json file not found, are you sure you are running it from angular workspace?`);
 
     const movePath = normalize(_options.sourceRoot + '/');
 
@@ -58,28 +59,28 @@ export function appWorks(_options: MyServiceSchema): Rule {
   };
 }
 
-function createHost(tree: Tree): workspaces.WorkspaceHost {
-  return {
-    async readFile(path: string): Promise<string> {
-      const data = tree.read(path);
-      if (!data) {
-        throw new SchematicsException('File not found.');
-      }
-      return virtualFs.fileBufferToString(data);
-    },
-    async writeFile(path: string, data: string): Promise<void> {
-      return tree.overwrite(path, data);
-    },
-    async isDirectory(path: string): Promise<boolean> {
-      return !tree.exists(path) && tree.getDir(path).subfiles.length > 0;
-    },
-    async isFile(path: string): Promise<boolean> {
-      return tree.exists(path);
-    },
-  };
-}
+// function createHost(tree: Tree): workspaces.WorkspaceHost {
+//   return {
+//     async readFile(path: string): Promise<string> {
+//       const data = tree.read(path);
+//       if (!data) {
+//         throw new SchematicsException('File not found.');
+//       }
+//       return virtualFs.fileBufferToString(data);
+//     },
+//     async writeFile(path: string, data: string): Promise<void> {
+//       return tree.overwrite(path, data);
+//     },
+//     async isDirectory(path: string): Promise<boolean> {
+//       return !tree.exists(path) && tree.getDir(path).subfiles.length > 0;
+//     },
+//     async isFile(path: string): Promise<boolean> {
+//       return tree.exists(path);
+//     },
+//   };
+// }
 
-function addImportToNgModule(_options: MyServiceSchema): Rule {
+function addImportToNgModule(_options: AWSchema): Rule {
   return (tree: Tree) => {
     if (!_options.gateway_url) throw new SchematicsException('AppWorks Gateway URL is required');
     // const modulePath = `/${_options.root}/${_options.sourceRoot}/app/app.module.ts`;
@@ -96,13 +97,29 @@ function addImportToNgModule(_options: MyServiceSchema): Rule {
       'HttpClientModule',
       '@angular/common/http'
     );
+    changes = changes.concat(addImportToModule(
+      source,
+      modulePath,
+      'ReactiveFormsModule',
+      '@angular/forms'
+    ));
+    changes = changes.concat(addImportToModule(
+      source,
+      modulePath,
+      'BrowserAnimationsModule',
+      '@angular/platform-browser/animations'
+    ));
+    changes = changes.concat(addImportToModule(
+      source,
+      modulePath,
+      'ClarityModule',
+      '@clr/angular'
+    ));
 
     addImport('APP_INITIALIZER', '@angular/core');
     addImport('HttpClient', '@angular/common/http');
     addImport('Observable', 'rxjs');
     addImport('tap', 'rxjs');
-    addImport('ClarityModule', '@clr/angular');
-    addImport('BrowserAnimationsModule', '@angular/platform-browser/animations');
     addImport('Config', './config/config.service');
     addImport('ConfigService', './config/config.service');
 

@@ -1,7 +1,7 @@
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 // import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 // import { appWorks } from '../app-works';
-import { ConfigSchema as MyServiceSchema } from '../app-works/schema';
+import { ConfigSchema as AWSchema } from '../app-works/schema';
 import { addPackageJsonDependency, NodeDependency, NodeDependencyType } from '@schematics/angular/utility/dependencies';
 import { of, Observable } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { get } from 'http';
 import { NodePackageInstallTask, RunSchematicTask } from '@angular-devkit/schematics/tasks';
 
 // Just return the tree
-export function ngAdd(_options: MyServiceSchema): Rule {
+export function ngAdd(_options: AWSchema): Rule {
     return (_tree: Tree, _context: SchematicContext) => {
         return chain([
             addPackageJsonDependencies(),
@@ -46,7 +46,7 @@ function installDependencies(): Rule {
     };
   }
 
-  function setupProject(options: MyServiceSchema): Rule {
+  function setupProject(options: AWSchema): Rule {
     return (tree: Tree, _context: SchematicContext) => {
       const installTaskId = _context.addTask(new NodePackageInstallTask());
       _context.addTask(new RunSchematicTask('app-works', options), [

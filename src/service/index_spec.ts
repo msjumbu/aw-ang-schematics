@@ -56,6 +56,7 @@ describe('service', () => {
         wsdl_url: 'testing',
         path: '/projects/bar/src/app/test',
         project: 'bar',
+        skipService: false
       };
       mock.onGet(defaultOptions.wsdl_url).reply(200, wsdl);
       const runner = new SchematicTestRunner('schematics', collectionPath);

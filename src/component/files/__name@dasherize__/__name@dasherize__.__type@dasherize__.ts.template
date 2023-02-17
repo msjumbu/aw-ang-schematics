@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { <%= serviceName %> as AWService} from '<%= servicePath %>';
 import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg} from '<%= typesPath %>';
 
@@ -10,7 +10,15 @@ import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg} from '<%= typesPa
 })
 export class <%= classify(name) %><%= classify(type) %> {
   constructor(private fb: FormBuilder, 
-      private awService: AWService) { }
+      private awService: AWService) {  }
+    <% if (inputs && inputs.length && inputs.length > 0) { %>
+    inputForm = this.fb.group({    <% for(let element of inputs) { %>
+      <%= element.name %>: [''<% if (element.minOccurs && element.minOccurs > 0) { %>, Validators.required, <% } %>],<% } %>
+    });
+    <% } %>
+    outputForm = this.fb.group({    <% for(let element of outputs) { %>
+      <%= element.name %>: ['',<% if (element.minOccurs && element.minOccurs > 0) { %>, Validators.required, <% } %>],<% } %>
+    });
 
   ngOnInit(): void {
     

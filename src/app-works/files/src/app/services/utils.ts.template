@@ -6,20 +6,25 @@ export class Utils {
     
     validator(xpath: string, currentValue: any, newValue: any) {
         let parts = xpath.split('/');
-        if (!parts || parts.length <= 3)
+
+        // this is to account SOAP Envelope, Header and response root, like '/SOAP:Envelope/SOAP:Body/GetUsersResponse'
+        // so if the path <= 3, it means we dont care about it
+        if (!parts || parts.length <= 3) 
             return newValue;
-        if (isArrayElement(parts.slice(3).join('/'), this.metadata))
+        if (isArrayElement(parts.slice(3).join('/'), this.metadata)) // remove the Envelope and Header parts
             return [newValue]
         return newValue;
 
         function isArrayElement(path: string, obj: any): boolean {
+            // we are checking if we are at the leaf element, if we are at the leaf and still haven't found an array, 
+            // we return not an array. otherwise take the first element and process
             if (!Array.isArray(obj) && obj.element)
                 obj = obj.element;
             else if (!Array.isArray(obj))
                 return false;
-            if (path.includes('/')) {
+            if (path.includes('/')) { // we are still not in the end of the path, so process more
                 let t = obj.find((item: { name: string; }) => item.name == path.split('/')[0]);
-                if (!t)
+                if (!t) // this may mean we dont have correct metadata
                     return false;
                 return isArrayElement(path.substring(path.indexOf('/') + 1), t);
             } else {
