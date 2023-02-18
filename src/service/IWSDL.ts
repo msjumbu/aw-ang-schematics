@@ -81,7 +81,7 @@ export interface IBinding {
 }
 export interface IPortType {
   name: string;
-  operation: IOperation | undefined;
+  operation: IOperation[] | undefined;
   ns: INamespace | undefined;
 }
 export interface IPort {

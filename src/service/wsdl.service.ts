@@ -74,6 +74,7 @@ export class WsdlService {
 
         let operations = portType['wsdl:operation'];
         if (operations) {
+          pt.operation = [];
           for (let index = 0; index < operations.length; index++) {
             const operation = operations[index];
 
@@ -95,9 +96,9 @@ export class WsdlService {
               output: outMsg,
               ns: elemTns
             }
-            pt.operation = op;
+            pt.operation.push(op);
             pt.ns = elemTns;
-            break;
+            // break;
           }
         }
         definition.portTypes.push(pt);

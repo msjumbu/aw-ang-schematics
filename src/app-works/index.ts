@@ -17,12 +17,8 @@ import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeSc
 import { InsertChange } from '@schematics/angular/utility/change';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 
-// You don't have to export the function as default. You can also have more than one rule factory
-// per file.
 export function appWorks(_options: AWSchema): Rule {
   return async (tree: Tree) => {
-    // const host = createHost(tree);
-    // const { workspace } = await workspaces.readWorkspace('/', host);
     const workspace = await getWorkspace(tree);
     const project = (_options.project != null) ? workspace.projects.get(_options.project) : null;
     if (!project) {
@@ -58,27 +54,6 @@ export function appWorks(_options: AWSchema): Rule {
     ]);
   };
 }
-
-// function createHost(tree: Tree): workspaces.WorkspaceHost {
-//   return {
-//     async readFile(path: string): Promise<string> {
-//       const data = tree.read(path);
-//       if (!data) {
-//         throw new SchematicsException('File not found.');
-//       }
-//       return virtualFs.fileBufferToString(data);
-//     },
-//     async writeFile(path: string, data: string): Promise<void> {
-//       return tree.overwrite(path, data);
-//     },
-//     async isDirectory(path: string): Promise<boolean> {
-//       return !tree.exists(path) && tree.getDir(path).subfiles.length > 0;
-//     },
-//     async isFile(path: string): Promise<boolean> {
-//       return tree.exists(path);
-//     },
-//   };
-// }
 
 function addImportToNgModule(_options: AWSchema): Rule {
   return (tree: Tree) => {

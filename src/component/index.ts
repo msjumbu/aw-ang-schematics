@@ -96,12 +96,26 @@ function createComponent(options: ComponentSchema): Rule {
         }
       });
     if (!serviceName) throw new SchematicsException('Unable to get service ' + serviceName);
-    console.log(metadata[1].element[0].name);
     
-    let outputs : any[] = []
-    if (metadata[1].element && metadata[1].element[0] && metadata[1].element[0].name=='tuple') {
+    let outputs : any[] = [];
+    if (!metadata[1].element) {
+      throw new SchematicsException('Service metadata do not contain response element');
+    }
+    let createGrid = false;
+    let useTuple = false;
+    let tableName = '';
+    let tuple = metadata[1].element.find((item: { name: string; }) => item.name == 'tuple');
+    if (tuple) {
       // metadata.tuple.old.table_name.elements
-      outputs = metadata[1].element[0].element[0].element[0].element;
+      useTuple = true;
+      let old = tuple.element.find((item: { name: string; }) => item.name == 'old');
+      if (!old) throw new SchematicsException('Something wrong, tuple found but not old');
+      outputs = old.element[0].element;
+      tableName = old.element[0].name;
+      
+      if (tuple.maxOccurs && 
+        (tuple.maxOccurs=='unbounded' || tuple.maxOccurs > 1))
+        createGrid = true;
     } else {
       outputs = metadata[1].element;
     }
@@ -118,8 +132,11 @@ function createComponent(options: ComponentSchema): Rule {
         typesPath: typesPath,
         type: "component",
         style: "css",
-        inputs: metadata[0].element,
-        outputs: outputs
+        inputs: metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'),
+        outputs: outputs,
+        createGrid: createGrid,
+        useTuple: useTuple,
+        tableName: tableName
       }),
       move(path)
     ]);

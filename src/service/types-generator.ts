@@ -126,7 +126,7 @@ export class TypesGenerator {
       if (element.maxOccurs == 'unbounded' || (Number(element.maxOccurs ?? 0) > 1)) {
         isArray = true;
       }
-      if (element.name != 'tuple' && element.name != 'new' && element.name != 'old') {
+      if ((element.name != 'tuple' && element.name != 'new' && element.name != 'old') || true) {
         if (!this.nodeArrMap.has(element.name)) {
           const messageType = this.createInterface(element.name, interfaceMembers);
           this.nodeArrMap.set('I' + element.name, messageType);
