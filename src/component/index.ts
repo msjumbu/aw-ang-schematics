@@ -119,6 +119,9 @@ function createComponent(options: ComponentSchema): Rule {
     } else {
       outputs = metadata[1].element;
     }
+    console.log(metadata[0]);
+    
+    let inputs = metadata[0].element ? metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'):undefined;
     const templateSource = apply(t, [
       applyTemplates({
         ...options,
@@ -132,7 +135,7 @@ function createComponent(options: ComponentSchema): Rule {
         typesPath: typesPath,
         type: "component",
         style: "css",
-        inputs: metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'),
+        inputs: inputs,
         outputs: outputs,
         createGrid: createGrid,
         useTuple: useTuple,

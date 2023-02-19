@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OtdsService, OTDSTicket } from '../services/otds.service';
+import { AuthenticationService, AuthToken } from '../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -11,10 +11,11 @@ import { OtdsService, OTDSTicket } from '../services/otds.service';
 
 export class LoginComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private otdsService: OtdsService, private router: Router) {}
+  constructor(private fb: FormBuilder, private authService: AuthenticationService, private router: Router) { }
 
   ngOnInit(): void {
   }
+  
   loginForm = this.fb.group({
     userName: ['awtest@SCM_SO_USERS', Validators.required],
     password: ['awtest123', Validators.required],
@@ -22,19 +23,14 @@ export class LoginComponent implements OnInit {
 
   invalidLogin: boolean = false;
 
-  login() {
-    this.otdsService.authenticate(this.loginForm.get("userName")?.value, this.loginForm.get("password")?.value)?.subscribe({ 
-      next: (data: OTDSTicket) => {
-        console.log(data.ticket);
-        this.invalidLogin = false;
-        this.otdsService.otdsTicket = data;
-        this.router.navigate(['/soaptest']);
-      },
-      error: (error) => {
-        console.log(error);
-        this.invalidLogin = true;
-      }
-    });
+  async login() {
+    let auth: AuthToken | undefined = await this.authService.authenticate(this.loginForm.get("userName")?.value, this.loginForm.get("password")?.value);
+    if (auth) {
+      console.log(auth.token);
+      this.invalidLogin = false;
+      this.router.navigate(['/soaptest']);
+    } else {
+      this.invalidLogin = true;
+    }
   }
-
 }

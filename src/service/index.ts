@@ -29,7 +29,7 @@ export function service(options: ServiceSchema): Rule {
     if (!options.wsdl_url || options.wsdl_url == 'test') {
       // _options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2F*&version=isv&resolveexternals=true';
       options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2Fsalesorderdatabasemetadata%2FGetScmSoSalesDistrictPriceMasterObject&resolveexternals=true';
-      // _options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2FGetOrganizationsOfUser&resolveexternals=true';
+      // options.wsdl_url = 'http://10.96.75.123:81/home/PTP/com.eibus.web.tools.wsdl.WSDLGateway.wcp?service=http%3A%2F%2Fschemas.cordys.com%2FUserManagement%2F1.0%2FUser%2FGetOrganizationsOfUser&resolveexternals=true';
     }
     if (options.wsdl_url.indexOf('resolveexternals=true') < 0) {
       options.wsdl_url += "&resolveexternals=true";
@@ -42,26 +42,32 @@ export function service(options: ServiceSchema): Rule {
     if (pts.length != 1) {
       throw new SchematicsException(`WSDL contains no method or more than one method`);
     }
-    let typeFileName = dasherize(def.name.startsWith('Method_Set_') ? def.name.substring('Method_Set_'.length) : def.name) + '.types';
+    // let typeFileName = dasherize(def.name.startsWith('Method_Set_') ? def.name.substring('Method_Set_'.length) : def.name) + '.types';
     if (options.skipService) {
-      return chain([createTypes(def, movePath, typeFileName)])
+      return chain([createTypes(def, movePath)])
     }
     for (let index = 0; index < pts.length; index++) {
       const pt = pts[index];
       if (pt.operation?.length != 1) {
         throw new SchematicsException(`WSDL contains no method or more than one method`);
       }
-      s.push(createService(def, pt, movePath, typeFileName, options))
+      s.push(createService(def, pt, movePath, options))
     }
-    return chain([createTypes(def, movePath, typeFileName), ...s])
+    return chain([createTypes(def, movePath), ...s])
   };
 }
 
-function createTypes(def: IDefinition, filePath: string, typeFileName: string): Rule {
+function createTypes(def: IDefinition, filePath: string): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     let typesGen: TypesGenerator = new TypesGenerator();
     const res = typesGen.generateTypes(def);
-    const file = normalize(filePath + '/' + typeFileName + '.ts');
+    let inMsg = def.portTypes[0].operation?.[0].input?.name;
+    inMsg = def.messages.find(msg => msg.name == inMsg)?.element[0]?.name ?? inMsg;
+    if (!inMsg) throw new Error("Why?");
+    
+    const file = normalize(filePath + '/' + dasherize(inMsg) + '.types.ts');
+    console.log(file.toString());
+    
     if (tree.exists(file))
       tree.overwrite(file, res);
     else
@@ -70,32 +76,32 @@ function createTypes(def: IDefinition, filePath: string, typeFileName: string): 
   }
 }
 
-function createService(def: IDefinition, pt: IPortType, filePath: string, typeFileName: string, _options: ServiceSchema): Rule {
+function createService(def: IDefinition, pt: IPortType, filePath: string, _options: ServiceSchema): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
-    const serviceName = pt.operation?.[0].name;
     let inMsg = pt.operation?.[0].input?.name;
     let outMsg = pt.operation?.[0].output?.name;
     inMsg = def.messages.find(msg => msg.name == inMsg)?.element[0]?.name ?? inMsg;
     outMsg = def.messages.find(msg => msg.name == outMsg)?.element[0]?.name ?? outMsg;
-    if (!serviceName) throw new SchematicsException('Service name not available.');
+    if (!inMsg) throw new SchematicsException('Service name not available.');
     let t = url('./files');
 
-    let srPath = buildRelativePath(`/${filePath}/${dasherize(serviceName)}.service.ts`, normalize(`/${_options.root}/${_options.sourceRoot}/app/services`));
-    let crPath = buildRelativePath(`/${filePath}/${dasherize(serviceName)}.service.ts`, normalize(`/${_options.root}/${_options.sourceRoot}/app/config`));
-
+    let srPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.root}/${_options.sourceRoot}/app/services`));
+    let crPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.root}/${_options.sourceRoot}/app/config`));
+    const typeFileName = dasherize(inMsg) + '.types';
     const templateSource = apply(t, [
       applyTemplates({
         classify: strings.classify,
         dasherize: strings.dasherize,
-        name: serviceName,
+        name: inMsg,
         inMsg: 'I' + inMsg,
         outMsg: 'I' + outMsg,
         typesFile: typeFileName,
         srPath: srPath,
         crPath: crPath,
-        webServiceName: pt.operation?.[0].name,
+        webServiceName: inMsg,
         webServiceNS: pt.operation?.[0].ns?.ns,
-        webServiceResponse: pt.operation?.[0].output?.element[0].name
+        webServiceResponse: pt.operation?.[0].output?.element[0].name,
+        auth_type: "AW"
       }),
       move(normalize(filePath as string)),
     ]);

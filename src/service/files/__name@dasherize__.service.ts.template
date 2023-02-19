@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Parser, Builder } from "xml2js";
-import { OtdsService } from "<%= srPath %>/otds.service";
+import { AuthenticationService, AuthToken } from "<%= srPath %>/authentication.service";
 import { ConfigService } from "<%= crPath %>/config.service";
 import { Utils } from "<%= srPath %>/utils";
 import { Subject } from "rxjs";
@@ -20,11 +20,11 @@ export class <%= classify(name) %>Service {
         validator: this.util.validator.bind(this.util)
     });
 
-    constructor(private http: HttpClient, private otds: OtdsService, private configService: ConfigService) { }
+    constructor(private http: HttpClient, private authService: AuthenticationService, private configService: ConfigService) { }
 
     callService(param: <%= inMsg %>): Subject<<%= outMsg %>> {
         let o: Subject<<%= outMsg %>> = new Subject();
-        if (!this.otds.otdsTicket) {
+        if (!this.authService.auth) {
             throw new Error("User not logged in");
         }
         let req = {
@@ -32,14 +32,16 @@ export class <%= classify(name) %>Service {
                 "meta": {
                     "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
                 },
+                <% if (auth_type == "OTDS") { %>
                 "SOAP:Header": {
                     "OTAuthentication": {
                         "meta": {
                             "xmlns": "urn:api.bpm.opentext.com"
                         },
-                        "AuthenticationToken": this.otds.otdsTicket.ticket
+                        "AuthenticationToken": this.authService.auth.token
                     }
                 },
+                <% } %>
                 "SOAP:Body": {
                     "<%= webServiceName %>": {
                         "meta": {
@@ -53,7 +55,8 @@ export class <%= classify(name) %>Service {
         let builder = new Builder({ attrkey: "meta" });
         let xml = builder.buildObject(req);
         let endpoint = this.configService.config.GATEWAY_URL+'?organization='+this.configService.config.ORG_DN;
-        this.http.post(endpoint, xml, { responseType: "text" }).subscribe((data => {
+        <% if (auth_type == 'OTDS') { %>this.http.post(endpoint, xml, { responseType: "text" }).subscribe((data => {<% } %>
+        <% if (auth_type == 'AW') { %>this.http.post(endpoint, xml, { responseType: "text", headers: {"SAMLart": this.authService.auth.token} }).subscribe((data => {<% } %>
             this.xmlParser.parseString(data, (err, result) => {
                 let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["<%= webServiceResponse %>"];
                 o.next(g);

@@ -1,0 +1,119 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '../config/config.service';
+import { Builder, Parser } from 'xml2js';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthenticationService {
+
+  constructor(private http: HttpClient, private config: ConfigService) { }
+
+  public auth: AuthToken | undefined;
+
+<% if (auth_type == "AW") { %>
+  private xmlParser = new Parser({
+    attrkey: "meta",
+    explicitArray: false,
+  });
+
+  async authenticate(username: string, password: string): Promise<AuthToken | undefined> {
+    let req = {
+      "SOAP:Envelope": {
+        "meta": {
+          "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
+        },
+        "SOAP:Header": {
+          "wsse:Security": {
+            "meta": {
+              "xmlns:wsse": "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+            },
+            "wsse:UsernameToken": {
+              "wsse:Username": username,
+              "wsse:Password": password
+            },
+          },
+        },
+        "SOAP:Body": {
+          "Request": {
+            "meta": {
+              "xmlns": "urn:oasis:names:tc:SAML:1.0:protocol",
+              "MajorVersion": "1",
+              "MinorVersion": "1"
+            },
+            "AuthenticationQuery": {
+              "saml:Subject": {
+                "meta": {
+                  "xmlns:saml": "urn:oasis:names:tc:SAML:1.0:assertion"
+                },
+                "saml:NameIdentifier": {
+                  "meta": {
+                    "Format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                  },
+                  "_": username
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    let builder = new Builder({ attrkey: "meta" });
+    let xml = builder.buildObject(req);
+    if (this.auth)
+      return this.auth;
+
+    let endpoint = this.config.config.GATEWAY_URL + '?organization=' + this.config.config.ORG_DN;
+    try {
+      let response = await firstValueFrom(this.http.post(endpoint, xml, { responseType: "text" }));
+      let xmljson = await this.xmlParser.parseStringPromise(response);
+      this.auth = { "authType": "AW", "userId": username,
+        "token": xmljson['SOAP:Envelope']['SOAP:Body']['samlp:Response']['samlp:AssertionArtifact']['_']};
+      return this.auth;
+    }
+    catch (err) {
+      return undefined;
+    }
+  }
+}
+<% } %> <% if (auth_type == "OTDS") { %>
+  async authenticate(username: string, password: string): Promise<OTDSTicket | undefined> {
+    const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
+    const body = '{"userName":"' + username + '", "password":"' + password + '"}';
+    if (this.auth)
+      return this.auth;
+    try {
+      let otdsTicket = await firstValueFrom(this.http.post<OTDSTicket>(this.config.config.OTDS_URL, body, { 'headers': headers }));
+
+      this.auth = { "authType": "OTDS", "userId": username,
+        "token": otdsTicket.ticket };
+      return this.auth;
+    }
+    catch (err) {
+      return undefined;
+    }
+  }
+}
+
+export interface OTDSTicket {
+  token: string;
+  userId: string;
+  ticket: string;
+  resourceID: string;
+  failureReason: string;
+  passwordExpirationTime: string;
+  continuation: string;
+  continuationContext: string;
+  continuationData: string;
+  samlArt?: string;
+}
+<% } %>
+
+export interface AuthToken {
+  authType: string;
+  userId: string;
+  token: string;
+}

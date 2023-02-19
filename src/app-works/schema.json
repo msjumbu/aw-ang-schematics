@@ -19,6 +19,11 @@
         "description": "Organization DN",
         "x-prompt": "Please enter your organization DN"
       },
+      "auth_type": {
+        "type": "string",
+        "description": "Authentication Type",
+        "x-prompt": "Please select the authentication to use (OTDS/AW)"
+      },
       "config_path": {
         "type": "string",
         "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
