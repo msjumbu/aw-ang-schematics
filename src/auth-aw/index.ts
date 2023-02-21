@@ -26,7 +26,7 @@ export function authAw(options: AWAuthSchema): Rule {
     if (!config) throw new SchematicsException('Unable to parse config.json');
     if (config['AUTH_TYPE']) throw new SchematicsException('Authentication is already configured');
     config['AUTH_TYPE'] = 'AW';
-    tree.overwrite(normalize(options.sourceRoot + '/assets/config.json'), JSON.stringify(config));
+    tree.overwrite(normalize(options.sourceRoot + '/assets/config.json'), JSON.stringify(config, undefined, 2));
 
     const templateSource = apply(t, [
       applyTemplates({ ...options }),

@@ -28,7 +28,7 @@ export function authOtds(options: OTDSAuthSchema): Rule {
     if (config['AUTH_TYPE']) throw new SchematicsException('Authentication is already configured');
     config['AUTH_TYPE'] = 'OTDS'
     config['OTDS_URL'] = options.otds_url;
-    tree.overwrite(normalize(options.sourceRoot + '/assets/config.json'), JSON.stringify(config));
+    tree.overwrite(normalize(options.sourceRoot + '/assets/config.json'), JSON.stringify(config, undefined, 2));
 
     const templateSource = apply(t, [
       applyTemplates({ ...options }),

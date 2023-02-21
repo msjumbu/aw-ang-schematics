@@ -31,7 +31,7 @@ function addPackageJsonDependencies(): Rule {
                     overwrite: false
                 };                
                 addPackageJsonDependency(tree, nodeDependency);
-                _context.logger.info('✅️ Added dependency');
+                _context.logger.info('✅️ Added dependency ' + npmRegistryPackage.name + "@" + npmRegistryPackage.version);
                 return tree;
             })
         );

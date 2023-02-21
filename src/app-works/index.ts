@@ -39,7 +39,7 @@ export function appWorks(options: AWSchema): Rule {
     let style = initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.find((item: string) => item == "node_modules/@clr/ui/clr-ui.min.css");
     if (!style)
       initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
-    tree.overwrite('/angular.json', JSON.stringify(initialWorkspace));
+    tree.overwrite('/angular.json', JSON.stringify(initialWorkspace, undefined, 2));
 
     if (options.path === undefined) {
       options.path = `${project.sourceRoot}`;
