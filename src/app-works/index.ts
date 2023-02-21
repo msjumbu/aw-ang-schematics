@@ -6,6 +6,7 @@ import {
   mergeWith,
   move,
   Rule,
+  schematic,
   SchematicsException,
   Tree,
   url
@@ -17,40 +18,49 @@ import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeSc
 import { InsertChange } from '@schematics/angular/utility/change';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 
-export function appWorks(_options: AWSchema): Rule {
+export function appWorks(options: AWSchema): Rule {
   return async (tree: Tree) => {
     const workspace = await getWorkspace(tree);
-    const project = (_options.project != null) ? workspace.projects.get(_options.project) : null;
+    let s: Rule | undefined = undefined;
+    if (options.auth_type == 'OTDS') {
+      s = schematic('auth-otds', { });
+    } else if (options.auth_type = 'AW') {
+      s = schematic('auth-aw', { });
+    }
+    if (!s) throw new SchematicsException('Auth type not selected');
+    const project = (options.project != null) ? workspace.projects.get(options.project) : null;
     if (!project) {
-      throw new SchematicsException(`Invalid project name: ${_options.project}`);
+      throw new SchematicsException(`Invalid project name: ${options.project}`);
     }
     // TODO: See if there is any other way
     const angularJson = tree.read('/angular.json');
     if (!angularJson) throw new SchematicsException('Unable to find angular.json');
     const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
-    initialWorkspace.projects[_options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
+    let style = initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.find((item: string) => item == "node_modules/@clr/ui/clr-ui.min.css");
+    if (!style)
+      initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
     tree.overwrite('/angular.json', JSON.stringify(initialWorkspace));
 
-    if (_options.path === undefined) {
-      _options.path = `${project.sourceRoot}`;
+    if (options.path === undefined) {
+      options.path = `${project.sourceRoot}`;
     }
-    _options.root = `${project.root}`
-    _options.sourceRoot = `${project.sourceRoot}`;
+    options.root = `${project.root}`
+    options.sourceRoot = `${project.sourceRoot}`;
 
     if (!tree.exists(`./angular.json`))
       throw new SchematicsException(`angular.json file not found, are you sure you are running it from angular workspace?`);
 
-    const movePath = normalize(_options.sourceRoot + '/');
+    const movePath = normalize(options.sourceRoot + '/');
 
     let t = url('./files/src');
-    console.log(t.toString())
     const templateSource = apply(t, [
-      applyTemplates({ ..._options }),
+      applyTemplates({ ...options }),
       move(movePath)
     ]);
     return chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
-      addImportToNgModule(_options)
+      addImportToNgModule(options),
+      s
     ]);
   };
 }
@@ -93,10 +103,12 @@ function addImportToNgModule(_options: AWSchema): Rule {
 
     addImport('APP_INITIALIZER', '@angular/core');
     addImport('HttpClient', '@angular/common/http');
+    // addImport('HTTP_INTERCEPTORS', '@angular/common/http');
     addImport('Observable', 'rxjs');
     addImport('tap', 'rxjs');
     addImport('Config', './config/config.service');
     addImport('ConfigService', './config/config.service');
+    // addImport('AuthenticationService', './services/authentication.service');
 
     const providerChanges = addSymbolToNgModuleMetadata(source,
       modulePath,
@@ -104,7 +116,11 @@ function addImportToNgModule(_options: AWSchema): Rule {
       '{ provide: APP_INITIALIZER, useFactory: initializeAppFactory, deps: [HttpClient, ConfigService], multi: true }',
       null);
     changes = changes.concat(providerChanges);
-
+    // changes = changes.concat(addSymbolToNgModuleMetadata(source,
+    //   modulePath,
+    //   'providers',
+    //   '{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, deps: [AuthenticationService], multi: true }',
+    //   null));
     addAppInitializerFactory();
 
     const recorder = tree.beginUpdate(modulePath);

@@ -18,7 +18,8 @@ export class ConfigService {
 }
 
 export interface Config {
-  OTDS_URL: string;
   GATEWAY_URL: string;
   ORG_DN: string;
+  AUTH_TYPE: string;
+  OTDS_URL?: string;
 }

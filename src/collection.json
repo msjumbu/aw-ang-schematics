@@ -25,6 +25,16 @@
       "description": "A blank schematic.",
       "factory": "./login/index#login",
       "schema": "./login/schema.json"
+    },
+    "auth-otds": {
+      "description": "A blank schematic.",
+      "factory": "./auth-otds/index#authOtds",
+      "schema": "./auth-otds/schema.json"
+    },
+    "auth-aw": {
+      "description": "A blank schematic.",
+      "factory": "./auth-aw/index#authAw",
+      "schema": "./auth-aw/schema.json"
     }
   }
 }

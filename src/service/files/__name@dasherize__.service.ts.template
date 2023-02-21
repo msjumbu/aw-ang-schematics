@@ -27,21 +27,11 @@ export class <%= classify(name) %>Service {
         if (!this.authService.auth) {
             throw new Error("User not logged in");
         }
-        let req = {
+        let req: any = {
             "SOAP:Envelope": {
                 "meta": {
                     "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
                 },
-                <% if (auth_type == "OTDS") { %>
-                "SOAP:Header": {
-                    "OTAuthentication": {
-                        "meta": {
-                            "xmlns": "urn:api.bpm.opentext.com"
-                        },
-                        "AuthenticationToken": this.authService.auth.token
-                    }
-                },
-                <% } %>
                 "SOAP:Body": {
                     "<%= webServiceName %>": {
                         "meta": {
@@ -52,11 +42,11 @@ export class <%= classify(name) %>Service {
                 }
             }
         };
+
         let builder = new Builder({ attrkey: "meta" });
         let xml = builder.buildObject(req);
         let endpoint = this.configService.config.GATEWAY_URL+'?organization='+this.configService.config.ORG_DN;
-        <% if (auth_type == 'OTDS') { %>this.http.post(endpoint, xml, { responseType: "text" }).subscribe((data => {<% } %>
-        <% if (auth_type == 'AW') { %>this.http.post(endpoint, xml, { responseType: "text", headers: {"SAMLart": this.authService.auth.token} }).subscribe((data => {<% } %>
+        this.http.post(endpoint, xml, { responseType: "text", headers: { "SAMLart": this.authService.auth.token } }).subscribe((data => {
             this.xmlParser.parseString(data, (err, result) => {
                 let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["<%= webServiceResponse %>"];
                 o.next(g);

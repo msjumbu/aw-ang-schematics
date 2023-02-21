@@ -36,7 +36,6 @@ describe('app-works', () => {
       appTree = await testRunner.runExternalSchematic('@schematics/angular', 'application', appOptions, appTree);
     });
     const defaultOptions: MyConfigSchema = {
-      otds_url: '',
       gateway_url: 'test',
       org_dn: '',
       config_path: '',

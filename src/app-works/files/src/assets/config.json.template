@@ -1,5 +1,4 @@
 {
-    "OTDS_URL": "<%= otds_url %>",
     "GATEWAY_URL": "<%= gateway_url %>",
     "ORG_DN": "<%= org_dn %>"
   }

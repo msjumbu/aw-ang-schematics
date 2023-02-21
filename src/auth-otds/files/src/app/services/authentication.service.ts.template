@@ -14,28 +14,39 @@ export class AuthenticationService {
 
   public auth: AuthToken | undefined;
 
-<% if (auth_type == "AW") { %>
-  private xmlParser = new Parser({
-    attrkey: "meta",
-    explicitArray: false,
-  });
-
   async authenticate(username: string, password: string): Promise<AuthToken | undefined> {
+    const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
+    const body = '{"userName":"' + username + '", "password":"' + password + '"}';
+    if (this.auth)
+      return this.auth;
+    try {
+      if (!this.config.config.OTDS_URL) throw new Error("OTDS URL not configured, please check config.json");
+      let otdsTicket = await firstValueFrom(this.http.post<OTDSTicket>(this.config.config.OTDS_URL, body, { 'headers': headers }));
+      this.auth = await this.getSAML(otdsTicket.ticket, username);
+      return this.auth;
+    }
+    catch (err) {
+      return undefined;
+    }
+  }
+
+  async getSAML(otdsTicket: string, userName: string): Promise<AuthToken | undefined> {
+    let xmlParser = new Parser({
+      attrkey: "meta",
+      explicitArray: false,
+    });
     let req = {
       "SOAP:Envelope": {
         "meta": {
           "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
         },
         "SOAP:Header": {
-          "wsse:Security": {
+          "OTAuthentication": {
             "meta": {
-              "xmlns:wsse": "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+              "xmlns": "urn:api.bpm.opentext.com"
             },
-            "wsse:UsernameToken": {
-              "wsse:Username": username,
-              "wsse:Password": password
-            },
-          },
+            "AuthenticationToken": otdsTicket
+          }
         },
         "SOAP:Body": {
           "Request": {
@@ -52,8 +63,7 @@ export class AuthenticationService {
                 "saml:NameIdentifier": {
                   "meta": {
                     "Format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-                  },
-                  "_": username
+                  }
                 }
               }
             }
@@ -69,27 +79,11 @@ export class AuthenticationService {
     let endpoint = this.config.config.GATEWAY_URL + '?organization=' + this.config.config.ORG_DN;
     try {
       let response = await firstValueFrom(this.http.post(endpoint, xml, { responseType: "text" }));
-      let xmljson = await this.xmlParser.parseStringPromise(response);
-      this.auth = { "authType": "AW", "userId": username,
-        "token": xmljson['SOAP:Envelope']['SOAP:Body']['samlp:Response']['samlp:AssertionArtifact']['_']};
-      return this.auth;
-    }
-    catch (err) {
-      return undefined;
-    }
-  }
-}
-<% } %> <% if (auth_type == "OTDS") { %>
-  async authenticate(username: string, password: string): Promise<OTDSTicket | undefined> {
-    const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
-    const body = '{"userName":"' + username + '", "password":"' + password + '"}';
-    if (this.auth)
-      return this.auth;
-    try {
-      let otdsTicket = await firstValueFrom(this.http.post<OTDSTicket>(this.config.config.OTDS_URL, body, { 'headers': headers }));
-
-      this.auth = { "authType": "OTDS", "userId": username,
-        "token": otdsTicket.ticket };
+      let xmljson = await xmlParser.parseStringPromise(response);
+      this.auth = {
+        "authType": "OTDS", "userId": userName,
+        "token": xmljson['SOAP:Envelope']['SOAP:Body']['samlp:Response']['samlp:AssertionArtifact']['_']
+      };
       return this.auth;
     }
     catch (err) {
@@ -98,7 +92,7 @@ export class AuthenticationService {
   }
 }
 
-export interface OTDSTicket {
+interface OTDSTicket {
   token: string;
   userId: string;
   ticket: string;
@@ -110,7 +104,6 @@ export interface OTDSTicket {
   continuationData: string;
   samlArt?: string;
 }
-<% } %>
 
 export interface AuthToken {
   authType: string;

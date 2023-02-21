@@ -4,11 +4,6 @@
     "title": "AppWorks Schema",
     "type": "object",
     "properties": {
-      "otds_url": {
-        "type": "string",
-        "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
-        "x-prompt": "Please enter your OTDS authentication rest service URL."
-      },
       "gateway_url": {
         "type": "string",
         "description": "AppWorks Gateway URL (ex: http://<< host/ip >>:<< port >>/home/<< organization >>/com.eibus.web.soap.Gateway.wcp)",
@@ -22,7 +17,19 @@
       "auth_type": {
         "type": "string",
         "description": "Authentication Type",
-        "x-prompt": "Please select the authentication to use (OTDS/AW)"
+        "default": "OTDS",
+        "enum": [
+          "OTDS",
+          "AW"
+        ],
+        "x-prompt": {
+          "message": "Which authentication would you like to use?",
+          "type": "list",
+          "items": [
+            { "value": "OTDS",  "label": "OTDS" },
+            { "value": "AW", "label": "AppWorks" }
+          ]
+        }
       },
       "config_path": {
         "type": "string",
@@ -43,5 +50,5 @@
         "visible": false
       }
     },
-    "required": ["otds_url", "gateway_url", "org_dn"]
+    "required": ["gateway_url", "org_dn"]
   }
