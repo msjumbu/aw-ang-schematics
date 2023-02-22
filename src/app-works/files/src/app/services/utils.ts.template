@@ -5,8 +5,11 @@ export class Utils {
     constructor(private metadata: any) {}
     
     validator(xpath: string, currentValue: any, newValue: any) {
+        if (newValue.meta && (newValue.meta.null || newValue.meta['xsi:nil'])) {
+            return null;
+        }
         let parts = xpath.split('/');
-
+        if (currentValue) return newValue; //if currentValue is there means, this is already part of an array so return the element as is.
         // this is to account SOAP Envelope, Header and response root, like '/SOAP:Envelope/SOAP:Body/GetUsersResponse'
         // so if the path <= 3, it means we dont care about it
         if (!parts || parts.length <= 3) 

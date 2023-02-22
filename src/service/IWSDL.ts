@@ -62,6 +62,7 @@ export class Element {
   tns: string = '';
   minOccurs?: string;
   maxOccurs?: string;
+  path?: string;
 }
 export interface IMessage {
   name: string;

@@ -28,7 +28,9 @@ export class <%= classify(name) %><%= classify(type) %> {
   getData(input: InputMsg): void {
     this.awService.callService(input).subscribe({
       next: (g:OutputMsg) => {
-        <% if(createGrid) { %>this.records = g.tuple;<% } %><% if(!createGrid && useTuple) { %>this.record = g.tuple;<% } %>
+        <% if(createGrid) { %>this.records = g.tuple;<% } %><% if(!createGrid && useTuple) { %>this.record = g.tuple;
+          this.outputForm.patchValue(this.record.old.<%= tableName %>)
+        }<% } %>
         console.log(g);
       },
       error: (err) => {

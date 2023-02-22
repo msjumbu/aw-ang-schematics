@@ -105,9 +105,9 @@ export class TypesGenerator {
         //       application: "",
         //       organization: ""
         //   }
-        //   text?: string;
+        //   _?: string;
         // }
-        const propSign = this.createPropertySignatureWithType('text', this.typeFromSOAP(''), false);
+        const propSign = this.createPropertySignatureWithType('_', this.typeFromSOAP(''), false);
         interfaceMembers.push(propSign);
       }
     }
@@ -128,6 +128,10 @@ export class TypesGenerator {
       }
       if ((element.name != 'tuple' && element.name != 'new' && element.name != 'old') || true) {
         if (!this.nodeArrMap.has(element.name)) {
+          if (!element.attributes) {
+            const propSign = this.createPropertySignatureWithType('meta', ts.factory.createTypeReferenceNode('any'), true);
+            interfaceMembers.push(propSign);
+          }
           const messageType = this.createInterface(element.name, interfaceMembers);
           this.nodeArrMap.set('I' + element.name, messageType);
         }
