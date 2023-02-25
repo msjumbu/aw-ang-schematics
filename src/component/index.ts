@@ -5,6 +5,7 @@ import { ConfigSchema as ComponentSchema } from './schema';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { findNode, findNodes } from '@schematics/angular/utility/ast-utils';
 import { parseName } from '@schematics/angular/utility/parse-name';
+import { readConfig } from '../util';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -57,7 +58,11 @@ export function openSourceFileFromTree(tree: Tree, filename: string): ts.SourceF
 
 function createComponent(options: ComponentSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
-    let t = url('./files');
+    if (!options.sourceRoot) throw new SchematicsException('Source Root not set');
+    let uiFramework = readConfig(tree, options.sourceRoot, 'UI_FRAMEWORK');
+    let t = url('./files/material');
+    if (uiFramework && uiFramework.toLowerCase() == 'clarity'.toLowerCase())
+      t = url('./files/clarity');
     let path = options.path;
 
     if (!path) {
@@ -123,6 +128,7 @@ function createComponent(options: ComponentSchema): Rule {
     
     let inputs = metadata[0].element ? metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'):undefined;
     const templateSource = apply(t, [
+      // options.name ? filter((path) => !path.endsWith('.clr.ts.template')) : noop(),
       applyTemplates({
         ...options,
         classify: strings.classify,

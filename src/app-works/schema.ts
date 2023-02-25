@@ -7,4 +7,5 @@ export interface ConfigSchema {
     config_path?: string;
     sourceRoot?: string;
     auth_type?: string;
+    ui_framework?: string;
   }

@@ -23,23 +23,26 @@ export function appWorks(options: AWSchema): Rule {
     const workspace = await getWorkspace(tree);
     let s: Rule | undefined = undefined;
     if (options.auth_type == 'OTDS') {
-      s = schematic('auth-otds', { });
+      s = schematic('auth-otds', {});
     } else if (options.auth_type = 'AW') {
-      s = schematic('auth-aw', { });
+      s = schematic('auth-aw', {});
     }
     if (!s) throw new SchematicsException('Auth type not selected');
     const project = (options.project != null) ? workspace.projects.get(options.project) : null;
     if (!project) {
       throw new SchematicsException(`Invalid project name: ${options.project}`);
     }
+    
     // TODO: See if there is any other way
-    const angularJson = tree.read('/angular.json');
-    if (!angularJson) throw new SchematicsException('Unable to find angular.json');
-    const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
-    let style = initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.find((item: string) => item == "node_modules/@clr/ui/clr-ui.min.css");
-    if (!style)
-      initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
-    tree.overwrite('/angular.json', JSON.stringify(initialWorkspace, undefined, 2));
+    if (options.ui_framework == 'clarity') {
+      const angularJson = tree.read('/angular.json');
+      if (!angularJson) throw new SchematicsException('Unable to find angular.json');
+      const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
+      let style = initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.find((item: string) => item == "node_modules/@clr/ui/clr-ui.min.css");
+      if (!style)
+        initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
+      tree.overwrite('/angular.json', JSON.stringify(initialWorkspace, undefined, 2));
+    }
 
     if (options.path === undefined) {
       options.path = `${project.sourceRoot}`;
@@ -57,19 +60,26 @@ export function appWorks(options: AWSchema): Rule {
       applyTemplates({ ...options }),
       move(movePath)
     ]);
-    return chain([
+    let rules: Rule[] = [
       mergeWith(templateSource, MergeStrategy.Overwrite),
       addImportToNgModule(options),
-      s
-    ]);
+      s];
+    if (!options.ui_framework || options.ui_framework.toLowerCase() == 'material') {
+      const matSource = apply(url('./files/material'), [
+        applyTemplates({ ...options }),
+        move(movePath)
+      ]);
+      rules.push(mergeWith(matSource, MergeStrategy.Overwrite));
+    }
+    return chain(rules);
   };
 }
 
-function addImportToNgModule(_options: AWSchema): Rule {
+function addImportToNgModule(options: AWSchema): Rule {
   return (tree: Tree) => {
-    if (!_options.gateway_url) throw new SchematicsException('AppWorks Gateway URL is required');
+    if (!options.gateway_url) throw new SchematicsException('AppWorks Gateway URL is required');
     // const modulePath = `/${_options.root}/${_options.sourceRoot}/app/app.module.ts`;
-    const modulePath = `/${_options.sourceRoot}/app/app.module.ts`;
+    const modulePath = `/${options.sourceRoot}/app/app.module.ts`;
     const sourceText = tree.read(modulePath);
     if (!sourceText) {
       throw new SchematicsException(`Could not find file for path: ${modulePath}`);
@@ -94,13 +104,22 @@ function addImportToNgModule(_options: AWSchema): Rule {
       'BrowserAnimationsModule',
       '@angular/platform-browser/animations'
     ));
-    changes = changes.concat(addImportToModule(
-      source,
-      modulePath,
-      'ClarityModule',
-      '@clr/angular'
-    ));
-
+    if (options.ui_framework == 'material') {
+      changes = changes.concat(addImportToModule(
+        source,
+        modulePath,
+        'MaterialModule',
+        './modules/material.module'
+      ));
+    }
+    if (options.ui_framework == 'clarity') {
+      changes = changes.concat(addImportToModule(
+        source,
+        modulePath,
+        'ClarityModule',
+        '@clr/angular'
+      ));
+    }
     addImport('APP_INITIALIZER', '@angular/core');
     addImport('HttpClient', '@angular/common/http');
     // addImport('HTTP_INTERCEPTORS', '@angular/common/http');
@@ -138,7 +157,7 @@ function addImportToNgModule(_options: AWSchema): Rule {
 
 function initializeAppFactory(httpClient: HttpClient, configService: ConfigService): () => Observable<any> {
   // Replace this path, if the config file location is changed
-  return () => httpClient.get<Config>('${_options.config_path || 'assets/config.json'}')
+  return () => httpClient.get<Config>('${options.config_path || 'assets/config.json'}')
     .pipe(
        tap(config => { 
           configService.config = config;
@@ -175,4 +194,3 @@ function initializeAppFactory(httpClient: HttpClient, configService: ConfigServi
     }
   };
 }
-

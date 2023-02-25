@@ -1,6 +1,7 @@
 import { normalize } from '@angular-devkit/core';
 import { apply, applyTemplates, chain, MergeStrategy, mergeWith, move, Rule, SchematicContext, SchematicsException, Tree, url } from '@angular-devkit/schematics';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
+import { setConfig } from '../util';
 import { ConfigSchema as OTDSAuthSchema } from './schema';
 
 
@@ -21,14 +22,8 @@ export function authOtds(options: OTDSAuthSchema): Rule {
     options.sourceRoot = `${project.sourceRoot}`;
     const movePath = normalize(options.sourceRoot + '/');
     let t = url('./files/src');
-    let s = tree.read(normalize(options.sourceRoot + '/assets/config.json'))?.toString('utf-8');
-    if (!s) throw new SchematicsException('Unable to find/read config.json');
-    let config = JSON.parse(s);
-    if (!config) throw new SchematicsException('Unable to parse config.json');
-    if (config['AUTH_TYPE']) throw new SchematicsException('Authentication is already configured');
-    config['AUTH_TYPE'] = 'OTDS'
-    config['OTDS_URL'] = options.otds_url;
-    tree.overwrite(normalize(options.sourceRoot + '/assets/config.json'), JSON.stringify(config, undefined, 2));
+    setConfig(tree, options.sourceRoot, 'AUTH_TYPE', 'OTDS');
+    setConfig(tree, options.sourceRoot, 'OTDS_URL', options.otds_url);
 
     const templateSource = apply(t, [
       applyTemplates({ ...options }),

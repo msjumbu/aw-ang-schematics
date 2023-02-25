@@ -22,15 +22,18 @@ export class LoginComponent implements OnInit {
   });
 
   invalidLogin: boolean = false;
+  showSpinner: boolean = false;
 
   async login() {
     let auth: AuthToken | undefined = await this.authService.authenticate(this.loginForm.get("userName")?.value, this.loginForm.get("password")?.value);
     if (auth) {
       console.log(auth.token);
       this.invalidLogin = false;
+      this.showSpinner = false;
       this.router.navigate(['/soaptest']);
     } else {
       this.invalidLogin = true;
+      this.showSpinner = false;
     }
   }
 }

@@ -32,7 +32,7 @@ export class Utils {
                 return isArrayElement(path.substring(path.indexOf('/') + 1), t);
             } else {
                 let t = obj.find((item: { name: string; }) => item.name == path);
-                if (t && t.maxOccurs && (t.maxOccurs == 'unbounded' || t.maxOccurs > 0))
+                if (t && t.maxOccurs && (t.maxOccurs == 'unbounded' || t.maxOccurs > 1))
                     return true;
                 else
                     return false

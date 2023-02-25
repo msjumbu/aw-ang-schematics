@@ -20,13 +20,13 @@ describe('app-works', () => {
     newProjectRoot: 'projects',
     version: '6.0.0',
   };
-  describe('with project bar', () => {
+  describe('with project bar and appworks auth', () => {
 
     const appOptions: ApplicationOptions = {
       name: 'bar',
       inlineStyle: false,
       inlineTemplate: false,
-      routing: false,
+      routing: true,
       skipPackageJson: false,
     };
 
@@ -40,6 +40,7 @@ describe('app-works', () => {
       org_dn: '',
       config_path: '',
       project: 'bar',
+      auth_type: 'AW',
     };
     it('should configure AppWorks support', async () => {
       const options = { ...defaultOptions };
@@ -50,7 +51,7 @@ describe('app-works', () => {
         jasmine.arrayContaining([
           '/projects/bar/src/assets/config.json',
           '/projects/bar/src/app/config/config.service.ts',
-          '/projects/bar/src/app/services/otds.service.ts',
+          '/projects/bar/src/app/services/authentication.service.ts',
           '/projects/bar/src/app/services/utils.ts',
         ]),
       );

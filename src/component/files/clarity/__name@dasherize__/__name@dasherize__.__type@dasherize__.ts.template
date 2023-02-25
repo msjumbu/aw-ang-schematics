@@ -1,0 +1,52 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { <%= serviceName %> as AWService} from '<%= servicePath %>';
+import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg<% if(useTuple) { %>, Ituple <% } %>, I<%= tableName %>} from '<%= typesPath %>';
+
+@Component({
+  selector: '<%= selector %>',
+  templateUrl: './<%= dasherize(name) %><%= type ? '.' + dasherize(type): '' %>.html',
+  styleUrls: ['./<%= dasherize(name) %><%= type ? '.' + dasherize(type): '' %>.<%= style %>']
+})
+export class <%= classify(name) %><%= classify(type) %> {
+  constructor(private fb: FormBuilder, 
+      private awService: AWService) {  }
+    <% if(createGrid && tableName) { %>records: I<%= tableName %>[] = [];<% } %><% if(!createGrid && useTuple) { %>record: I<%= tableName %> | undefined;<% } %>
+    <% if(createGrid) { %>// First 10 columns are only added to the table, please change below as per requirements
+    displayedColumns: string[] = [<% for(let i = 0; (i < outputs.length && i < 10); i++) { let element = outputs[i]; %> '<%= element.name %>',<% } %>]<% } %>
+    <% if (inputs && inputs.length && inputs.length > 0) { %>
+    inputForm = this.fb.group({    <% for(let element of inputs) { %>
+      <%= element.name %>: [''<% if (element.minOccurs && element.minOccurs > 0) { %>, Validators.required, <% } %>],<% } %>
+    });
+    <% } %>
+    outputForm = this.fb.group({    <% for(let element of outputs) { %>
+      <%= element.name %>: [<% if (element.eType?.includes('string') || !element.eType) { %> '' <%}%><% if (element.eType && element.eType.includes('int')) { %> 0 <%}%><% if (element.eType && element.eType.includes('date')) { %> new Date() <%}%>,<% if (element.minOccurs && element.minOccurs > 0) { %>, Validators.required, <% } %>],<% } %>
+    });
+
+  ngOnInit(): void {
+    
+  }
+
+  getData(input: InputMsg): void {
+    this.awService.callService(input).subscribe({
+      next: (g:OutputMsg) => {
+        <% if(createGrid) { %>this.records = [];
+        if (g.tuple) {
+          for (let index = 0; index < g.tuple.length; index++) {
+            const element = g.tuple[index];
+            if (element.old && element.old.<%= tableName %>)
+              this.records.push(element.old.<%= tableName %>)
+          }
+        }
+        <% } %><% if(!createGrid && useTuple) { %>if (g.tuple && g.tuple.old && g.tuple.old.<%= tableName %>) {
+          this.record = g.tuple.old.<%= tableName %>;
+          this.outputForm.patchValue(this.record);
+        }<% } %>
+        console.log(g);
+      },
+      error: (err) => {
+        console.log(err);  
+      }
+    });
+  }
+}

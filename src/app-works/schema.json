@@ -36,6 +36,25 @@
         "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
         "x-prompt": "Please enter the relative path to config.json"
       },
+      "ui_framework": {
+        "type": "string",
+        "description": "UI Framework to use",
+        "default": "material",
+        "enum": [
+          "material",
+          "clarity",
+          "primeng"
+        ],
+        "x-prompt": {
+          "message": "Which UI Framework would you like to use?",
+          "type": "list",
+          "items": [
+            { "value": "material",  "label": "Angular Material" },
+            { "value": "clarity", "label": "Clarity Design" },
+            { "value": "primeng", "label": "PrimeNG" }
+          ]
+        }
+      },
       "project": {
         "type": "string",
         "description": "The name of the project.",

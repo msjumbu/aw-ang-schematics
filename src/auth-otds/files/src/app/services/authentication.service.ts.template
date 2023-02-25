@@ -14,7 +14,9 @@ export class AuthenticationService {
 
   public auth: AuthToken | undefined;
 
-  async authenticate(username: string, password: string): Promise<AuthToken | undefined> {
+  async authenticate(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
+    if (!username) throw new Error("Username not provided");
+    if (!password) throw new Error("Password not provided");
     const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
     const body = '{"userName":"' + username + '", "password":"' + password + '"}';
     if (this.auth)

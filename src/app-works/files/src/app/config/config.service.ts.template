@@ -22,4 +22,5 @@ export interface Config {
   ORG_DN: string;
   AUTH_TYPE: string;
   OTDS_URL?: string;
+  UI_FRAMEWORK?: string;
 }

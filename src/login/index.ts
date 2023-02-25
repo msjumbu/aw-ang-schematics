@@ -2,6 +2,7 @@ import { apply, applyTemplates, chain, externalSchematic, MergeStrategy, mergeWi
 import { buildDefaultPath, getWorkspace } from "@schematics/angular/utility/workspace";
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { ConfigSchema as LoginSchema } from './schema';
+import { readConfig } from '../util';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -31,14 +32,14 @@ export function login(options: any): Rule {
 }
 
 function customizeComponent(options: LoginSchema): Rule {
-  return (_tree: Tree, _context: SchematicContext) => {
-    let t = url('./files');
+  return (tree: Tree, _context: SchematicContext) => {
+    let t = url('./files/common');
     let path = options.path;
 
     if (!path) {
       throw new SchematicsException(`Path "${options.path}" does not exist.`);
     }
-    const templateSource = apply(t, [
+    const commonSource = apply(t, [
       applyTemplates({
         ...options,
         classify: strings.classify,
@@ -49,7 +50,26 @@ function customizeComponent(options: LoginSchema): Rule {
       }),
       move(path)
     ]);
-    return mergeWith(templateSource, MergeStrategy.Overwrite);
 
+    if (!options.sourceRoot) throw new SchematicsException('Source Root not set');
+    let uiFramework = readConfig(tree, options.sourceRoot, 'UI_FRAMEWORK');
+    let u = url('./files/material');
+    if (uiFramework && uiFramework.toLowerCase() == 'clarity'.toLowerCase()) {
+      u = url('./files/clarity');
+    }
+    const compSource = apply(u, [
+      applyTemplates({
+        ...options,
+        classify: strings.classify,
+        dasherize: strings.dasherize,
+        camelize: strings.camelize,
+        type: "component",
+        style: "css",
+      }),
+      move(path)
+    ]);
+
+    return chain([mergeWith(commonSource, MergeStrategy.Overwrite),
+      mergeWith(compSource, MergeStrategy.Overwrite)]);
   }
 }

@@ -1,0 +1,58 @@
+<% if (inputs && inputs.length && inputs.length > 0) { %><form [formGroup]="inputForm">
+    <mat-card class="information-card">
+        <mat-card-header>
+            <mat-card-title><%= tableName %> Input</mat-card-title>
+        </mat-card-header>
+        <mat-card-content><% for(let i = 0; i < inputs.length; i++) { let element = inputs[i]; %><% if (i % 2 === 0) { %>
+            <div class="row"> <% } %>
+                <div class="col">
+                    <mat-form-field>
+                        <mat-label><%= element.name %></mat-label>
+                        <input 
+                            type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && element.eType.includes('int')) { %> "number" <%}%><% if (element.eType && element.eType.includes('dateTime')) { %> "datetime" <%}%><% if (element.eType && element.eType.includes('date') && !element.eType.includes('dateTime')) { %> "date" <%}%>
+                            name="<%= element.name %>" 
+                            matInput 
+                            placeholder="" 
+                            formControlName="<%= element.name %>"/>
+                    </mat-form-field>
+                </div><% if (i % 2 !== 0 || i+1 == inputs.length) { %>
+            </div><% } %><% } %>
+        </mat-card-content>
+        <mat-card-actions>
+            <button (click)="getData(inputForm.getRawValue())" mat-flat-button color="primary">Submit</button>
+        </mat-card-actions>
+    </mat-card>
+</form><% } %><% if (outputs && outputs.length && outputs.length > 0 && !createGrid) { %>
+<form [formGroup]="outputForm">
+    <mat-card class="information-card">
+        <mat-card-header>
+            <mat-card-title><%= tableName %> Output</mat-card-title>
+        </mat-card-header>
+        <mat-card-content><% for(let i = 0; i < outputs.length; i++) { let element = outputs[i]; %><% if (i % 2 === 0) { %>
+            <div class="row"><% } %>
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-label><%= element.name %></mat-label>
+                        <input 
+                            type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && element.eType.includes('int')) { %> "number" <%}%><% if (element.eType && element.eType.includes('dateTime')) { %> "datetime" <%}%><% if (element.eType && element.eType.includes('date') && !element.eType.includes('dateTime')) { %> "date" <%}%>
+                            name="<%= element.name %>" 
+                            matInput 
+                            placeholder="" 
+                            formControlName="<%= element.name %>"/>
+                    </mat-form-field>
+                </div><% if (i % 2 !== 0 || i+1 == outputs.length) { %>
+            </div><% } %><% } %>
+        </mat-card-content>
+    </mat-card>
+</form><% } %><% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %>
+
+<table mat-table [dataSource]="dataSource">
+    <% for(let element of outputs) { %>
+    <ng-container matColumnDef="<%= element.name %>">
+        <th mat-header-cell *matHeaderCellDef> <%= element.name %> </th>
+        <td mat-cell *matCellDef="let element"> {{element.<%= element.name %>}} </td>
+    </ng-container><% } %>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table> <% } %>

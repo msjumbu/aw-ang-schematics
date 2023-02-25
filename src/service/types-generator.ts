@@ -6,36 +6,36 @@ export class TypesGenerator {
   constructor() { }
   private nodeArrMap = new Map();
   private dataTypes: Record<SoapPrimitive, string> = {
-    "xs:boolean": "Boolean",
-    "xs:double": "Number",
-    "xs:float": "Number",
-    "xs:int": "Number",
-    "xs:string": "string",
-    "xs:short": "Number",
-    "xs:dateTime": "Date",
-    '': 'string',
-    'xs:signedInt': 'Number',
-    'xs:unsignedInt': 'Number',
-    'xs:unsignedShort': 'Number',
+    "xs:boolean": "boolean | null",
+    "xs:double": "number | null",
+    "xs:float": "number | null",
+    "xs:int": "number | null",
+    "xs:string": "string | null",
+    "xs:short": "number | null",
+    "xs:dateTime": "Date | null",
+    '': 'string | null',
+    'xs:signedInt': 'number | null',
+    'xs:unsignedInt': 'number | null',
+    'xs:unsignedShort': 'number | null',
     'xs:complexType': '',
-    'xsd:boolean': 'Boolean',
-    'xsd:double': 'Number',
-    'xsd:float': 'Number',
-    'xsd:int': 'Number',
-    'xsd:short': 'Number',
-    'xsd:signedInt': 'Number',
-    'xsd:string': 'string',
-    'xsd:unsignedInt': 'Number',
-    'xsd:unsignedShort': 'Number',
-    'xsd:dateTime': 'Date',
+    'xsd:boolean': 'boolean | null',
+    'xsd:double': 'number | null',
+    'xsd:float': 'number | null',
+    'xsd:int': 'number | null',
+    'xsd:short': 'number | null',
+    'xsd:signedInt': 'number | null',
+    'xsd:string': 'string | null',
+    'xsd:unsignedInt': 'number | null',
+    'xsd:unsignedShort': 'number | null',
+    'xsd:dateTime': 'Date | null',
     'xsd:complexType': '',
-    'xsd:anyType': 'string',
-    'xsd:date': 'Date'
+    'xsd:anyType': 'string | null',
+    'xsd:date': 'Date | null'
   };
 
   // Convert from SOAP primitive type to a Typescript type reference, defaulting to String
   private typeFromSOAP(soapType: SoapPrimitive): ts.TypeReferenceNode {
-    const typeName = this.dataTypes[soapType] ?? "string";
+    const typeName = this.dataTypes[soapType] ?? "string | null";
     return ts.factory.createTypeReferenceNode(typeName, []);
   }
 
@@ -146,7 +146,7 @@ export class TypesGenerator {
       if (element.maxOccurs == 'unbounded' || (Number(element.maxOccurs ?? 0) > 1)) {
         isArray = true;
       }
-      return this.createPropertySignatureWithType(element.name, this.typeFromSOAP(element.eType), isArray);
+      return this.createPropertySignatureWithType(element.name, this.typeFromSOAP(element.eType??''), isArray);
     }
   }
 

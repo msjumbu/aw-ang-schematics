@@ -19,7 +19,9 @@ export class AuthenticationService {
     explicitArray: false,
   });
 
-  async authenticate(username: string, password: string): Promise<AuthToken | undefined> {
+  async authenticate(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
+    if (!username) throw new Error("Username not provided");
+    if (!password) throw new Error("Password not provided");
     let req = {
       "SOAP:Envelope": {
         "meta": {

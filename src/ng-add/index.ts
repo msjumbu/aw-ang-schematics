@@ -9,19 +9,26 @@ import { get } from 'http';
 import { NodePackageInstallTask, RunSchematicTask } from '@angular-devkit/schematics/tasks';
 
 // Just return the tree
-export function ngAdd(_options: AWSchema): Rule {
+export function ngAdd(options: AWSchema): Rule {
     return (_tree: Tree, _context: SchematicContext) => {
         return chain([
-            addPackageJsonDependencies(),
+            addPackageJsonDependencies(options),
             installDependencies(),
-            setupProject(_options)
+            setupProject(options)
         ])(_tree, _context);
     }
 }
 
-function addPackageJsonDependencies(): Rule {
-    return (tree: Tree, _context: SchematicContext): Observable<Tree> => {        
-        return of('xml2js', '@types/xml2js', 'timers', 'stream', '@cds/core', '@clr/angular', '@clr/ui').pipe(
+function addPackageJsonDependencies(options: AWSchema): Rule {
+    return (tree: Tree, _context: SchematicContext): Observable<Tree> => {
+        let packages = ['xml2js', '@types/xml2js', 'timers', 'stream', '@cds/core'];
+        if (options.ui_framework && options.ui_framework.toLowerCase() == 'clarity') {
+            packages.push('@clr/angular');
+            packages.push('@clr/ui');
+        } else {
+            packages.push('@angular/material');
+        }
+        return of(...packages).pipe(
             concatMap(name => getLatestNodeVersion(name)),
             map((npmRegistryPackage: NpmRegistryPackage) => {
                 const nodeDependency: NodeDependency = {
@@ -29,7 +36,7 @@ function addPackageJsonDependencies(): Rule {
                     name: npmRegistryPackage.name,
                     version: npmRegistryPackage.version,
                     overwrite: false
-                };                
+                };
                 addPackageJsonDependency(tree, nodeDependency);
                 _context.logger.info('✅️ Added dependency ' + npmRegistryPackage.name + "@" + npmRegistryPackage.version);
                 return tree;
@@ -40,21 +47,30 @@ function addPackageJsonDependencies(): Rule {
 
 function installDependencies(): Rule {
     return (tree: Tree, _context: SchematicContext) => {
-      _context.addTask(new NodePackageInstallTask());
-      _context.logger.info('✅️ Dependencies installed');
-      return tree;
+        _context.addTask(new NodePackageInstallTask());
+        _context.logger.info('✅️ Dependencies installed');
+        return tree;
     };
-  }
+}
 
-  function setupProject(options: AWSchema): Rule {
-    return (tree: Tree, _context: SchematicContext) => {
-      const installTaskId = _context.addTask(new NodePackageInstallTask());
-      _context.addTask(new RunSchematicTask('app-works', options), [
-        installTaskId
-      ]);
-      return tree;
+function setupProject(options: AWSchema): Rule {
+    return (tree: Tree, context: SchematicContext) => {
+        const installTaskId = context.addTask(new NodePackageInstallTask());
+        if (!options.ui_framework || options.ui_framework.toLowerCase() == 'material') {
+            const angMatId = context.addTask(new RunSchematicTask('@angular/material', 'ng-add', undefined), [
+                installTaskId
+            ]);
+            context.addTask(new RunSchematicTask('app-works', options), [
+                angMatId
+            ]);
+        } else {
+            context.addTask(new RunSchematicTask('app-works', options), [
+                installTaskId
+            ]);
+        }
+        return tree;
     };
-  }
+}
 
 export interface NpmRegistryPackage {
     name: string;
