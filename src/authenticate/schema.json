@@ -4,10 +4,27 @@
     "title": "AppWorks Authentication Schema",
     "type": "object",
     "properties": {
+      "auth_type": {
+        "type": "string",
+        "description": "Authentication Type",
+        "default": "OTDS",
+        "enum": [
+          "OTDS",
+          "AW"
+        ],
+        "x-prompt": {
+          "message": "Which authentication would you like to use?",
+          "type": "list",
+          "items": [
+            { "value": "OTDS",  "label": "OTDS" },
+            { "value": "AW", "label": "AppWorks" }
+          ]
+        }
+      },
       "otds_url": {
         "type": "string",
         "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
-        "x-prompt": "Please enter your OTDS authentication rest service URL."
+        "x-prompt": "Please enter your OTDS authentication rest service URL. (Leave empty if you have selected AppWorks Authentication)"
       },
       "project": {
         "type": "string",
@@ -23,5 +40,5 @@
         "visible": false
       }
     },
-    "required": ["otds_url"]
+    "required": ["auth_type"]
   }

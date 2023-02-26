@@ -14,7 +14,20 @@ export class AuthenticationService {
 
   public auth: AuthToken | undefined;
 
+  private xmlParser = new Parser({
+    attrkey: "meta",
+    explicitArray: false,
+  });
+
   async authenticate(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
+    if (this.config.config.AUTH_TYPE == 'AW') {
+      return this.authAW(username, password);
+    } else {
+      return this.authOTDS(username, password);
+    }
+  }
+
+  async authOTDS(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
     if (!username) throw new Error("Username not provided");
     if (!password) throw new Error("Password not provided");
     const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
@@ -33,10 +46,6 @@ export class AuthenticationService {
   }
 
   async getSAML(otdsTicket: string, userName: string): Promise<AuthToken | undefined> {
-    let xmlParser = new Parser({
-      attrkey: "meta",
-      explicitArray: false,
-    });
     let req = {
       "SOAP:Envelope": {
         "meta": {
@@ -81,9 +90,72 @@ export class AuthenticationService {
     let endpoint = this.config.config.GATEWAY_URL + '?organization=' + this.config.config.ORG_DN;
     try {
       let response = await firstValueFrom(this.http.post(endpoint, xml, { responseType: "text" }));
-      let xmljson = await xmlParser.parseStringPromise(response);
+      let xmljson = await this.xmlParser.parseStringPromise(response);
       this.auth = {
         "authType": "OTDS", "userId": userName,
+        "token": xmljson['SOAP:Envelope']['SOAP:Body']['samlp:Response']['samlp:AssertionArtifact']['_']
+      };
+      return this.auth;
+    }
+    catch (err) {
+      return undefined;
+    }
+  }
+
+  async authAW(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
+    if (!username) throw new Error("Username not provided");
+    if (!password) throw new Error("Password not provided");
+    let req = {
+      "SOAP:Envelope": {
+        "meta": {
+          "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
+        },
+        "SOAP:Header": {
+          "wsse:Security": {
+            "meta": {
+              "xmlns:wsse": "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+            },
+            "wsse:UsernameToken": {
+              "wsse:Username": username,
+              "wsse:Password": password
+            },
+          },
+        },
+        "SOAP:Body": {
+          "Request": {
+            "meta": {
+              "xmlns": "urn:oasis:names:tc:SAML:1.0:protocol",
+              "MajorVersion": "1",
+              "MinorVersion": "1"
+            },
+            "AuthenticationQuery": {
+              "saml:Subject": {
+                "meta": {
+                  "xmlns:saml": "urn:oasis:names:tc:SAML:1.0:assertion"
+                },
+                "saml:NameIdentifier": {
+                  "meta": {
+                    "Format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                  },
+                  "_": username
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    let builder = new Builder({ attrkey: "meta" });
+    let xml = builder.buildObject(req);
+    if (this.auth)
+      return this.auth;
+
+    let endpoint = this.config.config.GATEWAY_URL + '?organization=' + this.config.config.ORG_DN;
+    try {
+      let response = await firstValueFrom(this.http.post(endpoint, xml, { responseType: "text" }));
+      let xmljson = await this.xmlParser.parseStringPromise(response);
+      this.auth = {
+        "authType": "AW", "userId": username,
         "token": xmljson['SOAP:Envelope']['SOAP:Body']['samlp:Response']['samlp:AssertionArtifact']['_']
       };
       return this.auth;

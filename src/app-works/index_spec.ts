@@ -1,8 +1,8 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import * as path from 'path';
-import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
-import { Schema as ApplicationOptions } from '@schematics/angular/application/schema';
 import { ConfigSchema as MyConfigSchema } from './schema';
+import { createTestApp } from '../utils/create-test-app';
+import { readConfig } from '../util';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -15,25 +15,11 @@ describe('app-works', () => {
   const schematicRunner = new SchematicTestRunner(
     'msjumbu', collectionPath);
 
-  const workspaceOptions: WorkspaceOptions = {
-    name: 'workspace',
-    newProjectRoot: 'projects',
-    version: '6.0.0',
-  };
-  describe('with project bar and appworks auth', () => {
-
-    const appOptions: ApplicationOptions = {
-      name: 'bar',
-      inlineStyle: false,
-      inlineTemplate: false,
-      routing: true,
-      skipPackageJson: false,
-    };
-
+  const projectName = 'bar';
+  describe('with core functionality', () => {
     let appTree: UnitTestTree;
     beforeEach(async () => {
-      appTree = await testRunner.runExternalSchematic('@schematics/angular', 'workspace', workspaceOptions)
-      appTree = await testRunner.runExternalSchematic('@schematics/angular', 'application', appOptions, appTree);
+      appTree = await createTestApp(projectName, testRunner);
     });
     const defaultOptions: MyConfigSchema = {
       gateway_url: 'test',
@@ -42,7 +28,7 @@ describe('app-works', () => {
       project: 'bar',
       auth_type: 'AW',
     };
-    it('should configure AppWorks support', async () => {
+    it('should create files', async () => {
       const options = { ...defaultOptions };
 
       const tree = await schematicRunner.runSchematic('app-works', options, appTree);
@@ -55,13 +41,96 @@ describe('app-works', () => {
           '/projects/bar/src/app/services/utils.ts',
         ]),
       );
+    });
+    it('should import modules & configure app.module', async () => {
+      const options = { ...defaultOptions };
+      const tree = await schematicRunner.runSchematic('app-works', options, appTree);
+
       const appModuleContent = tree.readContent('/projects/bar/src/app/app.module.ts');
-      // Some random checks on the app.module content, just to make sure its modified
-      expect(appModuleContent).toMatch(/import.*HttpClientModule.*from.*'@angular\/common\/http'/);
-      expect(appModuleContent).toMatch(/import.*ConfigService.*from.*'.\/config\/config.service'/);
-      expect(appModuleContent).toMatch(/imports:\s*\[[^\]]+?,\r?\n\s+HttpClientModule\r?\n/m);
-      expect(appModuleContent).toMatch(/provide:.*APP_INITIALIZER/);
-      expect(appModuleContent).toMatch('function initializeAppFactory');
+      expect(appModuleContent).toContain('HttpClientModule');
+      expect(appModuleContent).toContain('ReactiveFormsModule');
+      expect(appModuleContent).toContain('Observable');
+      expect(appModuleContent).toContain('tap');
+      expect(appModuleContent).toContain('Config');
+      expect(appModuleContent).toContain('ConfigService');
+      expect(appModuleContent).withContext('initializeAppFactory').toContain('function initializeAppFactory(httpClient: HttpClient, configService: ConfigService): () => Observable<any> {');
+      expect(appModuleContent).toContain(`{ provide: APP_INITIALIZER, useFactory: initializeAppFactory, deps: [HttpClient, ConfigService], multi: true }`);
     });
   });
+  
+  describe('with clarity ui', () => {
+    let appTree: UnitTestTree;
+    beforeEach(async () => {
+      appTree = await createTestApp(projectName, testRunner);
+    });
+    const defaultOptions: MyConfigSchema = {
+      gateway_url: 'test',
+      org_dn: '',
+      config_path: '',
+      project: 'bar',
+      auth_type: 'AW',
+      ui_framework: 'clarity'
+    };
+    it('should have clarity style', async () => {
+      const options = { ...defaultOptions };
+      const tree = await schematicRunner.runSchematic('app-works', options, appTree);
+
+      const angularJson = tree.read('/angular.json');
+      if (!angularJson) throw new Error("Unexpected error");
+
+      const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
+      let style = initialWorkspace.projects[projectName].architect.build.options.styles[0];
+      expect(style).withContext('clarity style must be first').toEqual("node_modules/@clr/ui/clr-ui.min.css");
+    });
+
+    it('should have clarity in config', async () => {
+      const options = { ...defaultOptions };
+      const tree = await schematicRunner.runSchematic('app-works', options, appTree);
+
+      let ui_framework = readConfig(tree, '/projects/bar/src', 'UI_FRAMEWORK');
+      expect(ui_framework).toEqual('clarity');
+    });
+
+    it('should import clarity module', async () => {
+      const options = { ...defaultOptions };
+      const tree = await schematicRunner.runSchematic('app-works', options, appTree);
+
+      const appModuleContent = tree.readContent('/projects/bar/src/app/app.module.ts');
+      expect(appModuleContent).toContain('ClarityModule');
+      expect(appModuleContent).not.toContain('MaterialModule');
+    });
+  });
+
+  describe('with angular material ui', () => {
+    let appTree: UnitTestTree;
+    beforeEach(async () => {
+      appTree = await createTestApp(projectName, testRunner);
+    });
+    const defaultOptions: MyConfigSchema = {
+      gateway_url: 'test',
+      org_dn: '',
+      config_path: '',
+      project: 'bar',
+      auth_type: 'AW',
+      ui_framework: 'material'
+    };
+    it('should have material in config', async () => {
+      const options = { ...defaultOptions };
+      const tree = await schematicRunner.runSchematic('app-works', options, appTree);
+
+      let ui_framework = readConfig(tree, '/projects/bar/src', 'UI_FRAMEWORK');
+      expect(ui_framework).toEqual('material');
+    });
+
+    it('should import material module', async () => {
+      const options = { ...defaultOptions };
+      const tree = await schematicRunner.runSchematic('app-works', options, appTree);
+
+      const appModuleContent = tree.readContent('/projects/bar/src/app/app.module.ts');
+      expect(appModuleContent).not.toContain('ClarityModule');
+      expect(appModuleContent).toContain('MaterialModule');
+    });
+  });
+
 });
+

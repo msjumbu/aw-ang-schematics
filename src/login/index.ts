@@ -6,10 +6,10 @@ import { readConfig } from '../util';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-export function login(options: any): Rule {
+export function login(options: LoginSchema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
     const workspace = await getWorkspace(tree);
-    const project = workspace.projects.get(options.project as string);
+    const project = (options.project != null) ? workspace.projects.get(options.project) : null;
     if (!project) {
       throw new SchematicsException(`Project "${options.project}" does not exist.`);
     }
@@ -26,7 +26,7 @@ export function login(options: any): Rule {
     options.sourceRoot = `${project.sourceRoot}`;
 
     return chain([externalSchematic('@schematics/angular', 'component',
-      { "name": options.name, "path": options.path }),
+      { "name": options.name, "project": options.project }),
     customizeComponent(options)]);
   };
 }

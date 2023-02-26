@@ -1,10 +1,8 @@
 export interface ConfigSchema {
-  selector?: any;
-  wsdl_url: string;
-  name: string;
+  auth_type: string;
+  otds_url?: string;
   project?: string;
   path?: string;
   root?: string;
   sourceRoot?: string;
-
 }

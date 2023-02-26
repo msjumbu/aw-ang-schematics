@@ -15,7 +15,7 @@ export function service(options: ServiceSchema): Rule {
     // const host = createHost(tree);
     const workspace = await getWorkspace(tree);
     // const { workspace } = await workspaces.readWorkspace('/', host);
-    const project = workspace.projects.get(options.project as string);
+    const project = (options.project != null) ? workspace.projects.get(options.project) : null;
     if (!project) {
       throw new SchematicsException(`Project "${options.project}" does not exist.`);
     }

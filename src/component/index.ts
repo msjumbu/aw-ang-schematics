@@ -12,7 +12,7 @@ import { readConfig } from '../util';
 export function component(options: ComponentSchema): Rule {
   return async (host: Tree, _context: SchematicContext) => {
     const workspace = await getWorkspace(host);
-    const project = workspace.projects.get(options.project as string);
+    const project = (options.project != null) ? workspace.projects.get(options.project) : null;
     if (!project) {
       throw new SchematicsException(`Project "${options.project}" does not exist.`);
     }
@@ -29,9 +29,11 @@ export function component(options: ComponentSchema): Rule {
     options.selector =
       options.selector || buildSelector(options.name, (project && project.prefix) || '');
     return chain([externalSchematic('@schematics/angular', 'component',
-      { "name": options.name, "path": options.path}),
+      // { "name": options.name, "path": options.path, "project": options.project}
+      { "name": options.name, "project": options.project}
+      ),
     schematic('service',
-      { "wsdl_url": options.wsdl_url, "path": options.path + '/' + dasherize(options.name) }),
+      { "wsdl_url": options.wsdl_url, "path": options.path + '/' + dasherize(options.name), "project": options.project }),
     createComponent(options)]);
   };
 }
@@ -68,6 +70,7 @@ function createComponent(options: ComponentSchema): Rule {
     if (!path) {
       throw new SchematicsException(`Path "${options.path}" does not exist.`);
     }
+    console.log("Why ---->" + 6);
     let serviceName: string | undefined = '';
     let servicePath, typesPath = '';
     let inMsg, outMsg = '';

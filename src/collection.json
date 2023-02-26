@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "ng-add": {
-      "description": "Add my AppWorks to the project.",
+      "description": "Add AppWorks to the project.",
       "factory": "./ng-add/index#ngAdd",
       "schema": "./app-works/schema.json"
     },
@@ -17,24 +17,19 @@
       "schema": "./service/schema.json"
     },
     "component": {
-      "description": "Create service for the wsdl and a component for the service",
+      "description": "Create service for the wsdl and a component using the service",
       "factory": "./component/index#component",
       "schema": "./component/schema.json"
     },
     "login": {
-      "description": "A blank schematic.",
+      "description": "Add login page schematic.",
       "factory": "./login/index#login",
       "schema": "./login/schema.json"
     },
-    "auth-otds": {
-      "description": "A blank schematic.",
-      "factory": "./auth-otds/index#authOtds",
-      "schema": "./auth-otds/schema.json"
-    },
-    "auth-aw": {
-      "description": "A blank schematic.",
-      "factory": "./auth-aw/index#authAw",
-      "schema": "./auth-aw/schema.json"
+    "authenticate": {
+      "description": "Add authentication support schematic.",
+      "factory": "./authenticate/index#authentication",
+      "schema": "./authenticate/schema.json"
     }
   }
 }

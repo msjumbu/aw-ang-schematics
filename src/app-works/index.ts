@@ -21,20 +21,13 @@ import { getWorkspace } from '@schematics/angular/utility/workspace';
 export function appWorks(options: AWSchema): Rule {
   return async (tree: Tree) => {
     const workspace = await getWorkspace(tree);
-    let s: Rule | undefined = undefined;
-    if (options.auth_type == 'OTDS') {
-      s = schematic('auth-otds', {});
-    } else if (options.auth_type = 'AW') {
-      s = schematic('auth-aw', {});
-    }
-    if (!s) throw new SchematicsException('Auth type not selected');
     const project = (options.project != null) ? workspace.projects.get(options.project) : null;
     if (!project) {
       throw new SchematicsException(`Invalid project name: ${options.project}`);
     }
-    
-    // TODO: See if there is any other way
+
     if (options.ui_framework == 'clarity') {
+      // TODO: See if there is any other way
       const angularJson = tree.read('/angular.json');
       if (!angularJson) throw new SchematicsException('Unable to find angular.json');
       const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
@@ -63,7 +56,14 @@ export function appWorks(options: AWSchema): Rule {
     let rules: Rule[] = [
       mergeWith(templateSource, MergeStrategy.Overwrite),
       addImportToNgModule(options),
-      s];
+      schematic('authenticate', {
+        'auth_type': options.auth_type ?? 'OTDS',
+        'otds_url': options.otds_url ?? 'Set OTDS Rest URL',
+        'path': options.path,
+        'project': options.project,
+        'root': options.root,
+        'sourceRoot': options.sourceRoot
+      })];
     if (!options.ui_framework || options.ui_framework.toLowerCase() == 'material') {
       const matSource = apply(url('./files/material'), [
         applyTemplates({ ...options }),

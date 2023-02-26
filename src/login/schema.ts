@@ -3,4 +3,5 @@ export interface ConfigSchema {
   project?: string;
   path?: string;
   sourceRoot?: string;
+  root?: string;
 }
