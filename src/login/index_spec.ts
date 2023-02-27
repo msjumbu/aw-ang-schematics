@@ -20,6 +20,7 @@ describe('login', () => {
     org_dn: '',
     config_path: '',
     project: projectName,
+    auth_type: 'AW',
   };
 
   let appTree: UnitTestTree;
@@ -56,7 +57,8 @@ describe('login with clarity', () => {
     org_dn: '',
     config_path: '',
     project: projectName,
-    ui_framework: 'clarity'
+    ui_framework: 'clarity',
+    auth_type: 'AW',
   };
 
   let appTree: UnitTestTree;
@@ -93,7 +95,8 @@ describe('login with material', () => {
     org_dn: '',
     config_path: '',
     project: projectName,
-    ui_framework: 'material'
+    ui_framework: 'material',
+    auth_type: 'AW',
   };
 
   let appTree: UnitTestTree;

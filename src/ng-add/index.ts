@@ -25,6 +25,10 @@ function addPackageJsonDependencies(options: AWSchema): Rule {
         if (options.ui_framework && options.ui_framework.toLowerCase() == 'clarity') {
             packages.push('@clr/angular');
             packages.push('@clr/ui');
+        } else if (options.ui_framework && options.ui_framework.toLowerCase() == 'primeng') {
+            packages.push('primeng');
+            packages.push('primeicons');
+            packages.push('primeflex')
         } else {
             packages.push('@angular/material');
         }

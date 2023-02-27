@@ -1,0 +1,39 @@
+// IMPORT ALL PrimeNG COMPONENTS
+// #STEPS
+// 1- Import this file as module in app.module.ts ==> import { PrimeNGModule } from './xyz/abc';
+// 2- Initialize it in imports:[] array ==> imports:[PrimeNGModule]
+
+import { NgModule } from '@angular/core';
+// *************** FORM CONTROLS ***************
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {TableModule} from 'primeng/table';
+// *************** NAVIGATION ***************
+
+// *************** LAYOUT ***************
+import {CardModule} from 'primeng/card';
+import {StyleClassModule} from 'primeng/styleclass';
+import {FieldsetModule} from 'primeng/fieldset';
+import {PanelModule} from 'primeng/panel';
+// *************** BUTTONS & INDICATORS ***************
+
+// *************** POPUPS & MODALS ***************
+
+// *************** DATA TABLE ***************
+
+
+const AllPrimeNGModules=[
+  InputTextModule,
+  CardModule,
+  ButtonModule,
+  StyleClassModule,
+  TableModule,
+  FieldsetModule,
+  PanelModule,
+];
+
+@NgModule({
+  imports: [AllPrimeNGModules],
+  exports: [AllPrimeNGModules],
+})
+export class PrimeNGModule {}

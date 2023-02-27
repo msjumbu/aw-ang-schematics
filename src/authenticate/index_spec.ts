@@ -3,7 +3,7 @@ import * as path from 'path';
 import { ConfigSchema as AWSchema } from '../app-works/schema';
 import { ConfigSchema as MyConfigSchema } from './schema';
 import { createTestApp } from '../utils/create-test-app';
-import { readConfig } from '../util';
+import { readConfig } from '../utils/util';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -22,7 +22,8 @@ describe('OTDS Authentication', () => {
       org_dn: '',
       config_path: '',
       project: 'bar',
-      // auth_type: 'OTDS',
+      auth_type: 'OTDS',
+      otds_url: 'rest',
     };
 
     let appTree: UnitTestTree;
@@ -53,7 +54,7 @@ describe('OTDS Authentication', () => {
       org_dn: '',
       config_path: '',
       project: 'bar',
-      // auth_type: 'OTDS',
+      auth_type: 'AW',
     };
 
     let appTree: UnitTestTree;

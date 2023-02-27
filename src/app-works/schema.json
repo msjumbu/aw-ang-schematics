@@ -41,7 +41,6 @@
       "auth_type": {
         "type": "string",
         "description": "Authentication Type",
-        "default": "OTDS",
         "enum": [
           "OTDS",
           "AW"

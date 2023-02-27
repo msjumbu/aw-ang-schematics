@@ -9,11 +9,14 @@
                     <mat-form-field>
                         <mat-label><%= element.name %></mat-label>
                         <input 
-                            type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && element.eType.includes('int')) { %> "number" <%}%><% if (element.eType && element.eType.includes('dateTime')) { %> "datetime" <%}%><% if (element.eType && element.eType.includes('date') && !element.eType.includes('dateTime')) { %> "date" <%}%>
+                            type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && (element.eType.includes('int') || element.eType.includes('double'))) { %> "number" <%}%><% if (element.eType && element.eType.includes('dateTime')) { %> "datetime" <%}%><% if (element.eType && element.eType.includes('date') && !element.eType.includes('dateTime')) { %> "date" <%}%>
                             name="<%= element.name %>" 
-                            matInput 
+                            matInput <% if (element.eType && element.eType.includes('date')) { %> 
+                            [matDatepicker]="picker" <%}%>
                             placeholder="" 
-                            formControlName="<%= element.name %>"/>
+                            formControlName="<%= element.name %>"/> <% if (element.eType && element.eType.includes('date')) { %> 
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle> 
+                            <mat-datepicker #picker></mat-datepicker><%}%>
                     </mat-form-field>
                 </div><% if (i % 2 !== 0 || i+1 == inputs.length) { %>
             </div><% } %><% } %>
@@ -36,9 +39,12 @@
                         <input 
                             type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && element.eType.includes('int')) { %> "number" <%}%><% if (element.eType && element.eType.includes('dateTime')) { %> "datetime" <%}%><% if (element.eType && element.eType.includes('date') && !element.eType.includes('dateTime')) { %> "date" <%}%>
                             name="<%= element.name %>" 
-                            matInput 
+                            matInput <% if (element.eType && element.eType.includes('date')) { %> 
+                            [matDatepicker]="picker<%= element.name %>" <%}%>
                             placeholder="" 
-                            formControlName="<%= element.name %>"/>
+                            formControlName="<%= element.name %>"/> <% if (element.eType && element.eType.includes('date')) { %> 
+                            <mat-datepicker-toggle matIconSuffix [for]="picker<%= element.name %>"></mat-datepicker-toggle> 
+                            <mat-datepicker #picker<%= element.name %>></mat-datepicker><%}%>
                     </mat-form-field>
                 </div><% if (i % 2 !== 0 || i+1 == outputs.length) { %>
             </div><% } %><% } %>

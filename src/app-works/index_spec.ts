@@ -2,7 +2,7 @@ import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/te
 import * as path from 'path';
 import { ConfigSchema as MyConfigSchema } from './schema';
 import { createTestApp } from '../utils/create-test-app';
-import { readConfig } from '../util';
+import { readConfig } from '../utils/util';
 
 const collectionPath = path.join(__dirname, '../collection.json');
 

@@ -1,7 +1,7 @@
 import { normalize } from '@angular-devkit/core';
 import { apply, applyTemplates, chain, MergeStrategy, mergeWith, move, Rule, SchematicContext, SchematicsException, Tree, url } from '@angular-devkit/schematics';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
-import { setConfig } from '../util';
+import { setConfig } from '../utils/util';
 import { ConfigSchema as OTDSAuthSchema } from './schema';
 
 export function authentication(options: OTDSAuthSchema): Rule {

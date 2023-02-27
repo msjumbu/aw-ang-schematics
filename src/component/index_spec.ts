@@ -35,6 +35,7 @@ describe('component', () => {
     org_dn: '',
     config_path: '',
     project: projectName,
+    auth_type: 'AW',
   };
 
   let appTree: UnitTestTree;

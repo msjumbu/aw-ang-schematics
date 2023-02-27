@@ -2,7 +2,7 @@ import { apply, applyTemplates, chain, externalSchematic, MergeStrategy, mergeWi
 import { buildDefaultPath, getWorkspace } from "@schematics/angular/utility/workspace";
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { ConfigSchema as LoginSchema } from './schema';
-import { readConfig } from '../util';
+import { readConfig } from '../utils/util';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -56,6 +56,8 @@ function customizeComponent(options: LoginSchema): Rule {
     let u = url('./files/material');
     if (uiFramework && uiFramework.toLowerCase() == 'clarity'.toLowerCase()) {
       u = url('./files/clarity');
+    } else if (uiFramework && uiFramework.toLowerCase() == 'primeng'.toLowerCase()) {
+      u = url('./files/primeng');
     }
     const compSource = apply(u, [
       applyTemplates({

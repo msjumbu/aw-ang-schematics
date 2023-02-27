@@ -35,6 +35,18 @@ export function appWorks(options: AWSchema): Rule {
       if (!style)
         initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/@clr/ui/clr-ui.min.css")
       tree.overwrite('/angular.json', JSON.stringify(initialWorkspace, undefined, 2));
+    } else if (options.ui_framework == 'primeng') {
+      const angularJson = tree.read('/angular.json');
+      if (!angularJson) throw new SchematicsException('Unable to find angular.json');
+      const initialWorkspace = JSON.parse(angularJson.toString('utf-8'));
+      let style = initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.find((item: string) => item == "node_modules/primeicons/primeicons.css");
+      if (!style) {
+        initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/primeicons/primeicons.css");
+        initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/primeng/resources/themes/lara-light-blue/theme.css");
+        initialWorkspace.projects[options.project ?? 0].architect.build.options.styles.splice(0, 0, "node_modules/primeng/resources/primeng.min.css");
+      }
+      tree.overwrite('/angular.json', JSON.stringify(initialWorkspace, undefined, 2));
+
     }
 
     if (options.path === undefined) {
@@ -57,8 +69,8 @@ export function appWorks(options: AWSchema): Rule {
       mergeWith(templateSource, MergeStrategy.Overwrite),
       addImportToNgModule(options),
       schematic('authenticate', {
-        'auth_type': options.auth_type ?? 'OTDS',
-        'otds_url': options.otds_url ?? 'Set OTDS Rest URL',
+        'auth_type': options.auth_type,
+        'otds_url': options.otds_url,
         'path': options.path,
         'project': options.project,
         'root': options.root,
@@ -66,6 +78,13 @@ export function appWorks(options: AWSchema): Rule {
       })];
     if (!options.ui_framework || options.ui_framework.toLowerCase() == 'material') {
       const matSource = apply(url('./files/material'), [
+        applyTemplates({ ...options }),
+        move(movePath)
+      ]);
+      rules.push(mergeWith(matSource, MergeStrategy.Overwrite));
+    }
+    if (options.ui_framework && options.ui_framework.toLowerCase() == 'primeng') {
+      const matSource = apply(url('./files/primeng'), [
         applyTemplates({ ...options }),
         move(movePath)
       ]);
@@ -110,6 +129,14 @@ function addImportToNgModule(options: AWSchema): Rule {
         modulePath,
         'MaterialModule',
         './modules/material.module'
+      ));
+    }
+    if (options.ui_framework == 'primeng') {
+      changes = changes.concat(addImportToModule(
+        source,
+        modulePath,
+        'PrimeNGModule',
+        './modules/primeng.module'
       ));
     }
     if (options.ui_framework == 'clarity') {

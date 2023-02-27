@@ -1,5 +1,6 @@
 <div class="login-wrapper">
     <form class="login" [formGroup]="loginForm">
+        <img src="assets/logo.png" alt="Image" height="50" class="mb-3">
         <section class="title">
             <h3 class="welcome">Welcome to</h3>
             Senthil
