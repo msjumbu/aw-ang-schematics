@@ -24,7 +24,6 @@
       "otds_url": {
         "type": "string",
         "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
-        "x-prompt": "Please enter your OTDS authentication rest service URL. (Leave empty if you have selected AppWorks Authentication)"
       },
       "project": {
         "type": "string",
