@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { <%= serviceName %> as AWService} from '<%= servicePath %>';
 import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg<% if(useTuple) { %>, Ituple <% } %>, I<%= tableName %>} from '<%= typesPath %>';
+import { ConfigService } from '<%= crPath %>/config.service';
 
 @Component({
   selector: '<%= selector %>',
@@ -10,7 +11,8 @@ import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg<% if(useTuple) { %
 })
 export class <%= classify(name) %><%= classify(type) %> {
   constructor(private fb: FormBuilder, 
-      private awService: AWService) {  }
+      private awService: AWService,
+      public config:ConfigService) {  }
     <% if(createGrid && tableName) { %>records: I<%= tableName %>[] = [];<% } %><% if(!createGrid && useTuple) { %>record: I<%= tableName %> | undefined;<% } %>
     <% if (inputs && inputs.length && inputs.length > 0) { %>
     inputForm = this.fb.group({    <% for(let element of inputs) { %>

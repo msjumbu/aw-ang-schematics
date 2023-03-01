@@ -6,6 +6,8 @@ import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeSc
 import { findNode, findNodes } from '@schematics/angular/utility/ast-utils';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { readConfig } from '../utils/util';
+import { buildRelativePath } from '@schematics/angular/utility/find-module';
+import { normalize } from '@angular-devkit/core';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -71,6 +73,8 @@ function createComponent(options: ComponentSchema): Rule {
     if (!path) {
       throw new SchematicsException(`Path "${options.path}" does not exist.`);
     }
+    
+    let crPath = buildRelativePath(`/${path}/${dasherize(options.name)}/${dasherize(options.name)}.component.ts`, normalize(`/${options.sourceRoot}/app/config`));
     let serviceName: string | undefined = '';
     let servicePath, typesPath = '';
     let inMsg, outMsg = '';
@@ -147,7 +151,8 @@ function createComponent(options: ComponentSchema): Rule {
         outputs: outputs,
         createGrid: createGrid,
         useTuple: useTuple,
-        tableName: tableName
+        tableName: tableName,
+        crPath: crPath
       }),
       move(path)
     ]);

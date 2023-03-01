@@ -21,6 +21,7 @@ describe('login', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -59,6 +60,7 @@ describe('login with clarity', () => {
     project: projectName,
     ui_framework: 'clarity',
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -96,6 +98,7 @@ describe('login with material', () => {
     project: projectName,
     ui_framework: 'material',
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -133,6 +136,7 @@ describe('login with primeng', () => {
     project: projectName,
     ui_framework: 'primeng',
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;

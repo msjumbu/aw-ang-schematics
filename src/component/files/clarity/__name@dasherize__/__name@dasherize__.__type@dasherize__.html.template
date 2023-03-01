@@ -26,7 +26,7 @@
     <clr-dg-column><%= element.name %></clr-dg-column><% } %>
 
     <clr-dg-row *ngFor="let record of records"><% for(let element of outputs) { %>
-        <clr-dg-cell>{{<%= tableName %>?.<%= element.name %>}}</clr-dg-cell><% } %>
+        <clr-dg-cell>{{<%= tableName %>?.<%= element.name %><% if (element.eType && element.eType.includes('date')) { %> | date:config.config.DATE_FORMAT<% } %>}}</clr-dg-cell><% } %>
     </clr-dg-row>
 
     <clr-dg-footer>{{records?.length}} records</clr-dg-footer>

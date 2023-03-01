@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Parser, Builder } from "xml2js";
-import { AuthenticationService, AuthToken } from "<%= srPath %>/authentication.service";
-import { ConfigService } from "<%= crPath %>/config.service";
-import { Utils } from "<%= srPath %>/utils";
-import { Subject } from "rxjs";
-import { <%= inMsg %>, <%= outMsg %>, metadata } from "./<%= typesFile %>";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Parser, Builder } from 'xml2js';
+import { AuthenticationService, AuthToken } from '<%= srPath %>/auth/authentication.service';
+import { ConfigService } from '<%= crPath %>/config.service';
+import { Utils } from '<%= srPath %>/utils';
+import { Subject } from 'rxjs';
+import { <%= inMsg %>, <%= outMsg %>, metadata } from './<%= typesFile %>';
 
 @Injectable({
     providedIn: "root"

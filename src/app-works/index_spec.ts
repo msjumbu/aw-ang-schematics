@@ -27,6 +27,7 @@ describe('app-works', () => {
       config_path: '',
       project: 'bar',
       auth_type: 'AW',
+      date_format: 'short',
     };
     it('should create files', async () => {
       const options = { ...defaultOptions };
@@ -68,7 +69,8 @@ describe('app-works', () => {
       config_path: '',
       project: 'bar',
       auth_type: 'AW',
-      ui_framework: 'clarity'
+      ui_framework: 'clarity',
+      date_format: 'short'
     };
     it('should have clarity style', async () => {
       const options = { ...defaultOptions };
@@ -111,7 +113,8 @@ describe('app-works', () => {
       config_path: '',
       project: 'bar',
       auth_type: 'AW',
-      ui_framework: 'material'
+      ui_framework: 'material',
+      date_format: 'short'
     };
     it('should have material in config', async () => {
       const options = { ...defaultOptions };
