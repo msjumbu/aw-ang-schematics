@@ -1,0 +1,21 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthenticationService {
+
+  constructor(private http: HttpClient, private config: ConfigService) { }
+
+  public auth: AuthToken | undefined;
+
+  async authenticate(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
+    // Implement your authentication logic
+  }
+}
+export interface AuthToken {
+  authType: string;
+  userId: string;
+  token: string;
+}
