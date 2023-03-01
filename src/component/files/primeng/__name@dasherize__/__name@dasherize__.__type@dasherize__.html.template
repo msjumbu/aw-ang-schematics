@@ -15,13 +15,13 @@
 <% if (outputs && outputs.length && outputs.length > 0 && !createGrid) { %><p-panel header="<%= tableName %> Output" [toggleable]="true">
     <form [formGroup]="outputForm"><% for(let element of outputs) { %>
         <label for="<%= element.name %>" class="block text-900 font-medium mb-2"><%= element.name %></label>
-        <input 
-            type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && element.eType.includes('int')) { %> "number" <%}%><% if (element.eType && element.eType.includes('dateTime')) { %> "datetime" <%}%><% if (element.eType && element.eType.includes('date') && !element.eType.includes('dateTime')) { %> "date" <%}%>
+        <% if (!element.eType || !element.eType.includes('date')) { %><input 
+            type=<% if (element.eType?.includes('string') || !element.eType) { %> "text" <%}%><% if (element.eType && element.eType.includes('int')) { %> "number" <%}%>
             name="<%= element.name %>" 
             pInputText 
             class="w-full mb-3"  
             placeholder="" 
-            formControlName="<%= element.name %>"/><% } %>
+            formControlName="<%= element.name %>"/><% } %><% if (element.eType && element.eType.includes('date')) { %><p-calendar formControlName="<%= element.name %>"/><% } %><% } %>
     </form>
 </p-panel><% } %>
 <% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %><p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
@@ -35,7 +35,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-record>
         <tr><% for(let element of outputs) { %>
-            <td>{{record?.<%= element.name %>}}</td><% } %>
+            <td>{{record?.<%= element.name %><% if (element.eType && element.eType.includes('date')) { %>  | date:config.config.DATE_FORMAT<% } %>}}</td><% } %>
         </tr>
     </ng-template>
     <ng-template pTemplate="summary">

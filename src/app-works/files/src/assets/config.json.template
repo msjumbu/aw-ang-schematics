@@ -1,5 +1,6 @@
 {
   "GATEWAY_URL": "<%= gateway_url %>",
   "ORG_DN": "<%= org_dn %>",
-  "UI_FRAMEWORK": "<%= ui_framework %>"
+  "UI_FRAMEWORK": "<%= ui_framework %>",
+  "DATE_FORMAT": "<%= date_format %>"
 }

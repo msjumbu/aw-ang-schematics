@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { firstValueFrom } from 'rxjs';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '../../config/config.service';
 import { Builder, Parser } from 'xml2js';
 
 @Injectable({

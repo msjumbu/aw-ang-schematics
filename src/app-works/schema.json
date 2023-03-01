@@ -14,11 +14,6 @@
         "description": "Organization DN",
         "x-prompt": "Please enter your organization DN"
       },
-      "config_path": {
-        "type": "string",
-        "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
-        "x-prompt": "Please enter the relative path to config.json"
-      },
       "ui_framework": {
         "type": "string",
         "description": "UI Framework to use",
@@ -38,6 +33,36 @@
           ]
         }
       },
+      "date_format": {
+        "type": "string",
+        "description": "Select Date Format",
+        "default": "dd/MM/yyyy",
+        "enum": [
+          "dd/MM/yyyy",
+          "MM/dd/yyyy",
+          "yyyy/MM/dd",
+          "short",
+          "medium",
+          "long"
+        ],
+        "x-prompt": {
+          "message": "Which UI Framework would you like to use?",
+          "type": "list",
+          "items": [
+            { "value": "dd/MM/yyyy", "label": "dd/MM/yyyy" },
+            { "value": "MM/dd/yyyy",  "label": "MM/dd/yyyy" },
+            { "value": "yyyy/MM/dd", "label": "yyyy/MM/dd" },
+            { "value": "short", "label": "short - 'M/d/yy, h:mm a'" },
+            { "value": "medium", "label": "medium - 'MMM d, y, h:mm:ss a'" },
+            { "value": "long", "label": "long - 'MMMM d, y, h:mm:ss a z'" }
+          ]
+        }
+      },
+      "config_path": {
+        "type": "string",
+        "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
+        "x-prompt": "Please enter the relative path to config.json"
+      },
       "auth_type": {
         "type": "string",
         "description": "Authentication Type",
@@ -49,7 +74,7 @@
       },
       "otds_url": {
         "type": "string",
-        "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
+        "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)"
       },
       "project": {
         "type": "string",
@@ -65,5 +90,5 @@
         "visible": false
       }
     },
-    "required": ["gateway_url", "org_dn"]
+    "required": ["gateway_url", "org_dn", "date_format"]
   }

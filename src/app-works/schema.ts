@@ -9,4 +9,5 @@ export interface ConfigSchema {
     auth_type?: string;
     otds_url?: string;
     ui_framework?: string;
+    date_format?: string;
   }

@@ -36,6 +36,7 @@ describe('getObjects with material', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -65,10 +66,11 @@ describe('getObjects with material', () => {
     };
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
-    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
-    expect(htmlContent).toContain("import { GetComCountryObjectsService as AWService} from './services/get-com-country-objects.service';");
-    expect(htmlContent).toContain("import { IGetComCountryObjects as InputMsg, IGetComCountryObjectsResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-objects.types';");
-    expect(htmlContent).toContain("import {MatTableDataSource} from '@angular/material/table';");
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(fileContent).toContain("import { GetComCountryObjectsService as AWService} from './services/get-com-country-objects.service';");
+    expect(fileContent).toContain("import { IGetComCountryObjects as InputMsg, IGetComCountryObjectsResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-objects.types';");
+    expect(fileContent).toContain("import {MatTableDataSource} from '@angular/material/table';");
+    expect(fileContent).toContain("import { ConfigService } from '../config/config.service'");
   });
   it('should contain variables', async () => {
     const compOptions: MyConfigSchema = {
@@ -190,6 +192,7 @@ describe('getObject with material', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -220,9 +223,10 @@ describe('getObject with material', () => {
     };
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
-    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
-    expect(htmlContent).toContain("import { GetComCountryObjectService as AWService} from './services/get-com-country-object.service';");
-    expect(htmlContent).toContain("import { IGetComCountryObject as InputMsg, IGetComCountryObjectResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-object.types';");
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(fileContent).toContain("import { GetComCountryObjectService as AWService} from './services/get-com-country-object.service';");
+    expect(fileContent).toContain("import { IGetComCountryObject as InputMsg, IGetComCountryObjectResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-object.types';");
+    expect(fileContent).toContain("import { ConfigService } from '../config/config.service'");
   });
   it('should contain variables', async () => {
     const compOptions: MyConfigSchema = {
@@ -334,7 +338,8 @@ describe('getObjects with primeng', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
-    ui_framework: 'primeng'
+    ui_framework: 'primeng',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -365,9 +370,10 @@ describe('getObjects with primeng', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     
-    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
-    expect(htmlContent).toContain("import { GetComCountryObjectsService as AWService} from './services/get-com-country-objects.service';");
-    expect(htmlContent).toContain("import { IGetComCountryObjects as InputMsg, IGetComCountryObjectsResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-objects.types';");
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(fileContent).toContain("import { GetComCountryObjectsService as AWService} from './services/get-com-country-objects.service';");
+    expect(fileContent).toContain("import { IGetComCountryObjects as InputMsg, IGetComCountryObjectsResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-objects.types';");
+    expect(fileContent).toContain("import { ConfigService } from '../config/config.service'");
   });
   it('should contain variables', async () => {
     const compOptions: MyConfigSchema = {
@@ -486,7 +492,8 @@ describe('getObject with primeng', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
-    ui_framework: 'primeng'
+    ui_framework: 'primeng',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -632,7 +639,8 @@ describe('getObjects with clarity', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
-    ui_framework: 'clarity'
+    ui_framework: 'clarity',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -784,7 +792,8 @@ describe('getObject with clarity', () => {
     config_path: '',
     project: projectName,
     auth_type: 'AW',
-    ui_framework: 'clarity'
+    ui_framework: 'clarity',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;

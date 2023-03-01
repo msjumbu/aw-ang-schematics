@@ -33,8 +33,7 @@ describe('service', () => {
     beforeEach(async () => {
       appTree = await createTestApp(projectName, testRunner);
     });
-    it('works', async () => {
-      
+    it('should create', async () => {
       const defaultOptions: MyServiceSchema = {
         wsdl_url: 'testing&resolveexternals=true',
         path: '/projects/bar/src/app/test',
@@ -48,5 +47,22 @@ describe('service', () => {
       expect(files).toContain('/projects/bar/src/app/test/services/get-scm-so-sales-district-price-master-objects.types.ts');
       expect(files).toContain('/projects/bar/src/app/test/services/get-scm-so-sales-district-price-master-objects.service.ts');
     });
+    it('should import', async () => {
+      const defaultOptions: MyServiceSchema = {
+        wsdl_url: 'testing&resolveexternals=true',
+        path: '/projects/bar/src/app/test',
+        project: 'bar',
+        skipService: false
+      };
+      mock.onGet(defaultOptions.wsdl_url).reply(200, wsdl);
+      const runner = new SchematicTestRunner('schematics', collectionPath);
+      const tree = await runner.runSchematic('service', defaultOptions, appTree);
+      const fileContent = tree.readContent('/projects/bar/src/app/test/services/get-scm-so-sales-district-price-master-objects.service.ts');
+      expect(fileContent).toContain("import { ConfigService } from '../../config/config.service';");
+      expect(fileContent).toContain("import { AuthenticationService, AuthToken } from '../../services/auth/authentication.service';");
+      expect(fileContent).toContain("import { Utils } from '../../services/utils';");
+      expect(fileContent).toContain("import { IGetScmSoSalesDistrictPriceMasterObjects, IGetScmSoSalesDistrictPriceMasterObjectsResponse, metadata } from './get-scm-so-sales-district-price-master-objects.types';");
+    });
+
   });
 });

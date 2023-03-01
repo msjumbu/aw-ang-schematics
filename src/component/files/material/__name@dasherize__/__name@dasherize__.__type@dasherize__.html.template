@@ -56,7 +56,7 @@
     <% for(let element of outputs) { %>
     <ng-container matColumnDef="<%= element.name %>">
         <th mat-header-cell *matHeaderCellDef> <%= element.name %> </th>
-        <td mat-cell *matCellDef="let element"> {{element.<%= element.name %>}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.<%= element.name %><% if (element.eType && element.eType.includes('date')) { %> | date:config.config.DATE_FORMAT<% } %>}} </td>
     </ng-container><% } %>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

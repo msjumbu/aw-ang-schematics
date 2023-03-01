@@ -23,4 +23,5 @@ export interface Config {
   AUTH_TYPE: string;
   OTDS_URL?: string;
   UI_FRAMEWORK?: string;
+  DATE_FORMAT?: string;
 }

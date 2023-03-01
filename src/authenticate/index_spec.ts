@@ -23,6 +23,7 @@ describe('OTDS Authentication', () => {
     project: 'bar',
     auth_type: 'OTDS',
     otds_url: 'rest',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -63,6 +64,7 @@ describe('AW Authentication', () => {
     config_path: '',
     project: 'bar',
     auth_type: 'AW',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;
@@ -100,6 +102,7 @@ describe('Custom Authentication', () => {
     config_path: '',
     project: 'bar',
     auth_type: 'CUSTOM',
+    date_format: 'short'
   };
 
   let appTree: UnitTestTree;

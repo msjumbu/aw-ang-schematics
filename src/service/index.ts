@@ -84,8 +84,8 @@ function createService(def: IDefinition, pt: IPortType, filePath: string, _optio
     if (!inMsg) throw new SchematicsException('Service name not available.');
     let t = url('./files');
 
-    let srPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.root}/${_options.sourceRoot}/app/services`));
-    let crPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.root}/${_options.sourceRoot}/app/config`));
+    let srPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.sourceRoot}/app/services`));
+    let crPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.sourceRoot}/app/config`));
     const typeFileName = dasherize(inMsg) + '.types';
     const templateSource = apply(t, [
       applyTemplates({
