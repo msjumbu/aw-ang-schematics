@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       console.log(auth.token);
       this.invalidLogin = false;
       this.showSpinner = false;
-      this.router.navigate(['/soaptest']);
+      this.router.navigate(['/']);
     } else {
       this.invalidLogin = true;
       this.showSpinner = false;

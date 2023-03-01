@@ -27,6 +27,12 @@ export class AuthenticationService {
     }
   }
 
+  public isAuthenticated(): boolean {
+    if(this.auth)
+      return true;
+    return false
+  }
+
   async authOTDS(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
     if (!username) throw new Error("Username not provided");
     if (!password) throw new Error("Password not provided");

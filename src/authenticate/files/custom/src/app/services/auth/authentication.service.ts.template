@@ -13,6 +13,12 @@ export class AuthenticationService {
   async authenticate(username: string | null | undefined, password: string | null | undefined): Promise<AuthToken | undefined> {
     // Implement your authentication logic
   }
+  
+  public isAuthenticated(): boolean {
+    if(this.auth)
+      return true;
+    return false
+  }
 }
 export interface AuthToken {
   authType: string;
