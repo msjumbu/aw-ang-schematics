@@ -66,7 +66,6 @@ function createTypes(def: IDefinition, filePath: string): Rule {
     if (!inMsg) throw new Error("Why?");
     
     const file = normalize(filePath + '/' + dasherize(inMsg) + '.types.ts');
-    console.log(file.toString());
     
     if (tree.exists(file))
       tree.overwrite(file, res);

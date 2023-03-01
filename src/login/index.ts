@@ -17,10 +17,9 @@ export function login(options: LoginSchema): Rule {
       options.path = buildDefaultPath(project);
     }
     options.name = 'login'
-    const parsedPath = parseName(options.path as string, options.name);
+    const parsedPath = parseName(options.path, options.name);
     options.name = parsedPath.name;
     options.path = parsedPath.path;
-    console.log(options.path);
 
     options.root = `${project.root}`
     options.sourceRoot = `${project.sourceRoot}`;

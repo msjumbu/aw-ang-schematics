@@ -22,7 +22,6 @@ export function component(options: ComponentSchema): Rule {
     const parsedPath = parseName(options.path as string, options.name);
     options.name = parsedPath.name;
     options.path = parsedPath.path;
-    console.log(options.path);
 
     options.root = `${project.root}`
     options.sourceRoot = `${project.sourceRoot}`;
@@ -72,7 +71,6 @@ function createComponent(options: ComponentSchema): Rule {
     if (!path) {
       throw new SchematicsException(`Path "${options.path}" does not exist.`);
     }
-    console.log("Why ---->" + 6);
     let serviceName: string | undefined = '';
     let servicePath, typesPath = '';
     let inMsg, outMsg = '';
@@ -129,7 +127,6 @@ function createComponent(options: ComponentSchema): Rule {
     } else {
       outputs = metadata[1].element;
     }
-    console.log(metadata[0]);
     
     let inputs = metadata[0].element ? metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'):undefined;
     const templateSource = apply(t, [

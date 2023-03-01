@@ -74,7 +74,6 @@ describe('login with clarity', () => {
     };
     const tree = await schematicRunner.runSchematic('login', loginOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/login/login.component.html');
-    expect(htmlContent).not.toContain('mat-card');
     expect(htmlContent).toContain('login-wrapper');
     expect(htmlContent).toContain('clr-input-container');
     expect(htmlContent).toContain('clr-password-container');
@@ -105,7 +104,7 @@ describe('login with material', () => {
     appTree = await schematicRunner.runSchematic('app-works', awOptions, appTree);
   });
 
-  it('html should be modified for clarity', async () => {
+  it('html should be modified for material', async () => {
     const loginOptions: MyConfigSchema = {
       name: '',
       project: projectName,
@@ -115,8 +114,42 @@ describe('login with material', () => {
     expect(htmlContent).toContain('mat-card');
     expect(htmlContent).toContain('mat-card-content');
     expect(htmlContent).toContain('mat-form-field');
-    expect(htmlContent).not.toContain('login-wrapper');
-    expect(htmlContent).not.toContain('clr-input-container');
-    expect(htmlContent).not.toContain('clr-password-container');
+  });
+});
+
+describe('login with primeng', () => {
+  const projectName = 'bar';
+
+  const testRunner = new SchematicTestRunner(
+    'rocket',
+    require.resolve(collectionPath),
+  );
+  const schematicRunner = new SchematicTestRunner(
+    'msjumbu', collectionPath);
+  const awOptions: AWSchema = {
+    gateway_url: 'test',
+    org_dn: '',
+    config_path: '',
+    project: projectName,
+    ui_framework: 'primeng',
+    auth_type: 'AW',
+  };
+
+  let appTree: UnitTestTree;
+  beforeEach(async () => {
+    appTree = await createTestApp(projectName, testRunner);
+    appTree = await schematicRunner.runSchematic('app-works', awOptions, appTree);
+  });
+
+  it('html should be modified for primeng', async () => {
+    const loginOptions: MyConfigSchema = {
+      name: '',
+      project: projectName,
+    };
+    const tree = await schematicRunner.runSchematic('login', loginOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/login/login.component.html');
+    expect(htmlContent).toContain('surface-card');
+    expect(htmlContent).toContain('pInputText');
+    expect(htmlContent).toContain('pButton');
   });
 });

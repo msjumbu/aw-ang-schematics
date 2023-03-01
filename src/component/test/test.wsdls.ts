@@ -1,12 +1,12 @@
-
-export const wsdl = `<?xml version="1.0"?>
+export const getObject = `
+<?xml version="1.0"?>
 <wsdl:definitions
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-	xmlns:tns="http://schemas.cordys.com/salesorderdatabasemetadata"
+	xmlns:tns="http://schemas.cordys.com/MigrationCurrentWsApps"
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 	xmlns:cordys="http://schemas.cordys.com/General/1.0/"
-	name="salesorderWebServiceInterface"
-	targetNamespace="http://schemas.cordys.com/salesorderdatabasemetadata">
+	name="MigrationCurrent_WS"
+	targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
 	<wsdl:types>
 		<xsd:schema
 			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -14,43 +14,21 @@ export const wsdl = `<?xml version="1.0"?>
 			xmlns=""
 			attributeFormDefault="unqualified"
 			elementFormDefault="qualified"
-			targetNamespace="http://schemas.cordys.com/salesorderdatabasemetadata">
+			targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
 			<xsd:import
 				namespace="http://schemas.cordys.com/General/1.0/"
 			/>
 			<xsd:element
-				name="GetScmSoSalesDistrictPriceMasterObjects">
+				name="GetComCountryObject">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element
-							maxOccurs="1"
-							minOccurs="0"
-							ref="tns:cursor"
-						/>
-						<xsd:element
-							name="fromMATERIAL_PRICE_ID">
+							name="CODE">
 							<xsd:simpleType>
 								<xsd:restriction
 									base="xsd:string">
-									<xsd:pattern
-										value="\{?[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}?"
-									/>
 									<xsd:maxLength
-										value="36"
-									/>
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-						<xsd:element
-							name="toMATERIAL_PRICE_ID">
-							<xsd:simpleType>
-								<xsd:restriction
-									base="xsd:string">
-									<xsd:pattern
-										value="\{?[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}?"
-									/>
-									<xsd:maxLength
-										value="36"
+										value="6"
 									/>
 								</xsd:restriction>
 							</xsd:simpleType>
@@ -62,16 +40,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:complexType>
 			</xsd:element>
 			<xsd:element
-				name="GetScmSoSalesDistrictPriceMasterObjectsResponse">
+				name="GetComCountryObjectResponse">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element
-							maxOccurs="1"
-							minOccurs="0"
-							ref="tns:cursor"
-						/>
-						<xsd:element
-							maxOccurs="unbounded"
 							minOccurs="0"
 							name="tuple">
 							<xsd:complexType>
@@ -81,7 +53,7 @@ export const wsdl = `<?xml version="1.0"?>
 										<xsd:complexType>
 											<xsd:sequence>
 												<xsd:element
-													ref="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER"
+													ref="tns:COM_COUNTRY"
 												/>
 											</xsd:sequence>
 										</xsd:complexType>
@@ -109,91 +81,154 @@ export const wsdl = `<?xml version="1.0"?>
 			xmlns:wcp="http://schemas.cordys.com/"
 			xmlns=""
 			elementFormDefault="qualified"
-			targetNamespace="http://schemas.cordys.com/salesorderdatabasemetadata">
+			targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTERModel">
+				name="COM_COUNTRYModel">
 				<xsd:sequence>
 					<xsd:element
-						name="MATERIAL_PRICE_ID"
+						name="CODE"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_PRICE_IDWithAttributes"
+						type="tns:COM_COUNTRY_CODEWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
-						name="ENTITY_CODE"
+						name="DESCRIPTION"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_ENTITY_CODEWithAttributes"
+						type="tns:COM_COUNTRY_DESCRIPTIONWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
-						name="SALES_ORG"
+						name="MATCHING_TYPE"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_ORGWithAttributes"
+						type="tns:COM_COUNTRY_MATCHING_TYPEWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
-						name="DIST_CHANNEL"
+						name="CALENDAR_NAME"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIST_CHANNELWithAttributes"
+						type="tns:COM_COUNTRY_CALENDAR_NAMEWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
-						name="DIVISION"
+						name="BASE_CURRENCY"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIVISIONWithAttributes"
+						type="tns:COM_COUNTRY_BASE_CURRENCYWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
-						name="SALES_DISTRICT"
+						name="IS_ACTIVE"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_DISTRICTWithAttributes"
-						minOccurs="0"
-						maxOccurs="1"
-					/>
-					<xsd:element
-						name="MATERIAL_CODE"
-						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_CODEWithAttributes"
-						minOccurs="0"
-						maxOccurs="1"
-					/>
-					<xsd:element
-						name="PRICE"
-						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_PRICEWithAttributes"
+						type="tns:COM_COUNTRY_IS_ACTIVEWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
 						name="CREATED_BY"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_BYWithAttributes"
+						type="tns:COM_COUNTRY_CREATED_BYWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
 						name="CREATED_ON"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_ONWithAttributes"
+						type="tns:COM_COUNTRY_CREATED_ONWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
 						name="MODIFIED_BY"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_BYWithAttributes"
+						type="tns:COM_COUNTRY_MODIFIED_BYWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
 					<xsd:element
 						name="MODIFIED_ON"
 						nillable="true"
-						type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_ONWithAttributes"
+						type="tns:COM_COUNTRY_MODIFIED_ONWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="SAP_CONTAINER"
+						nillable="true"
+						type="tns:COM_COUNTRY_SAP_CONTAINERWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_SILENT_POSTING"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_SILENT_POSTINGWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_TOUCHLESS_POSTING"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_TOUCHLESS_POSTINGWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="FISCAL_YEAR_CALC"
+						nillable="true"
+						type="tns:COM_COUNTRY_FISCAL_YEAR_CALCWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="FINANCIAL_YEAR_CALC"
+						nillable="true"
+						type="tns:COM_COUNTRY_FINANCIAL_YEAR_CALCWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="EXTRACTION_PATH"
+						nillable="true"
+						type="tns:COM_COUNTRY_EXTRACTION_PATHWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_SUPERWISER_REQ"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_SUPERWISER_REQWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="QC_DISABLED"
+						nillable="true"
+						type="tns:COM_COUNTRY_QC_DISABLEDWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="COUNTRY_GROUP_CODE"
+						nillable="true"
+						type="tns:COM_COUNTRY_COUNTRY_GROUP_CODEWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_AUDIT_PROCESS"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_AUDIT_PROCESSWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_EMAIL_WHITELIST"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_EMAIL_WHITELISTWithAttributes"
 						minOccurs="0"
 						maxOccurs="1"
 					/>
@@ -203,10 +238,10 @@ export const wsdl = `<?xml version="1.0"?>
 				/>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTERModelWithOldAttributes">
+				name="COM_COUNTRYModelWithOldAttributes">
 				<xsd:complexContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTERModel">
+						base="tns:COM_COUNTRYModel">
 						<xsd:attributeGroup
 							ref="tns:oldObjectAttributes"
 						/>
@@ -214,10 +249,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:complexContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTERModelWithNewAttributes">
+				name="COM_COUNTRYModelWithNewAttributes">
 				<xsd:complexContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTERModel">
+						base="tns:COM_COUNTRYModel">
 						<xsd:attributeGroup
 							ref="tns:newObjectAttributes"
 						/>
@@ -225,10 +260,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:complexContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_PRICE_IDWithAttributes">
+				name="COM_COUNTRY_CODEWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_PRICE_IDType">
+						base="tns:COM_COUNTRY_CODEType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -236,10 +271,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_ENTITY_CODEWithAttributes">
+				name="COM_COUNTRY_DESCRIPTIONWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_ENTITY_CODEType">
+						base="tns:COM_COUNTRY_DESCRIPTIONType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -247,10 +282,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_ORGWithAttributes">
+				name="COM_COUNTRY_MATCHING_TYPEWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_ORGType">
+						base="tns:COM_COUNTRY_MATCHING_TYPEType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -258,10 +293,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIST_CHANNELWithAttributes">
+				name="COM_COUNTRY_CALENDAR_NAMEWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIST_CHANNELType">
+						base="tns:COM_COUNTRY_CALENDAR_NAMEType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -269,10 +304,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIVISIONWithAttributes">
+				name="COM_COUNTRY_BASE_CURRENCYWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIVISIONType">
+						base="tns:COM_COUNTRY_BASE_CURRENCYType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -280,10 +315,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_DISTRICTWithAttributes">
+				name="COM_COUNTRY_IS_ACTIVEWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_DISTRICTType">
+						base="tns:COM_COUNTRY_IS_ACTIVEType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -291,10 +326,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_CODEWithAttributes">
+				name="COM_COUNTRY_CREATED_BYWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_CODEType">
+						base="tns:COM_COUNTRY_CREATED_BYType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -302,10 +337,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_PRICEWithAttributes">
+				name="COM_COUNTRY_CREATED_ONWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_PRICEType">
+						base="tns:COM_COUNTRY_CREATED_ONType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -313,10 +348,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_BYWithAttributes">
+				name="COM_COUNTRY_MODIFIED_BYWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_BYType">
+						base="tns:COM_COUNTRY_MODIFIED_BYType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -324,10 +359,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_ONWithAttributes">
+				name="COM_COUNTRY_MODIFIED_ONWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_ONType">
+						base="tns:COM_COUNTRY_MODIFIED_ONType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -335,10 +370,10 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_BYWithAttributes">
+				name="COM_COUNTRY_SAP_CONTAINERWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_BYType">
+						base="tns:COM_COUNTRY_SAP_CONTAINERType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -346,10 +381,87 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:complexType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_ONWithAttributes">
+				name="COM_COUNTRY_IS_SILENT_POSTINGWithAttributes">
 				<xsd:simpleContent>
 					<xsd:extension
-						base="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_ONType">
+						base="tns:COM_COUNTRY_IS_SILENT_POSTINGType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_TOUCHLESS_POSTINGWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_TOUCHLESS_POSTINGType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_FISCAL_YEAR_CALCWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_FISCAL_YEAR_CALCType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_FINANCIAL_YEAR_CALCWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_FINANCIAL_YEAR_CALCType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_EXTRACTION_PATHWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_EXTRACTION_PATHType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_SUPERWISER_REQWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_SUPERWISER_REQType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_QC_DISABLEDWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_QC_DISABLEDType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_COUNTRY_GROUP_CODEWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_COUNTRY_GROUP_CODEType">
 						<xsd:attributeGroup
 							ref="tns:elementAttributes"
 						/>
@@ -357,120 +469,220 @@ export const wsdl = `<?xml version="1.0"?>
 				</xsd:simpleContent>
 			</xsd:complexType>
 			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_PRICE_IDType">
+				name="COM_COUNTRY_CODEType">
 				<xsd:restriction
 					base="xsd:string">
-					<xsd:pattern
-						value="\{?[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}?"
-					/>
-					<xsd:pattern
-						value="\{?[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}?"
-					/>
 					<xsd:maxLength
-						value="36"
+						value="6"
 					/>
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_ENTITY_CODEType">
+				name="COM_COUNTRY_DESCRIPTIONType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="60"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_MATCHING_TYPEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="5"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CALENDAR_NAMEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="128"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_BASE_CURRENCYType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="6"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_ACTIVEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CREATED_BYType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="60"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CREATED_ONType">
+				<xsd:restriction
+					base="xsd:dateTime"
+				/>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_MODIFIED_BYType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="60"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_MODIFIED_ONType">
+				<xsd:restriction
+					base="xsd:dateTime"
+				/>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_SAP_CONTAINERType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="128"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_SILENT_POSTINGType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_TOUCHLESS_POSTINGType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_FISCAL_YEAR_CALCType">
+				<xsd:restriction
+					base="xsd:int">
+					<xsd:totalDigits
+						value="10"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_FINANCIAL_YEAR_CALCType">
+				<xsd:restriction
+					base="xsd:int">
+					<xsd:totalDigits
+						value="10"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_EXTRACTION_PATHType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="500"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_SUPERWISER_REQType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_QC_DISABLEDType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_COUNTRY_GROUP_CODEType">
 				<xsd:restriction
 					base="xsd:string">
 					<xsd:maxLength
 						value="10"
 					/>
 				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_ORGType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="4"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIST_CHANNELType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="2"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_DIVISIONType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="2"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_SALES_DISTRICTType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="10"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MATERIAL_CODEType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="20"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_PRICEType">
-				<xsd:restriction
-					base="xsd:double"
-				/>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_BYType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="50"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_CREATED_ONType">
-				<xsd:restriction
-					base="xsd:date"
-				/>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_BYType">
-				<xsd:restriction
-					base="xsd:string">
-					<xsd:maxLength
-						value="50"
-					/>
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER_MODIFIED_ONType">
-				<xsd:restriction
-					base="xsd:date"
-				/>
 			</xsd:simpleType>
 			<xsd:element
-				name="SCM_SO_SALES_DISTRICT_PRICE_MASTER"
-				type="tns:SCM_SO_SALES_DISTRICT_PRICE_MASTERModel"
+				name="COM_COUNTRY"
+				type="tns:COM_COUNTRYModel"
 			/>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_AUDIT_PROCESSType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_AUDIT_PROCESSWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_AUDIT_PROCESSType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_EMAIL_WHITELISTType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_EMAIL_WHITELISTWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_EMAIL_WHITELISTType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
 		</xsd:schema>
 		<xsd:schema
 			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 			attributeFormDefault="unqualified"
 			elementFormDefault="qualified"
-			targetNamespace="http://schemas.cordys.com/salesorderdatabasemetadata">
+			targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
 			<xsd:import
 				namespace="http://schemas.cordys.com/General/ClientAttributes/"
 			/>
@@ -867,51 +1079,51 @@ export const wsdl = `<?xml version="1.0"?>
 		</xsd:schema>
 	</wsdl:types>
 	<wsdl:message
-		name="GetScmSoSalesDistrictPriceMasterObjectsInput">
+		name="GetComCountryObjectInput">
 		<wsdl:part
 			name="body"
-			element="tns:GetScmSoSalesDistrictPriceMasterObjects"
+			element="tns:GetComCountryObject"
 		/>
 	</wsdl:message>
 	<wsdl:message
-		name="GetScmSoSalesDistrictPriceMasterObjectsOutput">
+		name="GetComCountryObjectOutput">
 		<wsdl:part
 			name="body"
-			element="tns:GetScmSoSalesDistrictPriceMasterObjectsResponse"
+			element="tns:GetComCountryObjectResponse"
 		/>
 	</wsdl:message>
 	<wsdl:message
-		name="GetScmSoSalesDistrictPriceMasterObjectsFaultDetail">
+		name="GetComCountryObjectFaultDetail">
 		<wsdl:part
 			name="FaultDetail"
 			element="cordys:FaultDetails"
 		/>
 	</wsdl:message>
 	<wsdl:portType
-		name="salesorderWsappWebServiceInterface">
+		name="MigrationCurrent_WSI">
 		<wsdl:operation
-			name="GetScmSoSalesDistrictPriceMasterObjects">
+			name="GetComCountryObject">
 			<wsdl:input
-				message="tns:GetScmSoSalesDistrictPriceMasterObjectsInput"
+				message="tns:GetComCountryObjectInput"
 			/>
 			<wsdl:output
-				message="tns:GetScmSoSalesDistrictPriceMasterObjectsOutput"
+				message="tns:GetComCountryObjectOutput"
 			/>
 			<wsdl:fault
 				name="FaultDetail"
-				message="tns:GetScmSoSalesDistrictPriceMasterObjectsFaultDetail"
+				message="tns:GetComCountryObjectFaultDetail"
 			/>
 		</wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding
-		name="salesorderWsappWebServiceInterface"
-		type="tns:salesorderWsappWebServiceInterface">
+		name="MigrationCurrent_WSI"
+		type="tns:MigrationCurrent_WSI">
 		<soap:binding
 			style="document"
 			transport="http://schemas.xmlsoap.org/soap/http"
 		/>
 		<wsdl:operation
-			name="GetScmSoSalesDistrictPriceMasterObjects">
+			name="GetComCountryObject">
 			<soap:operation
 				soapAction=""
 				style="document"
@@ -936,17 +1148,1194 @@ export const wsdl = `<?xml version="1.0"?>
 		</wsdl:operation>
 	</wsdl:binding>
 	<wsdl:service
-		name="salesorderWsappWebServiceInterfaceService">
+		name="MigrationCurrent_WSIService">
 		<wsdl:port
-			name="salesorderWsappWebServiceInterface"
-			binding="tns:salesorderWsappWebServiceInterface">
+			name="MigrationCurrent_WSI"
+			binding="tns:MigrationCurrent_WSI">
 			<soap:address
 				location="http://10.96.75.123:81/home/PTP/com.eibus.web.soap.Gateway.wcp?organization=o=PTP,cn=cordys,cn=defaultInst,o=lab.opentext.com"
 			/>
 		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
+`;
+
+export const getObjects = `
+<?xml version="1.0"?>
+<wsdl:definitions
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://schemas.cordys.com/MigrationCurrentWsApps"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:cordys="http://schemas.cordys.com/General/1.0/"
+	name="MigrationCurrent_WS"
+	targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
+	<wsdl:types>
+		<xsd:schema
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			xmlns:wcp="http://schemas.cordys.com/"
+			xmlns=""
+			attributeFormDefault="unqualified"
+			elementFormDefault="qualified"
+			targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
+			<xsd:import
+				namespace="http://schemas.cordys.com/General/1.0/"
+			/>
+			<xsd:element
+				name="GetComCountryObjects">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element
+							maxOccurs="1"
+							minOccurs="0"
+							ref="tns:cursor"
+						/>
+						<xsd:element
+							name="fromCODE">
+							<xsd:simpleType>
+								<xsd:restriction
+									base="xsd:string">
+									<xsd:maxLength
+										value="6"
+									/>
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:element>
+						<xsd:element
+							name="toCODE">
+							<xsd:simpleType>
+								<xsd:restriction
+									base="xsd:string">
+									<xsd:maxLength
+										value="6"
+									/>
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attributeGroup
+						ref="tns:GetMethodAttributes"
+					/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element
+				name="GetComCountryObjectsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element
+							maxOccurs="1"
+							minOccurs="0"
+							ref="tns:cursor"
+						/>
+						<xsd:element
+							maxOccurs="unbounded"
+							minOccurs="0"
+							name="tuple">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element
+										name="old">
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element
+													ref="tns:COM_COUNTRY"
+												/>
+											</xsd:sequence>
+										</xsd:complexType>
+									</xsd:element>
+									<xsd:element
+										maxOccurs="unbounded"
+										minOccurs="0"
+										ref="tns:values"
+									/>
+								</xsd:sequence>
+								<xsd:attributeGroup
+									ref="tns:tupleAttributes"
+								/>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attributeGroup
+						ref="tns:GetMethodAttributes"
+					/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+		<xsd:schema
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			xmlns:wcp="http://schemas.cordys.com/"
+			xmlns=""
+			elementFormDefault="qualified"
+			targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
+			<xsd:complexType
+				name="COM_COUNTRYModel">
+				<xsd:sequence>
+					<xsd:element
+						name="CODE"
+						nillable="true"
+						type="tns:COM_COUNTRY_CODEWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="DESCRIPTION"
+						nillable="true"
+						type="tns:COM_COUNTRY_DESCRIPTIONWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="MATCHING_TYPE"
+						nillable="true"
+						type="tns:COM_COUNTRY_MATCHING_TYPEWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="CALENDAR_NAME"
+						nillable="true"
+						type="tns:COM_COUNTRY_CALENDAR_NAMEWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="BASE_CURRENCY"
+						nillable="true"
+						type="tns:COM_COUNTRY_BASE_CURRENCYWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_ACTIVE"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_ACTIVEWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="CREATED_BY"
+						nillable="true"
+						type="tns:COM_COUNTRY_CREATED_BYWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="CREATED_ON"
+						nillable="true"
+						type="tns:COM_COUNTRY_CREATED_ONWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="MODIFIED_BY"
+						nillable="true"
+						type="tns:COM_COUNTRY_MODIFIED_BYWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="MODIFIED_ON"
+						nillable="true"
+						type="tns:COM_COUNTRY_MODIFIED_ONWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="SAP_CONTAINER"
+						nillable="true"
+						type="tns:COM_COUNTRY_SAP_CONTAINERWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_SILENT_POSTING"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_SILENT_POSTINGWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_TOUCHLESS_POSTING"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_TOUCHLESS_POSTINGWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="FISCAL_YEAR_CALC"
+						nillable="true"
+						type="tns:COM_COUNTRY_FISCAL_YEAR_CALCWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="FINANCIAL_YEAR_CALC"
+						nillable="true"
+						type="tns:COM_COUNTRY_FINANCIAL_YEAR_CALCWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="EXTRACTION_PATH"
+						nillable="true"
+						type="tns:COM_COUNTRY_EXTRACTION_PATHWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_SUPERWISER_REQ"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_SUPERWISER_REQWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="QC_DISABLED"
+						nillable="true"
+						type="tns:COM_COUNTRY_QC_DISABLEDWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="COUNTRY_GROUP_CODE"
+						nillable="true"
+						type="tns:COM_COUNTRY_COUNTRY_GROUP_CODEWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_AUDIT_PROCESS"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_AUDIT_PROCESSWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+					<xsd:element
+						name="IS_EMAIL_WHITELIST"
+						nillable="true"
+						type="tns:COM_COUNTRY_IS_EMAIL_WHITELISTWithAttributes"
+						minOccurs="0"
+						maxOccurs="1"
+					/>
+				</xsd:sequence>
+				<xsd:anyAttribute
+					processContents="lax"
+				/>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRYModelWithOldAttributes">
+				<xsd:complexContent>
+					<xsd:extension
+						base="tns:COM_COUNTRYModel">
+						<xsd:attributeGroup
+							ref="tns:oldObjectAttributes"
+						/>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRYModelWithNewAttributes">
+				<xsd:complexContent>
+					<xsd:extension
+						base="tns:COM_COUNTRYModel">
+						<xsd:attributeGroup
+							ref="tns:newObjectAttributes"
+						/>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_CODEWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_CODEType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_DESCRIPTIONWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_DESCRIPTIONType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_MATCHING_TYPEWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_MATCHING_TYPEType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_CALENDAR_NAMEWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_CALENDAR_NAMEType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_BASE_CURRENCYWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_BASE_CURRENCYType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_ACTIVEWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_ACTIVEType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_CREATED_BYWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_CREATED_BYType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_CREATED_ONWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_CREATED_ONType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_MODIFIED_BYWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_MODIFIED_BYType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_MODIFIED_ONWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_MODIFIED_ONType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_SAP_CONTAINERWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_SAP_CONTAINERType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_SILENT_POSTINGWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_SILENT_POSTINGType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_TOUCHLESS_POSTINGWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_TOUCHLESS_POSTINGType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_FISCAL_YEAR_CALCWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_FISCAL_YEAR_CALCType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_FINANCIAL_YEAR_CALCWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_FINANCIAL_YEAR_CALCType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_EXTRACTION_PATHWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_EXTRACTION_PATHType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_SUPERWISER_REQWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_SUPERWISER_REQType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_QC_DISABLEDWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_QC_DISABLEDType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:complexType
+				name="COM_COUNTRY_COUNTRY_GROUP_CODEWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_COUNTRY_GROUP_CODEType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CODEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="6"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_DESCRIPTIONType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="60"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_MATCHING_TYPEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="5"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CALENDAR_NAMEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="128"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_BASE_CURRENCYType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="6"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_ACTIVEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CREATED_BYType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="60"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_CREATED_ONType">
+				<xsd:restriction
+					base="xsd:dateTime"
+				/>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_MODIFIED_BYType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="60"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_MODIFIED_ONType">
+				<xsd:restriction
+					base="xsd:dateTime"
+				/>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_SAP_CONTAINERType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="128"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_SILENT_POSTINGType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_TOUCHLESS_POSTINGType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_FISCAL_YEAR_CALCType">
+				<xsd:restriction
+					base="xsd:int">
+					<xsd:totalDigits
+						value="10"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_FINANCIAL_YEAR_CALCType">
+				<xsd:restriction
+					base="xsd:int">
+					<xsd:totalDigits
+						value="10"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_EXTRACTION_PATHType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="500"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_SUPERWISER_REQType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_QC_DISABLEDType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType
+				name="COM_COUNTRY_COUNTRY_GROUP_CODEType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="10"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:element
+				name="COM_COUNTRY"
+				type="tns:COM_COUNTRYModel"
+			/>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_AUDIT_PROCESSType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_AUDIT_PROCESSWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_AUDIT_PROCESSType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:simpleType
+				name="COM_COUNTRY_IS_EMAIL_WHITELISTType">
+				<xsd:restriction
+					base="xsd:string">
+					<xsd:maxLength
+						value="1"
+					/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:complexType
+				name="COM_COUNTRY_IS_EMAIL_WHITELISTWithAttributes">
+				<xsd:simpleContent>
+					<xsd:extension
+						base="tns:COM_COUNTRY_IS_EMAIL_WHITELISTType">
+						<xsd:attributeGroup
+							ref="tns:elementAttributes"
+						/>
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+		</xsd:schema>
+		<xsd:schema
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			attributeFormDefault="unqualified"
+			elementFormDefault="qualified"
+			targetNamespace="http://schemas.cordys.com/MigrationCurrentWsApps">
+			<xsd:import
+				namespace="http://schemas.cordys.com/General/ClientAttributes/"
+			/>
+			<xsd:attributeGroup
+				name="UpdateMethodAttributes">
+				<xsd:attribute
+					default="yes"
+					name="reply">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="yes"
+							/>
+							<xsd:enumeration
+								value="no"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default="no"
+					name="commandUpdate">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="yes"
+							/>
+							<xsd:enumeration
+								value="no"
+							/>
+							<xsd:enumeration
+								value="true"
+							/>
+							<xsd:enumeration
+								value="false"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default="no"
+					name="preserveSpace">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="yes"
+							/>
+							<xsd:enumeration
+								value="no"
+							/>
+							<xsd:enumeration
+								value="true"
+							/>
+							<xsd:enumeration
+								value="false"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default="no"
+					name="batchUpdate">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="yes"
+							/>
+							<xsd:enumeration
+								value="no"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:anyAttribute
+					namespace="http://schemas.cordys.com/General/ClientAttributes/"
+					processContents="strict"
+				/>
+			</xsd:attributeGroup>
+			<xsd:attributeGroup
+				name="tupleAttributes">
+				<xsd:anyAttribute
+					namespace="http://schemas.cordys.com/General/ClientAttributes/"
+					processContents="strict"
+				/>
+			</xsd:attributeGroup>
+			<xsd:attribute
+				name="seqId"
+				type="xsd:int"
+			/>
+			<xsd:attributeGroup
+				name="oldObjectAttributes">
+				<xsd:attribute
+					default="0"
+					name="qConstraint">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="0"
+							/>
+							<xsd:enumeration
+								value="1"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:attributeGroup>
+			<xsd:attributeGroup
+				name="nestedObjectAttributes">
+				<xsd:anyAttribute
+					namespace="##targetNamespace"
+					processContents="strict"
+				/>
+			</xsd:attributeGroup>
+			<xsd:attributeGroup
+				name="newObjectAttributes">
+				<xsd:attribute
+					default="0"
+					name="qAccess">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="0"
+							/>
+							<xsd:enumeration
+								value="1"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default="0"
+					name="qConstraint">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="0"
+							/>
+							<xsd:enumeration
+								value="1"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default="0"
+					name="qInit">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="0"
+							/>
+							<xsd:enumeration
+								value="1"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default=""
+					name="qValues"
+					type="xsd:string"
+					use="optional"
+				/>
+			</xsd:attributeGroup>
+			<xsd:attributeGroup
+				name="GetMethodAttributes">
+				<xsd:attribute
+					default="no"
+					name="preserveSpace">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="yes"
+							/>
+							<xsd:enumeration
+								value="no"
+							/>
+							<xsd:enumeration
+								value="true"
+							/>
+							<xsd:enumeration
+								value="false"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default="0"
+					name="qAccess">
+					<xsd:simpleType>
+						<xsd:restriction
+							base="xsd:string">
+							<xsd:enumeration
+								value="0"
+							/>
+							<xsd:enumeration
+								value="1"
+							/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+				<xsd:attribute
+					default=""
+					name="qValues"
+					type="xsd:string"
+					use="optional"
+				/>
+				<xsd:anyAttribute
+					namespace="http://schemas.cordys.com/General/ClientAttributes/"
+					processContents="strict"
+				/>
+			</xsd:attributeGroup>
+			<xsd:attributeGroup
+				name="elementAttributes">
+				<xsd:anyAttribute
+					namespace="##any"
+					processContents="skip"
+				/>
+			</xsd:attributeGroup>
+			<xsd:element
+				name="values">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element
+							maxOccurs="unbounded"
+							minOccurs="1"
+							name="item">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element
+										maxOccurs="1"
+										minOccurs="1"
+										name="label"
+										type="xsd:string"
+									/>
+									<xsd:element
+										maxOccurs="1"
+										minOccurs="1"
+										name="value"
+										type="xsd:string"
+									/>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attribute
+						name="valuesID"
+						type="xsd:string"
+					/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element
+				name="cursor">
+				<xsd:complexType>
+					<xsd:attribute
+						default="0"
+						name="id"
+						type="xsd:string"
+					/>
+					<xsd:attribute
+						default="0"
+						name="position"
+						type="xsd:integer"
+					/>
+					<xsd:attribute
+						default="5"
+						name="numRows"
+						type="xsd:integer"
+					/>
+					<xsd:attribute
+						default="99999"
+						name="maxRows"
+						type="xsd:integer"
+					/>
+					<xsd:attribute
+						default="false"
+						name="sameConnection"
+						type="xsd:boolean"
+					/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+		<xsd:schema
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://schemas.cordys.com/General/1.0/"
+			elementFormDefault="qualified">
+			<xsd:element
+				name="FaultDetails">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element
+							ref="cordys:LocalizableMessage"
+						/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element
+				name="FaultRelatedException"
+				type="xsd:string">
+                </xsd:element>
+		</xsd:schema>
+		<xsd:schema
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://schemas.cordys.com/General/1.0/"
+			elementFormDefault="qualified">
+			<xsd:element
+				name="LocalizableMessage">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element
+							minOccurs="1"
+							maxOccurs="1"
+							name="MessageCode"
+							type="xsd:string"
+						/>
+						<xsd:element
+							minOccurs="0"
+							maxOccurs="unbounded"
+							name="Insertion"
+							type="cordys:NestedMessage"
+						/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:complexType
+				name="NestedMessage"
+				mixed="true">
+				<xsd:sequence
+					minOccurs="0">
+					<xsd:element
+						name="LocalizableMessage">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element
+									minOccurs="1"
+									maxOccurs="1"
+									name="MessageCode"
+									type="xsd:string"
+								/>
+								<xsd:element
+									minOccurs="0"
+									maxOccurs="unbounded"
+									name="Insertion"
+									type="cordys:NestedMessage"
+								/>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+		<xsd:schema
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://schemas.cordys.com/General/ClientAttributes/"
+			elementFormDefault="qualified"
+			attributeFormDefault="unqualified">
+			<xsd:attribute
+				name="sync_id"
+				type="xsd:string"
+			/>
+			<xsd:attribute
+				name="current_model"
+				type="xsd:string"
+			/>
+			<xsd:attribute
+				name="reorder"
+				type="xsd:boolean"
+			/>
+			<xsd:attribute
+				name="related"
+				type="xsd:string"
+			/>
+			<xsd:attribute
+				name="selected"
+				type="xsd:boolean"
+			/>
+			<xsd:attribute
+				name="activebusinessobject"
+				type="xsd:boolean"
+			/>
+			<xsd:attribute
+				name="delete"
+				type="xsd:boolean"
+			/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message
+		name="GetComCountryObjectsInput">
+		<wsdl:part
+			name="body"
+			element="tns:GetComCountryObjects"
+		/>
+	</wsdl:message>
+	<wsdl:message
+		name="GetComCountryObjectsOutput">
+		<wsdl:part
+			name="body"
+			element="tns:GetComCountryObjectsResponse"
+		/>
+	</wsdl:message>
+	<wsdl:message
+		name="GetComCountryObjectsFaultDetail">
+		<wsdl:part
+			name="FaultDetail"
+			element="cordys:FaultDetails"
+		/>
+	</wsdl:message>
+	<wsdl:portType
+		name="MigrationCurrent_WSI">
+		<wsdl:operation
+			name="GetComCountryObjects">
+			<wsdl:input
+				message="tns:GetComCountryObjectsInput"
+			/>
+			<wsdl:output
+				message="tns:GetComCountryObjectsOutput"
+			/>
+			<wsdl:fault
+				name="FaultDetail"
+				message="tns:GetComCountryObjectsFaultDetail"
+			/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding
+		name="MigrationCurrent_WSI"
+		type="tns:MigrationCurrent_WSI">
+		<soap:binding
+			style="document"
+			transport="http://schemas.xmlsoap.org/soap/http"
+		/>
+		<wsdl:operation
+			name="GetComCountryObjects">
+			<soap:operation
+				soapAction=""
+				style="document"
+			/>
+			<wsdl:input>
+				<soap:body
+					use="literal"
+				/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+				/>
+			</wsdl:output>
+			<wsdl:fault
+				name="FaultDetail">
+				<soap:fault
+					name="FaultDetail"
+					use="literal"
+				/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service
+		name="MigrationCurrent_WSIService">
 		<wsdl:port
-			name="salesorderWsappWebServiceInterfacePort"
-			binding="tns:salesorderWsappWebServiceInterface">
+			name="MigrationCurrent_WSI"
+			binding="tns:MigrationCurrent_WSI">
 			<soap:address
 				location="http://10.96.75.123:81/home/PTP/com.eibus.web.soap.Gateway.wcp?organization=o=PTP,cn=cordys,cn=defaultInst,o=lab.opentext.com"
 			/>
