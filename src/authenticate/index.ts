@@ -37,7 +37,9 @@ export function authentication(options: OTDSAuthSchema): Rule {
     options.sourceRoot = `${project.sourceRoot}`;
 
     const movePath = normalize(options.sourceRoot + '/');
-    let t = url('./files/src');
+    let t = url('./files/oob/src');
+    if (options.auth_type == "CUSTOM")
+      t = url('./files/custom/src');
     setConfig(tree, options.sourceRoot, 'AUTH_TYPE', options.auth_type, true);
     if (options.auth_type == 'OTDS' && options.otds_url)
       setConfig(tree, options.sourceRoot, 'OTDS_URL', options.otds_url, true);

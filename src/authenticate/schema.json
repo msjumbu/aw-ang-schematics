@@ -10,14 +10,16 @@
         "default": "OTDS",
         "enum": [
           "OTDS",
-          "AW"
+          "AW",
+          "CUSTOM"
         ],
         "x-prompt": {
           "message": "Which authentication would you like to use?",
           "type": "list",
           "items": [
             { "value": "OTDS",  "label": "OTDS" },
-            { "value": "AW", "label": "AppWorks" }
+            { "value": "AW", "label": "AppWorks" },
+            { "value": "CUSTOM", "label": "Custom" }
           ]
         }
       },

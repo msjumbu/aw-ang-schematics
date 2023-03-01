@@ -43,7 +43,8 @@
         "description": "Authentication Type",
         "enum": [
           "OTDS",
-          "AW"
+          "AW",
+          "CUSTOM"
         ]
       },
       "otds_url": {
