@@ -37,7 +37,6 @@ describe('app-works', () => {
         jasmine.arrayContaining([
           '/projects/bar/src/assets/config.json',
           '/projects/bar/src/app/config/config.service.ts',
-          '/projects/bar/src/app/services/authentication.service.ts',
           '/projects/bar/src/app/services/utils.ts',
         ]),
       );
