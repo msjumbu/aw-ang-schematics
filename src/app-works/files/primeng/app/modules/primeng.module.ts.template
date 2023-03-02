@@ -32,6 +32,7 @@ const AllPrimeNGModules=[
   TableModule,
   FieldsetModule,
   PanelModule,
+  CalendarModule,
 ];
 
 @NgModule({

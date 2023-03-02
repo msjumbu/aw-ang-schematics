@@ -49,6 +49,9 @@
                 </div><% if (i % 2 !== 0 || i+1 == outputs.length) { %>
             </div><% } %><% } %>
         </mat-card-content>
+        <% if (tableName) { %><mat-card-actions>
+            <button (click)="saveData(outputForm.getRawValue())" mat-flat-button color="primary">Update</button>
+        </mat-card-actions><% } %>
     </mat-card>
 </form><% } %><% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %>
 
