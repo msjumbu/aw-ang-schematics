@@ -61,7 +61,7 @@ describe('service', () => {
       expect(fileContent).toContain("import { ConfigService } from '../../config/config.service';");
       expect(fileContent).toContain("import { AuthenticationService, AuthToken } from '../../services/auth/authentication.service';");
       expect(fileContent).toContain("import { Utils } from '../../services/utils';");
-      expect(fileContent).toContain("import { IGetScmSoSalesDistrictPriceMasterObjects, IGetScmSoSalesDistrictPriceMasterObjectsResponse, metadata } from './get-scm-so-sales-district-price-master-objects.types';");
+      expect(fileContent).toContain("import { IGetScmSoSalesDistrictPriceMasterObjects, IGetScmSoSalesDistrictPriceMasterObjectsResponse, metadata, ISCM_SO_SALES_DISTRICT_PRICE_MASTER } from './get-scm-so-sales-district-price-master-objects.types';");
     });
 
   });

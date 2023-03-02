@@ -30,7 +30,7 @@ export class <%= classify(name) %><%= classify(type) %> {
   }
 
   getData(input: InputMsg): void {
-    this.awService.callService(input).subscribe({
+    this.awService.get(input).subscribe({
       next: (g:OutputMsg) => {
         <% if(createGrid) { %>this.records = [];
         if (g.tuple) {
@@ -51,4 +51,11 @@ export class <%= classify(name) %><%= classify(type) %> {
       }
     });
   }
+
+  <% if (tableName) { %>saveData(data: I+<%= tableName %>) {
+    if (!this.record) throw new Error("Old not found");
+    
+    this.awService.update(this.record, data);
+  }
+  <% } %>
 }

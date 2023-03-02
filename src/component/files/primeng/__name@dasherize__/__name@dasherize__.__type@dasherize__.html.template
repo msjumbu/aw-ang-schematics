@@ -21,7 +21,8 @@
             pInputText 
             class="w-full mb-3"  
             placeholder="" 
-            formControlName="<%= element.name %>"/><% } %><% if (element.eType && element.eType.includes('date')) { %><p-calendar formControlName="<%= element.name %>"/><% } %><% } %>
+            formControlName="<%= element.name %>"/><% } %><% if (element.eType && element.eType.includes('date')) { %><p-calendar inputId="<%= element.name %>" formControlName="<%= element.name %>" [showTime]=true/><% } %><% } %>
+            <% if (tableName) { %><button pButton (click)="saveData(outputForm.getRawValue())" label="Update" class="w-full"></button><% } %>
     </form>
 </p-panel><% } %>
 <% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %><p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">

@@ -5,7 +5,7 @@ import { AuthenticationService, AuthToken } from '<%= srPath %>/auth/authenticat
 import { ConfigService } from '<%= crPath %>/config.service';
 import { Utils } from '<%= srPath %>/utils';
 import { Subject } from 'rxjs';
-import { <%= inMsg %>, <%= outMsg %>, metadata } from './<%= typesFile %>';
+import { <%= inMsg %>, <%= outMsg %>, metadata<% if (tableName) { %>, I<%= tableName %><% } %> } from './<%= typesFile %>';
 
 @Injectable({
     providedIn: "root"
@@ -22,7 +22,7 @@ export class <%= classify(name) %>Service {
 
     constructor(private http: HttpClient, private authService: AuthenticationService, private configService: ConfigService) { }
 
-    callService(param: <%= inMsg %>): Subject<<%= outMsg %>> {
+    get(param: <%= inMsg %>): Subject<<%= outMsg %>> {
         let o: Subject<<%= outMsg %>> = new Subject();
         if (!this.authService.auth) {
             throw new Error("User not logged in");
@@ -55,4 +55,51 @@ export class <%= classify(name) %>Service {
         }));
         return o;
     }
+    <% if (tableName) { %>update(_old: I<%= tableName %>, _new: I<%= tableName %>): Subject<any> {
+        let o: Subject<any> = new Subject();
+        if (!this.authService.auth) {
+            throw new Error("User not logged in");
+        }
+        let oldData = JSON.parse(JSON.stringify(_old));
+        let newData = JSON.parse(JSON.stringify(_new));
+        let req: any = {
+            "SOAP:Envelope": {
+                "meta": {
+                    "xmlns:SOAP": "http://schemas.xmlsoap.org/soap/envelope/"
+                },
+                "SOAP:Body": {
+                    "Update": {
+                        "meta": {
+                            "xmlns": "<%= webServiceNS %>"
+                        },
+                        "tuple": {
+                            "old": {
+                                "<%= tableName %>": {
+                                    ...oldData
+                                }
+                            },
+                            "new": {
+                                "<%= tableName %>": {
+                                    ...newData
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        let builder = new Builder({ attrkey: "meta" });
+        let xml = builder.buildObject(req);
+        let endpoint = this.configService.config.GATEWAY_URL + '?organization=' + this.configService.config.ORG_DN;
+        this.http.post(endpoint, xml, { responseType: "text", headers: { "SAMLart": this.authService.auth.token } }).subscribe((data => {
+            this.xmlParser.parseString(data, (err, result) => {
+                let g: any = result["SOAP:Envelope"]?.["SOAP:Body"]?.["UpdateResponse"];
+                o.next(g);
+                o.complete();
+            });
+        }));
+        return o;
+    }<% } %>
+
 }

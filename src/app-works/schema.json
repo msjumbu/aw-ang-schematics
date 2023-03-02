@@ -7,12 +7,14 @@
       "gateway_url": {
         "type": "string",
         "description": "AppWorks Gateway URL (ex: http://<< host/ip >>:<< port >>/home/<< organization >>/com.eibus.web.soap.Gateway.wcp)",
-        "x-prompt": "Please enter your AppWorks Gateway URL"
+        "x-prompt": "Please enter your AppWorks Gateway URL",
+        "default": "http://10.96.75.123:81/home/PTP/com.eibus.web.soap.Gateway.wcp"
       },
       "org_dn": {
         "type": "string",
         "description": "Organization DN",
-        "x-prompt": "Please enter your organization DN"
+        "x-prompt": "Please enter your organization DN",
+        "default": "o=PTP,cn=cordys,cn=defaultInst,o=lab.opentext.com"
       },
       "ui_framework": {
         "type": "string",

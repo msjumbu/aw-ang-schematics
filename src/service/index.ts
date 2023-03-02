@@ -7,6 +7,8 @@ import { WsdlService } from './wsdl.service';
 import { IDefinition, IPortType } from './IWSDL';
 import { dasherize } from '@angular-devkit/core/src/utils/strings';
 import { buildDefaultPath, getWorkspace } from "@schematics/angular/utility/workspace";
+import { isTTY } from '../utils/util';
+import * as inquirer from "inquirer";
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -36,7 +38,7 @@ export function service(options: ServiceSchema): Rule {
     }
     let wsdlService: WsdlService = new WsdlService();
     let def: IDefinition = await wsdlService.getWSDL(options.wsdl_url);
-    
+
     let s = [];
     let pts = def.portTypes;
     if (pts.length != 1) {
@@ -64,9 +66,9 @@ function createTypes(def: IDefinition, filePath: string): Rule {
     let inMsg = def.portTypes[0].operation?.[0].input?.name;
     inMsg = def.messages.find(msg => msg.name == inMsg)?.element[0]?.name ?? inMsg;
     if (!inMsg) throw new Error("Why?");
-    
+
     const file = normalize(filePath + '/' + dasherize(inMsg) + '.types.ts');
-    
+
     if (tree.exists(file))
       tree.overwrite(file, res);
     else
@@ -76,11 +78,30 @@ function createTypes(def: IDefinition, filePath: string): Rule {
 }
 
 function createService(def: IDefinition, pt: IPortType, filePath: string, _options: ServiceSchema): Rule {
-  return (_tree: Tree, _context: SchematicContext) => {
+  return async (_tree: Tree, _context: SchematicContext) => {
     let inMsg = pt.operation?.[0].input?.name;
     let outMsg = pt.operation?.[0].output?.name;
     inMsg = def.messages.find(msg => msg.name == inMsg)?.element[0]?.name ?? inMsg;
     outMsg = def.messages.find(msg => msg.name == outMsg)?.element[0]?.name ?? outMsg;
+    let tableName = def.elements.find(msg => msg.name == outMsg)?.element?.find(t => t.name == 'tuple')?.element?.find(o => o.name == 'old')?.element?.[0]?.name;
+    const questions = [
+      {
+        type: 'input',
+        name: 'tableName',
+        message: "Unable to identify the table/object, please enter the table/object used by the service",
+      }];
+    if (isTTY() && !tableName) {
+      const prompt = inquirer.createPromptModule();
+      let t = await prompt(questions);
+      tableName = t['tableName'];
+    }
+    if (!tableName)
+      throw new SchematicsException('Table/Object name is required, cannot continue');
+
+    // console.log(def.elements.find(msg => msg.name == outMsg)?.element?.find(t => t.name == 'tuple')?.element?.find(o => o.name == 'old'));
+    // console.log(def.messages.find(msg => msg.element[0].name == outMsg)?.element[0]?.name);
+
+
     if (!inMsg) throw new SchematicsException('Service name not available.');
     let t = url('./files');
 
@@ -100,7 +121,8 @@ function createService(def: IDefinition, pt: IPortType, filePath: string, _optio
         webServiceName: inMsg,
         webServiceNS: pt.operation?.[0].ns?.ns,
         webServiceResponse: pt.operation?.[0].output?.element[0].name,
-        auth_type: "AW"
+        auth_type: "AW",
+        tableName: tableName
       }),
       move(normalize(filePath as string)),
     ]);

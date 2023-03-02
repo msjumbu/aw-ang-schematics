@@ -4,6 +4,7 @@ import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { setConfig } from '../utils/util';
 import { ConfigSchema as OTDSAuthSchema } from './schema';
 import * as inquirer from "inquirer";
+import { isTTY } from '../utils/util';
 
 export function authentication(options: OTDSAuthSchema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
@@ -53,17 +54,4 @@ export function authentication(options: OTDSAuthSchema): Rule {
   };
 }
 
-function _isTruthy(value: undefined | string): boolean {
-  // Returns true if value is a string that is anything but 0 or false.
-  return value !== undefined && value !== '0' && value.toUpperCase() !== 'FALSE';
-}
 
-function isTTY(): boolean {
-  // If we force TTY, we always return true.
-  const force = process.env['NG_FORCE_TTY'];
-  if (force !== undefined) {
-    return _isTruthy(force);
-  }
-
-  return !!process.stdout.isTTY && !_isTruthy(process.env['CI']);
-}

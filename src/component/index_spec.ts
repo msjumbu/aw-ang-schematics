@@ -145,7 +145,7 @@ describe('getObjects with material', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
-        this.awService.callService(input).subscribe({
+        this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             this.records = [];
             if (g.tuple) {
@@ -297,7 +297,7 @@ describe('getObject with material', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
-        this.awService.callService(input).subscribe({
+        this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             if (g.tuple && g.tuple.old && g.tuple.old.COM_COUNTRY) {
               this.record = g.tuple.old.COM_COUNTRY;
@@ -446,7 +446,7 @@ describe('getObjects with primeng', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
-      this.awService.callService(input).subscribe({
+      this.awService.get(input).subscribe({
         next: (g:OutputMsg) => {
           this.records = [];
           if (g.tuple) {
@@ -598,7 +598,7 @@ describe('getObject with primeng', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
-        this.awService.callService(input).subscribe({
+        this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             if (g.tuple && g.tuple.old && g.tuple.old.COM_COUNTRY) {
               this.record = g.tuple.old.COM_COUNTRY;
@@ -746,7 +746,7 @@ describe('getObjects with clarity', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
-      this.awService.callService(input).subscribe({
+      this.awService.get(input).subscribe({
         next: (g:OutputMsg) => {
           this.records = [];
           if (g.tuple) {
@@ -898,7 +898,7 @@ describe('getObject with clarity', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
-        this.awService.callService(input).subscribe({
+        this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             if (g.tuple && g.tuple.old && g.tuple.old.COM_COUNTRY) {
               this.record = g.tuple.old.COM_COUNTRY;
