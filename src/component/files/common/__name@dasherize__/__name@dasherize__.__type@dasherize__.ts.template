@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { <%= serviceName %> as AWService} from '<%= servicePath %>';
 import { <%= inMsg %> as InputMsg, <%= outMsg %> as OutputMsg<% if(useTuple) { %>, Ituple <% } %>, I<%= tableName %>} from '<%= typesPath %>';
 import { ConfigService } from '<%= crPath %>/config.service';
-
+<% if(createGrid && uiFramework=='material') { %>import {MatTableDataSource} from '@angular/material/table';<% } %>
 @Component({
   selector: '<%= selector %>',
   templateUrl: './<%= dasherize(name) %><%= type ? '.' + dasherize(type): '' %>.html',
@@ -14,8 +14,9 @@ export class <%= classify(name) %><%= classify(type) %> {
       private awService: AWService,
       public config:ConfigService) {  }
     <% if(createGrid && tableName) { %>records: I<%= tableName %>[] = [];<% } %><% if(!createGrid && useTuple) { %>record: I<%= tableName %> | undefined;<% } %>
-    <% if(createGrid) { %>// First 10 columns are only added to the table, please change below as per requirements
-    displayedColumns: string[] = [<% for(let i = 0; (i < outputs.length && i < 10); i++) { let element = outputs[i]; %> '<%= element.name %>',<% } %>]<% } %>
+    <% if(createGrid && uiFramework=='material') { %>// First 10 columns are only added to the table, please change below as per requirements
+    displayedColumns: string[] = [<% for(let i = 0; (i < outputs.length && i < 10); i++) { let element = outputs[i]; %> '<%= element.name %>',<% } %>]
+    dataSource = new MatTableDataSource<I<%= tableName %>>([]); <% } %>
     <% if (inputs && inputs.length && inputs.length > 0) { %>
     inputForm = this.fb.group({    <% for(let element of inputs) { %>
       <%= element.name %>: new FormControl<<% if (element.eType?.includes('string') || !element.eType) { %>string<%}%><% if (element.eType && (element.eType.includes('int') || element.eType.includes('double'))) { %>number<%}%><% if (element.eType && element.eType.includes('date')) { %>Date<%}%>|null>(null,[<% if (element.minOccurs && element.minOccurs > 0) { %>, Validators.required, <% } %>]),<% } %>
@@ -32,7 +33,7 @@ export class <%= classify(name) %><%= classify(type) %> {
   getData(input: InputMsg): void {
     this.awService.get(input).subscribe({
       next: (g:OutputMsg) => {
-        <% if(createGrid) { %>this.records = [];
+        <% if (useTuple) { %><% if(createGrid) { %>this.records = [];
         if (g.tuple) {
           for (let index = 0; index < g.tuple.length; index++) {
             const element = g.tuple[index];
@@ -40,10 +41,11 @@ export class <%= classify(name) %><%= classify(type) %> {
               this.records.push(element.old.<%= tableName %>)
           }
         }
-        <% } %><% if(!createGrid && useTuple) { %>if (g.tuple && g.tuple.old && g.tuple.old.<%= tableName %>) {
+        <% if(uiFramework=='material') { %>this.dataSource = new MatTableDataSource<ICOM_COUNTRY>(this.records); <% } %>
+        <% } %><% if(!createGrid) { %>if (g.tuple && g.tuple.old && g.tuple.old.<%= tableName %>) {
           this.record = g.tuple.old.<%= tableName %>;
           this.outputForm.patchValue(this.record);
-        }<% } %>
+        }<% } %><% } %><% if (!useTuple) { %>// Provide your implementation here.<% } %>
         console.log(g);
       },
       error: (err) => {
@@ -52,7 +54,7 @@ export class <%= classify(name) %><%= classify(type) %> {
     });
   }
 
-  <% if (tableName) { %>saveData(data: I+<%= tableName %>) {
+  <% if (tableName && !createGrid) { %>saveData(data: I<%= tableName %>) {
     if (!this.record) throw new Error("Old not found");
     
     this.awService.update(this.record, data);

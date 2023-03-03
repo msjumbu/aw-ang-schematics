@@ -100,6 +100,100 @@ describe('getObjects with material', () => {
         toCODE: new FormControl<string|null>(null,[]),
       });`)
   });
+  it('should contain input panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<form [formGroup]="inputForm">
+    <mat-card class="information-card">
+        <mat-card-header>
+            <mat-card-title>COM_COUNTRY Input</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="row"> 
+                <div class="col">
+                    <mat-form-field>
+                        <mat-label>fromCODE</mat-label>
+                        <input 
+                            type= "text" 
+                            name="fromCODE" 
+                            matInput 
+                            placeholder="" 
+                            formControlName="fromCODE"/> 
+                    </mat-form-field>
+                </div>
+                <div class="col">
+                    <mat-form-field>
+                        <mat-label>toCODE</mat-label>
+                        <input 
+                            type= "text" 
+                            name="toCODE" 
+                            matInput 
+                            placeholder="" 
+                            formControlName="toCODE"/> 
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button (click)="getData(inputForm.getRawValue())" mat-flat-button color="primary">Submit</button>
+        </mat-card-actions>
+    </mat-card>
+</form>`);
+    assertNotContains(htmlContent, `<form [formGroup]="inputForm">
+      <mat-card class="information-card">
+          <mat-card-header>
+              <mat-card-title>COM_COUNTRY Input</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+              <div class="row"> 
+                  <div class="col">
+                      <mat-form-field>
+                          <mat-label>CODE</mat-label>
+                          <input 
+                              type= "text" 
+                              name="CODE" 
+                              matInput 
+                              placeholder="" 
+                              formControlName="CODE"/> 
+                      </mat-form-field>
+                  </div>
+              </div>
+          </mat-card-content>
+          <mat-card-actions>
+              <button (click)="getData(inputForm.getRawValue())" mat-flat-button color="primary">Submit</button>
+          </mat-card-actions>
+      </mat-card>
+      </form>`);
+  });
+  it('should contain output table', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<table mat-table [dataSource]="dataSource">
+    
+    <ng-container matColumnDef="CODE">
+        <th mat-header-cell *matHeaderCellDef> CODE </th>
+        <td mat-cell *matCellDef="let element"> {{element.CODE}} </td>
+    </ng-container>`);
+    assertContains(htmlContent, `<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>`);
+    expect(htmlContent).not.toContain(`<form [formGroup]="outputForm">`);
+    expect(htmlContent).not.toContain(`<button (click)="saveData(outputForm.getRawValue())" mat-flat-button color="primary">Update</button>`);
+  });
+
+
   it('should contain output form group', async () => {
     const compOptions: MyConfigSchema = {
       name: 'pk',
@@ -164,6 +258,17 @@ describe('getObjects with material', () => {
           }
         });
       }`)
+  });
+  it('should not contain savedata method', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(fileContent).not.toContain("saveData(data: ICOM_COUNTRY)");
   });
 });
 
@@ -239,6 +344,19 @@ describe('getObject with material', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
     expect(htmlContent).toContain("record: ICOM_COUNTRY | undefined;");
   });
+  it('should not contain table variables', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(htmlContent).not.toContain("records: ICOM_COUNTRY[] = [];");
+    expect(htmlContent).not.toContain("displayedColumns: string[] = [ 'CODE', 'DESCRIPTION', 'MATCHING_TYPE', 'CALENDAR_NAME', 'BASE_CURRENCY', 'IS_ACTIVE', 'CREATED_BY', 'CREATED_ON', 'MODIFIED_BY', 'MODIFIED_ON',]");
+    expect(htmlContent).not.toContain("dataSource = new MatTableDataSource<ICOM_COUNTRY>([]);");
+  });
   it('should contain input form group', async () => {
     const compOptions: MyConfigSchema = {
       name: 'pk',
@@ -252,6 +370,95 @@ describe('getObject with material', () => {
         CODE: new FormControl<string|null>(null,[]),
       });`)
   });
+  it('should contain input panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<form [formGroup]="inputForm">
+    <mat-card class="information-card">
+        <mat-card-header>
+            <mat-card-title>COM_COUNTRY Input</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="row"> 
+                <div class="col">
+                    <mat-form-field>
+                        <mat-label>CODE</mat-label>
+                        <input 
+                            type= "text" 
+                            name="CODE" 
+                            matInput 
+                            placeholder="" 
+                            formControlName="CODE"/> 
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button (click)="getData(inputForm.getRawValue())" mat-flat-button color="primary">Submit</button>
+        </mat-card-actions>
+    </mat-card>
+</form>`);
+    assertNotContains(htmlContent, `<mat-form-field>
+    <mat-label>fromCODE</mat-label>
+    <input 
+        type= "text" 
+        name="fromCODE" 
+        matInput 
+        placeholder="" 
+        formControlName="fromCODE"/> 
+</mat-form-field>`);
+  });
+  it('should contain output panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<form [formGroup]="outputForm">
+    <mat-card class="information-card">
+        <mat-card-header>
+            <mat-card-title>COM_COUNTRY Output</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-label>CODE</mat-label>
+                        <input 
+                            type= "text" 
+                            name="CODE" 
+                            matInput 
+                            placeholder="" 
+                            formControlName="CODE"/> 
+                    </mat-form-field>
+                </div>`)
+    assertContains(htmlContent, `<mat-form-field class="full-width">
+        <mat-label>CREATED_ON</mat-label>
+        <input 
+            type= "datetime" 
+            name="CREATED_ON" 
+            matInput  
+            [matDatepicker]="pickerCREATED_ON" 
+            placeholder="" 
+            formControlName="CREATED_ON"/>  
+            <mat-datepicker-toggle matIconSuffix [for]="pickerCREATED_ON"></mat-datepicker-toggle> 
+            <mat-datepicker #pickerCREATED_ON></mat-datepicker>
+    </mat-form-field>`);
+    assertContains(htmlContent, `        <mat-card-actions>
+        <button (click)="saveData(outputForm.getRawValue())" mat-flat-button color="primary">Update</button>
+    </mat-card-actions>`);
+    expect(htmlContent).not.toContain(`<table mat-table [dataSource]="dataSource">`);
+  });
+
   it('should contain output form group', async () => {
     const compOptions: MyConfigSchema = {
       name: 'pk',
@@ -311,6 +518,23 @@ describe('getObject with material', () => {
         });
       }`)
   });
+  it('should contain savedata method', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+
+    assertContains(fileContent, `saveData(data: ICOM_COUNTRY) {
+      if (!this.record) throw new Error("Old not found");
+      
+      this.awService.update(this.record, data);
+    }`)
+  });
+
 });
 
 describe('getObjects with primeng', () => {
@@ -369,7 +593,7 @@ describe('getObjects with primeng', () => {
     };
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
-    
+
     const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
     expect(fileContent).toContain("import { GetComCountryObjectsService as AWService} from './services/get-com-country-objects.service';");
     expect(fileContent).toContain("import { IGetComCountryObjects as InputMsg, IGetComCountryObjectsResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-objects.types';");
@@ -401,6 +625,57 @@ describe('getObjects with primeng', () => {
         toCODE: new FormControl<string|null>(null,[]),
       });`)
   });
+  it('should contain input panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Input" [toggleable]="true">
+    <form [formGroup]="inputForm">
+        <label for="fromCODE" class="block text-900 font-medium mb-2">fromCODE</label>
+        <input 
+            type= "text" 
+            name="fromCODE" 
+            pInputText 
+            class="w-full mb-3" 
+            placeholder="" 
+            formControlName="fromCODE"/>
+        <label for="toCODE" class="block text-900 font-medium mb-2">toCODE</label>
+        <input 
+            type= "text" 
+            name="toCODE" 
+            pInputText 
+            class="w-full mb-3" 
+            placeholder="" 
+            formControlName="toCODE"/>
+    <button pButton (click)="getData(inputForm.getRawValue())" label="Submit" class="w-full"></button>
+  </form>
+</p-panel>
+`);
+    expect(htmlContent).not.toContain(`<label for="CODE" class="block text-900 font-medium mb-2">CODE</label>`);
+  });
+  it('should contain output panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="caption">
+        COM_COUNTRY Output
+    </ng-template>
+    <ng-template pTemplate="header">`);
+    expect(htmlContent).not.toContain(`<p-panel header="COM_COUNTRY Output" [toggleable]="true">`);
+    expect(htmlContent).not.toContain(`<button pButton (click)="saveData(outputForm.getRawValue())" label="Update" class="w-full"></button>`);
+  });
+
   it('should contain output form group', async () => {
     const compOptions: MyConfigSchema = {
       name: 'pk',
@@ -464,6 +739,17 @@ describe('getObjects with primeng', () => {
         }
       });
     }`)
+  });
+  it('should not contain savedata method', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(fileContent).not.toContain("saveData(data: ICOM_COUNTRY)");
   });
 });
 
@@ -525,9 +811,10 @@ describe('getObject with primeng', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
-    
+
     expect(htmlContent).toContain("import { GetComCountryObjectService as AWService} from './services/get-com-country-object.service';");
     expect(htmlContent).toContain("import { IGetComCountryObject as InputMsg, IGetComCountryObjectResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-object.types';");
+    expect(htmlContent).toContain("import { ConfigService } from '../config/config.service';");
   });
   it('should contain variables', async () => {
     const compOptions: MyConfigSchema = {
@@ -540,6 +827,18 @@ describe('getObject with primeng', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
     expect(htmlContent).toContain("record: ICOM_COUNTRY | undefined;");
   });
+  it('should not contain table variables', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(htmlContent).not.toContain("records: ICOM_COUNTRY[] = [];");
+  });
+
   it('should contain input form group', async () => {
     const compOptions: MyConfigSchema = {
       name: 'pk',
@@ -552,6 +851,53 @@ describe('getObject with primeng', () => {
     assertContains(htmlContent, `inputForm = this.fb.group({
         CODE: new FormControl<string|null>(null,[]),
       });`)
+  });
+  it('should contain input panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Input" [toggleable]="true">
+    <form [formGroup]="inputForm">
+        <label for="CODE" class="block text-900 font-medium mb-2">CODE</label>
+        <input 
+            type= "text" 
+            name="CODE" 
+            pInputText 
+            class="w-full mb-3" 
+            placeholder="" 
+            formControlName="CODE"/>
+    <button pButton (click)="getData(inputForm.getRawValue())" label="Submit" class="w-full"></button>
+  </form>
+</p-panel>`);
+    expect(htmlContent).not.toContain(`<label for="fromCODE" class="block text-900 font-medium mb-2">fromCODE</label>`);
+  });
+  it('should contain output panel', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
+    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Output" [toggleable]="true">
+    <form [formGroup]="outputForm">
+        <label for="CODE" class="block text-900 font-medium mb-2">CODE</label>
+        <input 
+            type= "text" 
+            name="CODE" 
+            pInputText 
+            class="w-full mb-3"  
+            placeholder="" 
+            formControlName="CODE"/>`)
+    assertContains(htmlContent, `<p-calendar inputId="CREATED_ON" formControlName="CREATED_ON" [showTime]=true/>`);
+    assertContains(htmlContent, `<button pButton (click)="saveData(outputForm.getRawValue())" label="Update" class="w-full"></button>`);
+    expect(htmlContent).not.toContain(`<p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">`);
   });
   it('should contain output form group', async () => {
     const compOptions: MyConfigSchema = {
@@ -612,6 +958,22 @@ describe('getObject with primeng', () => {
         });
       }`)
   });
+  it('should contain savedata method', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+
+    assertContains(fileContent, `saveData(data: ICOM_COUNTRY) {
+      if (!this.record) throw new Error("Old not found");
+      
+      this.awService.update(this.record, data);
+    }`)
+  });
 });
 
 describe('getObjects with clarity', () => {
@@ -670,10 +1032,11 @@ describe('getObjects with clarity', () => {
     };
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
-    
-    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');    
+
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
     expect(htmlContent).toContain("import { GetComCountryObjectsService as AWService} from './services/get-com-country-objects.service';");
     expect(htmlContent).toContain("import { IGetComCountryObjects as InputMsg, IGetComCountryObjectsResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-objects.types';");
+    expect(htmlContent).toContain("import { ConfigService } from '../config/config.service';");
   });
   it('should contain variables', async () => {
     const compOptions: MyConfigSchema = {
@@ -765,6 +1128,17 @@ describe('getObjects with clarity', () => {
       });
     }`)
   });
+  it('should not contain savedata method', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(fileContent).not.toContain("saveData(data: ICOM_COUNTRY)");
+  });
 });
 
 describe('getObject with clarity', () => {
@@ -825,9 +1199,10 @@ describe('getObject with clarity', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
-    
+
     expect(htmlContent).toContain("import { GetComCountryObjectService as AWService} from './services/get-com-country-object.service';");
     expect(htmlContent).toContain("import { IGetComCountryObject as InputMsg, IGetComCountryObjectResponse as OutputMsg, Ituple , ICOM_COUNTRY} from './services/get-com-country-object.types';");
+    expect(htmlContent).toContain("import { ConfigService } from '../config/config.service';");
   });
   it('should contain variables', async () => {
     const compOptions: MyConfigSchema = {
@@ -839,6 +1214,17 @@ describe('getObject with clarity', () => {
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
     expect(htmlContent).toContain("record: ICOM_COUNTRY | undefined;");
+  });
+  it('should not contain table variables', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+    expect(htmlContent).not.toContain("records: ICOM_COUNTRY[] = [];");
   });
   it('should contain input form group', async () => {
     const compOptions: MyConfigSchema = {
@@ -912,6 +1298,22 @@ describe('getObject with clarity', () => {
         });
       }`)
   });
+  it('should contain savedata method', async () => {
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObject);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
+
+    assertContains(fileContent, `saveData(data: ICOM_COUNTRY) {
+      if (!this.record) throw new Error("Old not found");
+      
+      this.awService.update(this.record, data);
+    }`)
+  });
 });
 
 
@@ -921,4 +1323,8 @@ function stripWhitespace(str: string) {
 
 function assertContains(source: string, targetString: string) {
   expect(stripWhitespace(source)).toContain(stripWhitespace(targetString));
+}
+
+function assertNotContains(source: string, targetString: string) {
+  expect(stripWhitespace(source)).not.toContain(stripWhitespace(targetString));
 }

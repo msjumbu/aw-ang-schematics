@@ -133,6 +133,30 @@ function createComponent(options: ComponentSchema): Rule {
     }
     
     let inputs = metadata[0].element ? metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'):undefined;
+    const tsComponentSource = apply(url('./files/common'), [
+      // options.name ? filter((path) => !path.endsWith('.clr.ts.template')) : noop(),
+      applyTemplates({
+        ...options,
+        classify: strings.classify,
+        dasherize: strings.dasherize,
+        camelize: strings.camelize,
+        serviceName: serviceName,
+        servicePath: servicePath,
+        inMsg: inMsg,
+        outMsg: outMsg,
+        typesPath: typesPath,
+        type: "component",
+        style: "css",
+        inputs: inputs,
+        outputs: outputs,
+        createGrid: createGrid,
+        useTuple: useTuple,
+        tableName: tableName,
+        crPath: crPath,
+        uiFramework: uiFramework
+      }),
+      move(path)
+    ]);
     const templateSource = apply(t, [
       // options.name ? filter((path) => !path.endsWith('.clr.ts.template')) : noop(),
       applyTemplates({
@@ -152,11 +176,14 @@ function createComponent(options: ComponentSchema): Rule {
         createGrid: createGrid,
         useTuple: useTuple,
         tableName: tableName,
-        crPath: crPath
+        crPath: crPath,
+        uiFramework: uiFramework
       }),
       move(path)
     ]);
-    return mergeWith(templateSource, MergeStrategy.Overwrite);
+    return chain([
+      mergeWith(tsComponentSource, MergeStrategy.Overwrite),
+      mergeWith(templateSource, MergeStrategy.Overwrite)]);
   }
 }
 

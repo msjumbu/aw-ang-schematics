@@ -1,6 +1,6 @@
 {
   "name": "@msjumbu/app-works",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "AppWorks Schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
