@@ -7,7 +7,9 @@ import { ConfigSchema as MyConfigSchema } from './schema';
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 
-import { getObjects, getObject } from "./test/test.wsdls";
+import { getObjects, getObject } from "../testing/test.wsdls";
+import { assertContains, assertNotContains } from '../utils/util';
+
 
 const collectionPath = path.join(__dirname, '../collection.json');
 
@@ -1338,14 +1340,3 @@ describe('getObject with clarity', () => {
 });
 
 
-function stripWhitespace(str: string) {
-  return str.replace(/\s/g, '');
-}
-
-function assertContains(source: string, targetString: string) {
-  expect(stripWhitespace(source)).toContain(stripWhitespace(targetString));
-}
-
-function assertNotContains(source: string, targetString: string) {
-  expect(stripWhitespace(source)).not.toContain(stripWhitespace(targetString));
-}

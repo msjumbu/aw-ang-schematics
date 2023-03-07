@@ -34,3 +34,15 @@ export function isTTY(): boolean {
 
     return !!process.stdout.isTTY && !_isTruthy(process.env['CI']);
 }
+
+function stripWhitespace(str: string) {
+    return str.replace(/\s/g, '');
+}
+
+export function assertContains(source: string, targetString: string) {
+    expect(stripWhitespace(source)).toContain(stripWhitespace(targetString));
+}
+
+export function assertNotContains(source: string, targetString: string) {
+    expect(stripWhitespace(source)).not.toContain(stripWhitespace(targetString));
+}
