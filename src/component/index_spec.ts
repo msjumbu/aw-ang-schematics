@@ -109,7 +109,7 @@ describe('getObjects with material', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<form [formGroup]="inputForm">
+    assertContains(htmlContent, `<form [formGroup]="inputForm" [style.display]="showSpinner ? 'none' : 'block'">
     <mat-card class="information-card">
         <mat-card-header>
             <mat-card-title>COM_COUNTRY Input</mat-card-title>
@@ -145,7 +145,7 @@ describe('getObjects with material', () => {
         </mat-card-actions>
     </mat-card>
 </form>`);
-    assertNotContains(htmlContent, `<form [formGroup]="inputForm">
+    assertNotContains(htmlContent, `<form [formGroup]="inputForm" [style.display]="showSpinner ? 'none' : 'block'">
       <mat-card class="information-card">
           <mat-card-header>
               <mat-card-title>COM_COUNTRY Input</mat-card-title>
@@ -180,7 +180,7 @@ describe('getObjects with material', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<table mat-table [dataSource]="dataSource">
+    assertContains(htmlContent, `<table mat-table [dataSource]="dataSource" [style.display]="showSpinner ? 'none' : 'block'">
     
     <ng-container matColumnDef="CODE">
         <th mat-header-cell *matHeaderCellDef> CODE </th>
@@ -189,7 +189,7 @@ describe('getObjects with material', () => {
     assertContains(htmlContent, `<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>`);
-    expect(htmlContent).not.toContain(`<form [formGroup]="outputForm">`);
+    expect(htmlContent).not.toContain(`<form [formGroup]="outputForm" [style.display]="showSpinner ? 'none' : 'block'">`);
     expect(htmlContent).not.toContain(`<button (click)="saveData(outputForm.getRawValue())" mat-flat-button color="primary">Update</button>`);
   });
 
@@ -239,6 +239,7 @@ describe('getObjects with material', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
+        this.showSpinner = true;
         this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             this.records = [];
@@ -252,9 +253,11 @@ describe('getObjects with material', () => {
             this.dataSource = new MatTableDataSource<ICOM_COUNTRY>(this.records);
     
             console.log(g);
+            this.showSpinner = false;
           },
           error: (err) => {
             console.log(err);
+            this.showSpinner = false;
           }
         });
       }`)
@@ -379,7 +382,7 @@ describe('getObject with material', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<form [formGroup]="inputForm">
+    assertContains(htmlContent, `<form [formGroup]="inputForm" [style.display]="showSpinner ? 'none' : 'block'">
     <mat-card class="information-card">
         <mat-card-header>
             <mat-card-title>COM_COUNTRY Input</mat-card-title>
@@ -423,7 +426,7 @@ describe('getObject with material', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<form [formGroup]="outputForm">
+    assertContains(htmlContent, `<form [formGroup]="outputForm" [style.display]="showSpinner ? 'none' : 'block'">
     <mat-card class="information-card">
         <mat-card-header>
             <mat-card-title>COM_COUNTRY Output</mat-card-title>
@@ -456,7 +459,7 @@ describe('getObject with material', () => {
     assertContains(htmlContent, `        <mat-card-actions>
         <button (click)="saveData(outputForm.getRawValue())" mat-flat-button color="primary">Update</button>
     </mat-card-actions>`);
-    expect(htmlContent).not.toContain(`<table mat-table [dataSource]="dataSource">`);
+    expect(htmlContent).not.toContain(`<table mat-table [dataSource]="dataSource" [style.display]="showSpinner ? 'none' : 'block'">`);
   });
 
   it('should contain output form group', async () => {
@@ -504,6 +507,7 @@ describe('getObject with material', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
+        this.showSpinner = true;
         this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             if (g.tuple && g.tuple.old && g.tuple.old.COM_COUNTRY) {
@@ -511,9 +515,11 @@ describe('getObject with material', () => {
               this.outputForm.patchValue(this.record);
             }
             console.log(g);
+            this.showSpinner = false;
           },
           error: (err) => {
             console.log(err);
+            this.showSpinner = false;
           }
         });
       }`)
@@ -634,7 +640,7 @@ describe('getObjects with primeng', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Input" [toggleable]="true">
+    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Input" [toggleable]="true" [style.display]="showSpinner ? 'none' : 'block'">
     <form [formGroup]="inputForm">
         <label for="fromCODE" class="block text-900 font-medium mb-2">fromCODE</label>
         <input 
@@ -667,7 +673,7 @@ describe('getObjects with primeng', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
+    assertContains(htmlContent, `<p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}" [style.display]="showSpinner ? 'none' : 'block'">
     <ng-template pTemplate="caption">
         COM_COUNTRY Output
     </ng-template>
@@ -721,6 +727,7 @@ describe('getObjects with primeng', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
+      this.showSpinner = true;
       this.awService.get(input).subscribe({
         next: (g:OutputMsg) => {
           this.records = [];
@@ -733,9 +740,11 @@ describe('getObjects with primeng', () => {
           }
   
           console.log(g);
+          this.showSpinner = false;
         },
         error: (err) => {
           console.log(err);
+          this.showSpinner = false;
         }
       });
     }`)
@@ -861,7 +870,7 @@ describe('getObject with primeng', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Input" [toggleable]="true">
+    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Input" [toggleable]="true" [style.display]="showSpinner ? 'none' : 'block'">
     <form [formGroup]="inputForm">
         <label for="CODE" class="block text-900 font-medium mb-2">CODE</label>
         <input 
@@ -885,8 +894,10 @@ describe('getObject with primeng', () => {
     mock.onGet(compOptions.wsdl_url).reply(200, getObject);
     const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.html');
-    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Output" [toggleable]="true">
+    assertContains(htmlContent, `<p-panel header="COM_COUNTRY Output" [toggleable]="true" [style.display]="showSpinner ? 'none' : 'block'">
     <form [formGroup]="outputForm">
+    <div class="formgrid grid">
+    <div class="field col">
         <label for="CODE" class="block text-900 font-medium mb-2">CODE</label>
         <input 
             type= "text" 
@@ -894,7 +905,8 @@ describe('getObject with primeng', () => {
             pInputText 
             class="w-full mb-3"  
             placeholder="" 
-            formControlName="CODE"/>`)
+            formControlName="CODE"/>
+        </div>`)
     assertContains(htmlContent, `<p-calendar inputId="CREATED_ON" formControlName="CREATED_ON" [showTime]=true/>`);
     assertContains(htmlContent, `<button pButton (click)="saveData(outputForm.getRawValue())" label="Update" class="w-full"></button>`);
     expect(htmlContent).not.toContain(`<p-table [value]="records" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">`);
@@ -944,6 +956,7 @@ describe('getObject with primeng', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
+        this.showSpinner = true;
         this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             if (g.tuple && g.tuple.old && g.tuple.old.COM_COUNTRY) {
@@ -951,9 +964,11 @@ describe('getObject with primeng', () => {
               this.outputForm.patchValue(this.record);
             }
             console.log(g);
+            this.showSpinner = false;
           },
           error: (err) => {
             console.log(err);
+            this.showSpinner = false;
           }
         });
       }`)
@@ -1109,6 +1124,7 @@ describe('getObjects with clarity', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
+      this.showSpinner = true;
       this.awService.get(input).subscribe({
         next: (g:OutputMsg) => {
           this.records = [];
@@ -1121,9 +1137,11 @@ describe('getObjects with clarity', () => {
           }
   
           console.log(g);
+          this.showSpinner = false;
         },
         error: (err) => {
           console.log(err);
+          this.showSpinner = false;
         }
       });
     }`)
@@ -1284,6 +1302,7 @@ describe('getObject with clarity', () => {
     const htmlContent = tree.readContent('/projects/bar/src/app/pk/pk.component.ts');
 
     assertContains(htmlContent, `getData(input: InputMsg): void {
+        this.showSpinner = true;
         this.awService.get(input).subscribe({
           next: (g:OutputMsg) => {
             if (g.tuple && g.tuple.old && g.tuple.old.COM_COUNTRY) {
@@ -1291,9 +1310,11 @@ describe('getObject with clarity', () => {
               this.outputForm.patchValue(this.record);
             }
             console.log(g);
+            this.showSpinner = false;
           },
           error: (err) => {
             console.log(err);
+            this.showSpinner = false;
           }
         });
       }`)

@@ -1,4 +1,7 @@
-<% if (inputs && inputs.length && inputs.length > 0) { %><form [formGroup]="inputForm">
+<div id="center" style="position:fixed;top:50%;left:50%" [style.display]="showSpinner ? 'block' : 'none'">
+    <mat-spinner></mat-spinner></div>
+
+<% if (inputs && inputs.length && inputs.length > 0) { %><form [formGroup]="inputForm" [style.display]="showSpinner ? 'none' : 'block'">
     <mat-card class="information-card">
         <mat-card-header>
             <mat-card-title><%= tableName %> Input</mat-card-title>
@@ -25,12 +28,14 @@
             <button (click)="getData(inputForm.getRawValue())" mat-flat-button color="primary">Submit</button>
         </mat-card-actions>
     </mat-card>
-</form><% } %><% if (outputs && outputs.length && outputs.length > 0 && !createGrid) { %>
-<form [formGroup]="outputForm">
+</form><% } %> <% if (!inputs || inputs.length <= 0) { %><button (click)="getData({})" mat-flat-button color="primary">Submit</button>
+<% } %><% if (outputs && outputs.length && outputs.length > 0 && !createGrid) { %>
+<form [formGroup]="outputForm" [style.display]="showSpinner ? 'none' : 'block'">
     <mat-card class="information-card">
         <mat-card-header>
             <mat-card-title><%= tableName %> Output</mat-card-title>
         </mat-card-header>
+        
         <mat-card-content><% for(let i = 0; i < outputs.length; i++) { let element = outputs[i]; %><% if (i % 2 === 0) { %>
             <div class="row"><% } %>
                 <div class="col">
@@ -55,7 +60,7 @@
     </mat-card>
 </form><% } %><% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %>
 
-<table mat-table [dataSource]="dataSource">
+<table mat-table [dataSource]="dataSource" [style.display]="showSpinner ? 'none' : 'block'">
     <% for(let element of outputs) { %>
     <ng-container matColumnDef="<%= element.name %>">
         <th mat-header-cell *matHeaderCellDef> <%= element.name %> </th>

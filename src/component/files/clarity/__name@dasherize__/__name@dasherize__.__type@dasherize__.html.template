@@ -1,4 +1,7 @@
-<% if (inputs && inputs.length && inputs.length > 0) { %><form clrForm [formGroup]="inputForm"><% for(let element of inputs) { %>
+<div id="center" style="position:fixed;top:50%;left:50%" [style.display]="showSpinner ? 'block' : 'none'">
+    <p-progressSpinner></p-progressSpinner></div>
+
+<% if (inputs && inputs.length && inputs.length > 0) { %><form clrForm [formGroup]="inputForm" [style.display]="showSpinner ? 'none' : 'block'"><% for(let element of inputs) { %>
     <clr-input-container>
         <label><%= element.name %></label>
         <input 
@@ -9,9 +12,9 @@
             formControlName="<%= element.name %>"/>
     </clr-input-container><% } %>
     <button (click)="getData(inputForm.getRawValue())" class="btn btn-primary">Submit</button>
-  </form><% } %>
+  </form><% } %><% if (!inputs || inputs.length <= 0) { %><button (click)="getData({})" class="btn btn-primary">Submit</button><% } %>
 
-<% if (outputs && outputs.length && outputs.length > 0 && !createGrid) { %><form clrForm [formGroup]="outputForm"><% for(let element of outputs) { %>
+<% if (outputs && outputs.length && outputs.length > 0 && !createGrid) { %><form clrForm [formGroup]="outputForm" [style.display]="showSpinner ? 'none' : 'block'"><% for(let element of outputs) { %>
     <clr-input-container>
         <label><%= element.name %></label>
         <input 
@@ -23,7 +26,7 @@
     </clr-input-container><% } %>
     <% if (tableName) { %><button (click)="saveData(outputForm.getRawValue())" class="btn btn-primary">Update</button><% } %>
   </form><% } %>
-<% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %><clr-datagrid><% for(let element of outputs) { %>
+<% if (outputs && outputs.length && outputs.length > 0 && createGrid) { %><clr-datagrid [style.display]="showSpinner ? 'none' : 'block'"><% for(let element of outputs) { %>
     <clr-dg-column><%= element.name %></clr-dg-column><% } %>
 
     <clr-dg-row *ngFor="let record of records"><% for(let element of outputs) { %>

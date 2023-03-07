@@ -6,8 +6,6 @@
 import { NgModule } from '@angular/core';
 // *************** FORM CONTROLS ***************
 import {InputTextModule} from 'primeng/inputtext';
-import {ButtonModule} from 'primeng/button';
-import {TableModule} from 'primeng/table';
 import {CalendarModule} from 'primeng/calendar';
 
 // *************** NAVIGATION ***************
@@ -17,7 +15,11 @@ import {CardModule} from 'primeng/card';
 import {StyleClassModule} from 'primeng/styleclass';
 import {FieldsetModule} from 'primeng/fieldset';
 import {PanelModule} from 'primeng/panel';
+import {TableModule} from 'primeng/table';
+
 // *************** BUTTONS & INDICATORS ***************
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {ButtonModule} from 'primeng/button';
 
 // *************** POPUPS & MODALS ***************
 
@@ -33,6 +35,7 @@ const AllPrimeNGModules=[
   FieldsetModule,
   PanelModule,
   CalendarModule,
+  ProgressSpinnerModule,
 ];
 
 @NgModule({

@@ -81,9 +81,18 @@ export class TypesGenerator {
       this.generateMembers(message.element[0], '');
     }
     // the below is cover messages without any parameters/elements
-    if (!this.nodeArrMap.has('I' + message.name)) {
-      const messageType = this.createInterface(message.name, []);
-      this.nodeArrMap.set('I' + message.name, messageType);
+    if (!this.nodeArrMap.has('I' + message.name)) {   
+      if (message.element && message.element[0] && !this.nodeArrMap.has('I' + message.element[0].name)) {
+        console.log(message.element[0].name + " : " + this.nodeArrMap.has('I' + message.element[0].name));
+        const element = this.createInterface(message.element[0].name, []);
+        this.nodeArrMap.set('I' + message.element[0].name, element);
+        let t = this.createPropertySignatureWithType(message.element[0].name, ts.factory.createTypeReferenceNode('I' + message.element[0]?.name + ''), false);
+        const messageType = this.createInterface(message.name, [t]);
+        this.nodeArrMap.set('I' + message.name, messageType);
+      } else {
+        const messageType = this.createInterface(message.name, []);
+        this.nodeArrMap.set('I' + message.name, messageType);
+      }
     }
   }
 
@@ -146,7 +155,7 @@ export class TypesGenerator {
       if (element.maxOccurs == 'unbounded' || (Number(element.maxOccurs ?? 0) > 1)) {
         isArray = true;
       }
-      return this.createPropertySignatureWithType(element.name, this.typeFromSOAP(element.eType??''), isArray);
+      return this.createPropertySignatureWithType(element.name, this.typeFromSOAP(element.eType ?? ''), isArray);
     }
   }
 

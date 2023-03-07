@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
   showSpinner: boolean = false;
 
   async login() {
+    this.showSpinner = true;
     let auth: AuthToken | undefined = await this.authService.authenticate(this.loginForm.get("userName")?.value, this.loginForm.get("password")?.value);
     if (auth) {
       console.log(auth.token);

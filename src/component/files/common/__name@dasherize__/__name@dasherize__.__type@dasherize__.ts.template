@@ -25,12 +25,15 @@ export class <%= classify(name) %><%= classify(type) %> {
     outputForm = this.fb.group({    <% for(let element of outputs) { %>
       <%= element.name %>: new FormControl<<% if (element.eType?.includes('string') || !element.eType) { %>string<%}%><% if (element.eType && (element.eType.includes('int') || element.eType.includes('double'))) { %>number<%}%><% if (element.eType && element.eType.includes('date')) { %>Date<%}%>|null>(null,[<% if (element.minOccurs && element.minOccurs > 0) { %>, Validators.required, <% } %>]),<% } %>
     });
+  
+  showSpinner: boolean = false;
 
   ngOnInit(): void {
     
   }
 
   getData(input: InputMsg): void {
+    this.showSpinner = true;
     this.awService.get(input).subscribe({
       next: (g:OutputMsg) => {
         <% if (useTuple) { %><% if(createGrid) { %>this.records = [];
@@ -40,16 +43,18 @@ export class <%= classify(name) %><%= classify(type) %> {
             if (element.old && element.old.<%= tableName %>)
               this.records.push(element.old.<%= tableName %>)
           }
-        }
-        <% if(uiFramework=='material') { %>this.dataSource = new MatTableDataSource<ICOM_COUNTRY>(this.records); <% } %>
-        <% } %><% if(!createGrid) { %>if (g.tuple && g.tuple.old && g.tuple.old.<%= tableName %>) {
+        }<% if(uiFramework=='material') { %>
+        this.dataSource = new MatTableDataSource<ICOM_COUNTRY>(this.records); <% } %><% } %><% if(!createGrid) { %>
+        if (g.tuple && g.tuple.old && g.tuple.old.<%= tableName %>) {
           this.record = g.tuple.old.<%= tableName %>;
           this.outputForm.patchValue(this.record);
         }<% } %><% } %><% if (!useTuple) { %>// Provide your implementation here.<% } %>
         console.log(g);
+        this.showSpinner = false;
       },
       error: (err) => {
-        console.log(err);  
+        console.log(err);
+        this.showSpinner = false; 
       }
     });
   }

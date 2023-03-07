@@ -17,7 +17,8 @@
             <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
         </div>
 
-        <button pButton pRipple (click)="login()" label="Sign In" icon="pi pi-user" class="w-full"></button>
+        <button pButton pRipple [style.display]="showSpinner ? 'none' : 'block'" (click)="login()" label="Sign In" icon="pi pi-user" class="w-full"></button>
+        <p-progressSpinner [style.display]="showSpinner ? 'block' : 'none'"></p-progressSpinner>
     </div>
     </form>
 </div>
