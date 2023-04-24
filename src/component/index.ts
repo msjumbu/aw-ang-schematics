@@ -6,7 +6,7 @@ import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeSc
 import { findNode, findNodes } from '@schematics/angular/utility/ast-utils';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { readConfig } from '../utils/util';
-import { buildRelativePath } from '@schematics/angular/utility/find-module';
+import { buildRelativePath, findModuleFromOptions } from '@schematics/angular/utility/find-module';
 import { normalize } from '@angular-devkit/core';
 
 // You don't have to export the function as default. You can also have more than one rule factory
@@ -21,6 +21,9 @@ export function component(options: ComponentSchema): Rule {
     if (options.path === undefined) {
       options.path = buildDefaultPath(project);
     }
+    
+    const mod = findModuleFromOptions(host, options);
+    if (!mod) throw new SchematicsException(`Module not found.`);
     const parsedPath = parseName(options.path as string, options.name);
     options.name = parsedPath.name;
     options.path = parsedPath.path;

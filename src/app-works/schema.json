@@ -1,96 +1,130 @@
 {
-    "$schema": "http://json-schema.org/schema",
-    "$id": "SchematicsAppWorks",
-    "title": "AppWorks Schema",
-    "type": "object",
-    "properties": {
-      "gateway_url": {
-        "type": "string",
-        "description": "AppWorks Gateway URL (ex: http://<< host/ip >>:<< port >>/home/<< organization >>/com.eibus.web.soap.Gateway.wcp)",
-        "x-prompt": "Please enter your AppWorks Gateway URL",
-        "default": "http://10.96.75.123:81/home/PTP/com.eibus.web.soap.Gateway.wcp"
-      },
-      "org_dn": {
-        "type": "string",
-        "description": "Organization DN",
-        "x-prompt": "Please enter your organization DN",
-        "default": "o=PTP,cn=cordys,cn=defaultInst,o=lab.opentext.com"
-      },
-      "ui_framework": {
-        "type": "string",
-        "description": "UI Framework to use",
-        "default": "material",
-        "enum": [
-          "material",
-          "clarity",
-          "primeng"
-        ],
-        "x-prompt": {
-          "message": "Which UI Framework would you like to use?",
-          "type": "list",
-          "items": [
-            { "value": "material",  "label": "Angular Material" },
-            { "value": "clarity", "label": "Clarity Design" },
-            { "value": "primeng", "label": "PrimeNG" }
-          ]
-        }
-      },
-      "date_format": {
-        "type": "string",
-        "description": "Select Date Format",
-        "default": "dd/MM/yyyy",
-        "enum": [
-          "dd/MM/yyyy",
-          "MM/dd/yyyy",
-          "yyyy/MM/dd",
-          "short",
-          "medium",
-          "long"
-        ],
-        "x-prompt": {
-          "message": "Which UI Framework would you like to use?",
-          "type": "list",
-          "items": [
-            { "value": "dd/MM/yyyy", "label": "dd/MM/yyyy" },
-            { "value": "MM/dd/yyyy",  "label": "MM/dd/yyyy" },
-            { "value": "yyyy/MM/dd", "label": "yyyy/MM/dd" },
-            { "value": "short", "label": "short - 'M/d/yy, h:mm a'" },
-            { "value": "medium", "label": "medium - 'MMM d, y, h:mm:ss a'" },
-            { "value": "long", "label": "long - 'MMMM d, y, h:mm:ss a z'" }
-          ]
-        }
-      },
-      "config_path": {
-        "type": "string",
-        "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
-        "x-prompt": "Please enter the relative path to config.json"
-      },
-      "auth_type": {
-        "type": "string",
-        "description": "Authentication Type",
-        "enum": [
-          "OTDS",
-          "AW",
-          "CUSTOM"
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsAppWorks",
+  "title": "AppWorks Schema",
+  "type": "object",
+  "properties": {
+    "gateway_url": {
+      "type": "string",
+      "description": "AppWorks Gateway URL (ex: http://<< host/ip >>:<< port >>/home/<< organization >>/com.eibus.web.soap.Gateway.wcp)",
+      "x-prompt": "Please enter your AppWorks Gateway URL",
+      "default": "http://10.96.75.123:81/home/PTP/com.eibus.web.soap.Gateway.wcp"
+    },
+    "org_dn": {
+      "type": "string",
+      "description": "Organization DN",
+      "x-prompt": "Please enter your organization DN",
+      "default": "o=PTP,cn=cordys,cn=defaultInst,o=lab.opentext.com"
+    },
+    "ui_framework": {
+      "type": "string",
+      "description": "UI Framework to use",
+      "default": "material",
+      "enum": [
+        "material",
+        "clarity",
+        "primeng"
+      ],
+      "x-prompt": {
+        "message": "Which UI Framework would you like to use?",
+        "type": "list",
+        "items": [
+          {
+            "value": "material",
+            "label": "Angular Material"
+          },
+          {
+            "value": "clarity",
+            "label": "Clarity Design"
+          },
+          {
+            "value": "primeng",
+            "label": "PrimeNG"
+          }
         ]
-      },
-      "otds_url": {
-        "type": "string",
-        "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)"
-      },
-      "project": {
-        "type": "string",
-        "description": "The name of the project.",
-        "$default": {
-          "$source": "projectName"
-        }
-      },
-      "path": {
-        "type": "string",
-        "format": "path",
-        "description": "The path to create the service.",
-        "visible": false
       }
     },
-    "required": ["gateway_url", "org_dn", "date_format"]
-  }
+    "date_format": {
+      "type": "string",
+      "description": "Select Date Format",
+      "default": "dd/MM/yyyy",
+      "enum": [
+        "dd/MM/yyyy",
+        "MM/dd/yyyy",
+        "yyyy/MM/dd",
+        "short",
+        "medium",
+        "long"
+      ],
+      "x-prompt": {
+        "message": "Which Date Format would you like to use?",
+        "type": "list",
+        "items": [
+          {
+            "value": "dd/MM/yyyy",
+            "label": "dd/MM/yyyy"
+          },
+          {
+            "value": "MM/dd/yyyy",
+            "label": "MM/dd/yyyy"
+          },
+          {
+            "value": "yyyy/MM/dd",
+            "label": "yyyy/MM/dd"
+          },
+          {
+            "value": "short",
+            "label": "short - 'M/d/yy, h:mm a'"
+          },
+          {
+            "value": "medium",
+            "label": "medium - 'MMM d, y, h:mm:ss a'"
+          },
+          {
+            "value": "long",
+            "label": "long - 'MMMM d, y, h:mm:ss a z'"
+          }
+        ]
+      }
+    },
+    "config_path": {
+      "type": "string",
+      "description": "The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to this config path in the web server. If no path is provided, default assets/config.json will be used.",
+      "x-prompt": "Please enter the relative path to config.json"
+    },
+    "auth_type": {
+      "type": "string",
+      "description": "Authentication Type",
+      "enum": [
+        "OTDS",
+        "AW",
+        "CUSTOM"
+      ]
+    },
+    "otds_url": {
+      "type": "string",
+      "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)"
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "$default": {
+        "$source": "workingDirectory"
+      },
+      "description": "Path relative to the workspace root.",
+      "visible": false
+    }
+  },
+  "required": [
+    "gateway_url",
+    "org_dn",
+    "date_format"
+  ]
+}
