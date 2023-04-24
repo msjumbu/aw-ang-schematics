@@ -1,45 +1,59 @@
 {
-    "$schema": "http://json-schema.org/schema",
-    "$id": "SchematicsAppWorksAuth",
-    "title": "AppWorks Authentication Schema",
-    "type": "object",
-    "properties": {
-      "auth_type": {
-        "type": "string",
-        "description": "Authentication Type",
-        "default": "OTDS",
-        "enum": [
-          "OTDS",
-          "AW",
-          "CUSTOM"
-        ],
-        "x-prompt": {
-          "message": "Which authentication would you like to use?",
-          "type": "list",
-          "items": [
-            { "value": "OTDS",  "label": "OTDS" },
-            { "value": "AW", "label": "AppWorks" },
-            { "value": "CUSTOM", "label": "Custom" }
-          ]
-        }
-      },
-      "otds_url": {
-        "type": "string",
-        "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
-      },
-      "project": {
-        "type": "string",
-        "description": "The name of the project.",
-        "$default": {
-          "$source": "projectName"
-        }
-      },
-      "path": {
-        "type": "string",
-        "format": "path",
-        "description": "The path to create the service.",
-        "visible": false
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsAppWorksAuth",
+  "title": "AppWorks Authentication Schema",
+  "type": "object",
+  "properties": {
+    "auth_type": {
+      "type": "string",
+      "description": "Authentication Type",
+      "default": "OTDS",
+      "enum": [
+        "OTDS",
+        "AW",
+        "CUSTOM"
+      ],
+      "x-prompt": {
+        "message": "Which authentication would you like to use?",
+        "type": "list",
+        "items": [
+          {
+            "value": "OTDS",
+            "label": "OTDS"
+          },
+          {
+            "value": "AW",
+            "label": "AppWorks"
+          },
+          {
+            "value": "CUSTOM",
+            "label": "Custom"
+          }
+        ]
       }
     },
-    "required": ["auth_type"]
-  }
+    "otds_url": {
+      "type": "string",
+      "description": "Please enter your OTDS authentication rest service URL. (ex: http://<< host/ip >>:<< port >>/otdsws/rest/authentication/credentials)",
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "$default": {
+        "$source": "workingDirectory"
+      },
+      "description": "The path at which to create the component, relative to the workspace root.",
+      "visible": false
+    }
+  },
+  "required": [
+    "auth_type"
+  ]
+}

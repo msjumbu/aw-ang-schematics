@@ -1,33 +1,38 @@
 {
-    "$schema": "http://json-schema.org/schema",
-    "$id": "SchematicsAppWorksService",
-    "title": "AppWorks Service Schema",
-    "type": "object",
-    "properties": {
-      "wsdl_url": {
-        "type": "string",
-        "description": "WSDL URL",
-        "x-prompt": "Please enter your WSDL URL"
-      },
-      "project": {
-        "type": "string",
-        "description": "The name of the project.",
-        "$default": {
-          "$source": "projectName"
-        }
-      },
-      "skipService": {
-        "type": "boolean",
-        "description": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
-        "x-prompt": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
-        "default": false
-      },
-      "path": {
-        "type": "string",
-        "format": "path",
-        "description": "The path to create the service.",
-        "visible": false
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsAppWorksService",
+  "title": "AppWorks Service Schema",
+  "type": "object",
+  "properties": {
+    "wsdl_url": {
+      "type": "string",
+      "description": "WSDL URL",
+      "x-prompt": "Please enter your WSDL URL"
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
       }
     },
-    "required": ["wsdl_url"]
-  }
+    "skipService": {
+      "type": "boolean",
+      "description": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
+      "x-prompt": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
+      "default": false
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "$default": {
+        "$source": "workingDirectory"
+      },
+      "description": "The path at which to create the service, relative to the workspace root.",
+      "visible": false
+    }
+  },
+  "required": [
+    "wsdl_url"
+  ]
+}
