@@ -21,6 +21,11 @@
         "$source": "projectName"
       }
     },
+    "module": {
+      "type": "string",
+      "description": "The declaring NgModule.",
+      "alias": "m"
+    },
     "path": {
       "type": "string",
       "format": "path",

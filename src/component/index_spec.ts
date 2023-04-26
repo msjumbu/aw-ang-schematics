@@ -1,6 +1,6 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import * as path from 'path';
-import { createTestApp } from '../utils/create-test-app';
+import { createTestApp, createTestModule } from '../utils/create-test-app';
 import { ConfigSchema as AWSchema } from '../app-works/schema';
 import { ConfigSchema as MyConfigSchema } from './schema';
 
@@ -12,6 +12,73 @@ import { assertContains, assertNotContains } from '../utils/util';
 
 
 const collectionPath = path.join(__dirname, '../collection.json');
+
+describe('test with module', () => {
+  let mock: MockAdapter;
+
+  beforeAll(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.reset();
+  });
+
+  const projectName = 'bar';
+
+  const testRunner = new SchematicTestRunner(
+    'rocket',
+    require.resolve(collectionPath),
+  );
+  const schematicRunner = new SchematicTestRunner(
+    'msjumbu', collectionPath);
+  const awOptions: AWSchema = {
+    gateway_url: 'test',
+    org_dn: '',
+    config_path: '',
+    project: projectName,
+    auth_type: 'AW',
+    date_format: 'short'
+  };
+
+  let appTree: UnitTestTree;
+  beforeEach(async () => {
+    appTree = await createTestApp(projectName, testRunner);
+    appTree = await schematicRunner.runSchematic('app-works', awOptions, appTree);
+    appTree = await createTestModule(projectName, 'test-mod', testRunner, appTree);
+  });
+  it('should create files', async () => {
+    
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+      module: 'test-mod'
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    expect(tree.files).toContain('/projects/bar/src/app/test-mod/pk/pk.component.css');
+    expect(tree.files).toContain('/projects/bar/src/app/test-mod/pk/pk.component.html');
+    expect(tree.files).toContain('/projects/bar/src/app/test-mod/pk/pk.component.spec.ts');
+    expect(tree.files).toContain('/projects/bar/src/app/test-mod/pk/pk.component.ts');
+  });
+
+  it('should add imports to module file', async () => {
+    
+    const compOptions: MyConfigSchema = {
+      name: 'pk',
+      project: projectName,
+      wsdl_url: 'testing&resolveexternals=true',
+      module: 'test-mod'
+    };
+    mock.onGet(compOptions.wsdl_url).reply(200, getObjects);
+    const tree = await schematicRunner.runSchematic('component', compOptions, appTree);
+    const fileContent = tree.readContent('/projects/bar/src/app/test-mod/test-mod.module.ts');
+    expect(fileContent).toContain("import { ReactiveFormsModule } from '@angular/forms';");
+    expect(fileContent).toContain("import { MaterialModule } from '../modules/material.module';");
+  });
+
+});
 
 describe('getObjects with material', () => {
   let mock: MockAdapter;
@@ -46,6 +113,7 @@ describe('getObjects with material', () => {
     appTree = await createTestApp(projectName, testRunner);
     appTree = await schematicRunner.runSchematic('app-works', awOptions, appTree);
   });
+
   it('should create files', async () => {
     const compOptions: MyConfigSchema = {
       name: 'pk',

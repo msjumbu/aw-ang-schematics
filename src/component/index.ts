@@ -1,13 +1,14 @@
 import { dasherize } from '@angular-devkit/core/src/utils/strings';
-import { apply, applyTemplates, chain, externalSchematic, MergeStrategy, mergeWith, move, Rule, schematic, SchematicContext, SchematicsException, strings, Tree, url } from '@angular-devkit/schematics';
+import { apply, applyTemplates, chain, externalSchematic, MergeStrategy, mergeWith, move, noop, Rule, schematic, SchematicContext, SchematicsException, strings, Tree, url } from '@angular-devkit/schematics';
 import { buildDefaultPath, getWorkspace } from "@schematics/angular/utility/workspace";
 import { ConfigSchema as ComponentSchema } from './schema';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { findNode, findNodes } from '@schematics/angular/utility/ast-utils';
+import { addImportToModule, findNode, findNodes } from '@schematics/angular/utility/ast-utils';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { readConfig } from '../utils/util';
 import { buildRelativePath, findModuleFromOptions } from '@schematics/angular/utility/find-module';
-import { normalize } from '@angular-devkit/core';
+import { normalize, Path } from '@angular-devkit/core';
+import { InsertChange } from '@schematics/angular/utility/change';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -21,9 +22,17 @@ export function component(options: ComponentSchema): Rule {
     if (options.path === undefined) {
       options.path = buildDefaultPath(project);
     }
-    
-    const mod = findModuleFromOptions(host, options);
-    if (!mod) throw new SchematicsException(`Module not found.`);
+    let mod: Path | undefined;
+    if (options.module) {
+      mod = findModuleFromOptions(host, {
+        name: options.module,
+        path: options.path
+      });
+      if (!mod) throw new SchematicsException(`Module not found.`);
+      options.path = mod.substring(0, mod.lastIndexOf('/'));
+    } else {
+      options.module = '';
+    }
     const parsedPath = parseName(options.path as string, options.name);
     options.name = parsedPath.name;
     options.path = parsedPath.path;
@@ -32,13 +41,15 @@ export function component(options: ComponentSchema): Rule {
     options.sourceRoot = `${project.sourceRoot}`;
     options.selector =
       options.selector || buildSelector(options.name, (project && project.prefix) || '');
+
     return chain([externalSchematic('@schematics/angular', 'component',
       // { "name": options.name, "path": options.path, "project": options.project}
-      { "name": options.name, "project": options.project}
-      ),
+      { "name": options.name, "project": options.project, "path": options.path, "module": options.module }
+    ),
     schematic('service',
       { "wsdl_url": options.wsdl_url, "path": options.path + '/' + dasherize(options.name), "project": options.project }),
-    createComponent(options)]);
+    createComponent(options),
+    addImportsToModule(mod, options.sourceRoot)]);
   };
 }
 
@@ -62,6 +73,62 @@ export function openSourceFileFromTree(tree: Tree, filename: string): ts.SourceF
   return openSourceFile(filename, () => tree.read(filename)?.toString('utf-8'));
 }
 
+function addImportsToModule(modulePath: Path | undefined, sourceRoot: string): Rule {
+  if (!modulePath) {
+    return noop;
+  }
+  return (tree: Tree, _context: SchematicContext) => {
+    const sourceText = tree.read(modulePath);
+    if (!sourceText) {
+      throw new SchematicsException(`Could not find file for path: ${modulePath}`);
+    }
+    let ui_framework = readConfig(tree, sourceRoot, 'UI_FRAMEWORK');
+    const source = ts.createSourceFile(modulePath, sourceText.toString(), ts.ScriptTarget.Latest, true);
+    let mPath = buildRelativePath(`${modulePath}`, normalize(`/${sourceRoot}/app/modules`));
+    // console.log("M ==> " + `${modulePath}`);
+    // console.log("M ==> " + `/${sourceRoot}/app/modules`);
+    // console.log("M ==> " + mPath);
+    let changes = addImportToModule(
+      source,
+      modulePath,
+      'ReactiveFormsModule',
+      '@angular/forms'
+    );
+    if (ui_framework == 'material') {
+      changes = changes.concat(addImportToModule(
+        source,
+        modulePath,
+        'MaterialModule',
+        `${mPath}/material.module`
+      ));
+    }
+    if (ui_framework == 'primeng') {
+      changes = changes.concat(addImportToModule(
+        source,
+        modulePath,
+        'PrimeNGModule',
+        `${mPath}/primeng.module`
+      ));
+    }
+    if (ui_framework == 'clarity') {
+      changes = changes.concat(addImportToModule(
+        source,
+        modulePath,
+        'ClarityModule',
+        '@clr/angular'
+      ));
+    }
+    const recorder = tree.beginUpdate(modulePath);
+    changes.forEach(change => {
+      if (change instanceof InsertChange) {
+        recorder.insertLeft(change.pos, change.toAdd);
+      }
+    });
+    tree.commitUpdate(recorder);
+    return tree;
+  };
+}
+
 function createComponent(options: ComponentSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     if (!options.sourceRoot) throw new SchematicsException('Source Root not set');
@@ -76,7 +143,7 @@ function createComponent(options: ComponentSchema): Rule {
     if (!path) {
       throw new SchematicsException(`Path "${options.path}" does not exist.`);
     }
-    
+
     let crPath = buildRelativePath(`/${path}/${dasherize(options.name)}/${dasherize(options.name)}.component.ts`, normalize(`/${options.sourceRoot}/app/config`));
     let serviceName: string | undefined = '';
     let servicePath, typesPath = '';
@@ -111,8 +178,8 @@ function createComponent(options: ComponentSchema): Rule {
         }
       });
     if (!serviceName) throw new SchematicsException('Unable to get service ' + serviceName);
-    
-    let outputs : any[] = [];
+
+    let outputs: any[] = [];
     if (!metadata[1].element) {
       throw new SchematicsException('Service metadata do not contain response element');
     }
@@ -127,15 +194,15 @@ function createComponent(options: ComponentSchema): Rule {
       if (!old) throw new SchematicsException('Something wrong, tuple found but not old');
       outputs = old.element[0].element;
       tableName = old.element[0].name;
-      
-      if (tuple.maxOccurs && 
-        (tuple.maxOccurs=='unbounded' || tuple.maxOccurs > 1))
+
+      if (tuple.maxOccurs &&
+        (tuple.maxOccurs == 'unbounded' || tuple.maxOccurs > 1))
         createGrid = true;
     } else {
       outputs = metadata[1].element;
     }
-    
-    let inputs = metadata[0].element ? metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor'):undefined;
+
+    let inputs = metadata[0].element ? metadata[0].element.filter((item: { name: string; }) => item.name != 'cursor') : undefined;
     const tsComponentSource = apply(url('./files/common'), [
       // options.name ? filter((path) => !path.endsWith('.clr.ts.template')) : noop(),
       applyTemplates({

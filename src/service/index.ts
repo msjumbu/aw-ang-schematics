@@ -1,6 +1,6 @@
-import { normalize, strings } from '@angular-devkit/core';
+import { normalize, Path, strings } from '@angular-devkit/core';
 import { apply, applyTemplates, chain, MergeStrategy, mergeWith, move, Rule, SchematicContext, SchematicsException, Tree, url } from '@angular-devkit/schematics';
-import { buildRelativePath } from "@schematics/angular/utility/find-module";
+import { buildRelativePath, findModuleFromOptions } from "@schematics/angular/utility/find-module";
 import { ConfigSchema as ServiceSchema } from './schema';
 import { TypesGenerator } from './types-generator';
 import { WsdlService } from './wsdl.service';
@@ -24,6 +24,17 @@ export function service(options: ServiceSchema): Rule {
     // const projectType = project.extensions.projectType === 'application' ? 'app' : 'lib';
     if (options.path === undefined) {
       options.path = buildDefaultPath(project);
+    }
+    let mod : Path | undefined;
+    if (options.module) {
+      mod = findModuleFromOptions(tree, {
+        name: options.module,
+        path: options.path
+      });
+      if (!mod) throw new SchematicsException(`Module not found.`);
+      options.path = mod.substring(0, mod.lastIndexOf('/'));
+    } else {
+      options.module = '';
     }
     options.root = `${project.root}`
     options.sourceRoot = `${project.sourceRoot}`;

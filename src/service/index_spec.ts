@@ -7,10 +7,47 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 
 import { getObject, getObjects, noInput } from "../testing/test.wsdls";
-import { createTestApp } from '../utils/create-test-app';
+import { createTestApp, createTestModule } from '../utils/create-test-app';
 import { assertContains } from '../utils/util';
 
 const collectionPath = path.join(__dirname, '../collection.json');
+
+describe('getObject service with module', () => {
+  let mock: MockAdapter;
+
+  beforeAll(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.reset();
+  });
+
+  const testRunner = new SchematicTestRunner(
+    'rocket',
+    require.resolve(collectionPath),
+  );
+  const projectName = 'bar';
+  let appTree: UnitTestTree;
+  beforeEach(async () => {
+    appTree = await createTestApp(projectName, testRunner);
+    appTree = await createTestModule(projectName, 'test-mod', testRunner, appTree);
+  });
+  it('should create files', async () => {
+    const defaultOptions: MyServiceSchema = {
+      wsdl_url: 'testing&resolveexternals=true',
+      project: 'bar',
+      skipService: false,
+      module: 'test-mod',
+    };
+    mock.onGet(defaultOptions.wsdl_url).reply(200, getObject);
+    const runner = new SchematicTestRunner('schematics', collectionPath);
+    const tree = await runner.runSchematic('service', defaultOptions, appTree);
+    const files = tree.files;
+    expect(files).toContain('/projects/bar/src/app/test-mod/services/get-com-country-object.service.ts');
+    expect(files).toContain('/projects/bar/src/app/test-mod/services/get-com-country-object.types.ts');
+  });
+});
 
 describe('service', () => {
 

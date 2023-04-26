@@ -22,6 +22,11 @@
       "x-prompt": "Do you want to skip service generation? Useful when you have already created service and the service signature has changed.",
       "default": false
     },
+    "module": {
+      "type": "string",
+      "description": "The declaring NgModule.",
+      "alias": "m"
+    },
     "path": {
       "type": "string",
       "format": "path",

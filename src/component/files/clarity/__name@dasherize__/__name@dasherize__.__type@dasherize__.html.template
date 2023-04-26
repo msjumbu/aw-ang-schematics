@@ -1,5 +1,8 @@
 <div id="center" style="position:fixed;top:50%;left:50%" [style.display]="showSpinner ? 'block' : 'none'">
-    <p-progressSpinner></p-progressSpinner></div>
+    <span class="spinner">
+        Loading...
+    </span>
+</div>
 
 <% if (inputs && inputs.length && inputs.length > 0) { %><form clrForm [formGroup]="inputForm" [style.display]="showSpinner ? 'none' : 'block'"><% for(let element of inputs) { %>
     <clr-input-container>

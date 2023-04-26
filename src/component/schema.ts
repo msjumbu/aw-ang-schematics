@@ -6,5 +6,5 @@ export interface ConfigSchema {
   path?: string;
   root?: string;
   sourceRoot?: string;
-
+  module?: string;
 }

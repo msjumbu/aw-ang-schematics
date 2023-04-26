@@ -5,4 +5,5 @@ export interface ConfigSchema {
   root?: string;
   skipService: boolean;
   sourceRoot?: string;
+  module?: string;
 }
