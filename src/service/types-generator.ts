@@ -80,7 +80,7 @@ export class TypesGenerator {
     if (message.element && message.element[0]) {
       this.generateMembers(message.element[0], '');
     }
-    // the below is cover messages without any parameters/elements
+    // the below is to cover messages without any parameters/elements
     if (!this.nodeArrMap.has('I' + message.name)) {   
       if (message.element && message.element[0] && !this.nodeArrMap.has('I' + message.element[0].name)) {
         console.log(message.element[0].name + " : " + this.nodeArrMap.has('I' + message.element[0].name));

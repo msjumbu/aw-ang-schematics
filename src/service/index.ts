@@ -88,7 +88,7 @@ function createTypes(def: IDefinition, filePath: string): Rule {
   }
 }
 
-function createService(def: IDefinition, pt: IPortType, filePath: string, _options: ServiceSchema): Rule {
+function createService(def: IDefinition, pt: IPortType, filePath: string, options: ServiceSchema): Rule {
   return async (_tree: Tree, _context: SchematicContext) => {
     let inMsg = pt.operation?.[0].input?.name;
     let outMsg = pt.operation?.[0].output?.name;
@@ -109,15 +109,11 @@ function createService(def: IDefinition, pt: IPortType, filePath: string, _optio
     if (!tableName)
       throw new SchematicsException('Table/Object name is required, cannot continue');
 
-    // console.log(def.elements.find(msg => msg.name == outMsg)?.element?.find(t => t.name == 'tuple')?.element?.find(o => o.name == 'old'));
-    // console.log(def.messages.find(msg => msg.element[0].name == outMsg)?.element[0]?.name);
-
-
     if (!inMsg) throw new SchematicsException('Service name not available.');
     let t = url('./files');
 
-    let srPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.sourceRoot}/app/services`));
-    let crPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${_options.sourceRoot}/app/config`));
+    let srPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${options.sourceRoot}/app/services`));
+    let crPath = buildRelativePath(`/${filePath}/${dasherize(inMsg)}.service.ts`, normalize(`/${options.sourceRoot}/app/config`));
     const typeFileName = dasherize(inMsg) + '.types';
     const templateSource = apply(t, [
       applyTemplates({
@@ -133,7 +129,8 @@ function createService(def: IDefinition, pt: IPortType, filePath: string, _optio
         webServiceNS: pt.operation?.[0].ns?.ns,
         webServiceResponse: pt.operation?.[0].output?.element[0].name,
         auth_type: "AW",
-        tableName: tableName
+        tableName: tableName,
+        wsdl_url: options.wsdl_url
       }),
       move(normalize(filePath as string)),
     ]);
