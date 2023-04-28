@@ -1,5 +1,5 @@
 # AppWorks Angular startup kit - in the foot steps of schematics 
-##Add AppWorks with the following command
+## Add AppWorks with the following command
 Provide the following inputs
 1. AppWorks gateway url
 2. Organization dn - the dn of the organization
