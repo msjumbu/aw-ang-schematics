@@ -29,7 +29,13 @@ Once you provide the inputs the following things will be done,
 5. The generated UI will be ready for both reading the data from the service, display it in the grid/form and update data as well.
 6. If your service is like composite service, the above component may not be created properly. it's your responsibility to modify the component to work.
 
-Array guarantee - if the service is returning an array of objects (as per WSDL) then the service will always return an array, even if the service returns a single object. No more checking if the service returned array or single object. 
+Array guarantee - if the service is returning an array of objects (as per WSDL) then the service will always return an array, even if the service returns a single object. No more checking if the service returned array or single object.
+
+Reactive forms - the forms generated will always be reactive forms.
+
+Required fields - if the WSDL mentions any field as required (minoccurs = 1), then a required validator is added to the field.
+
+
 
 This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a componlent for the service in angular.
 
