@@ -23,7 +23,7 @@ Provide the following inputs
 
 Once you provide the inputs the following things will be done,
 1. WSDL will be downloaded
-2 A types file will be created with all the types in the WSDL
+2. A types file will be created with all the types in the WSDL
 3. A service file will be created, which will be responsible for calling the service from AppWorks
 4. A UI component will be created with the fields available in the WSDL. If the service is returning an array of objects, then a grid and details type of UI will be created for the selected UI framework while setting up the project. If the service is returning a single object, then a form will be created with the service fields. 
 5. The generated UI will be ready for both reading the data from the service, display it in the grid/form and update data as well.
