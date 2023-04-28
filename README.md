@@ -13,7 +13,11 @@ Custom - use this if you want to authenticate against any other identity managem
 
 Once the command completes without any errors, the project is setup.
 
+Now we are ready to add components to the project.
 
+## Add component with the following command
+Provide the following inputs
+1. WSDL url - the url of the WSDL containing the service to be used in the component. Only one service needs to be present in the WSDL. If there are more than one service, like you provided the methodset WSDL, you will get error
 
 This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a component for the service in angular.
 
