@@ -1,4 +1,13 @@
 # AppWorks Angular startup kit - in the foot steps of schematics 
+Add AppWorks with the following command
+Provide the following inputs
+1. AppWorks gateway url
+2. What authentication do you want to use
+AppWorks - this will authenticate user against AppWorks
+OTDS - this will authenticate against OTDS, using the OTDS rest API, not the SSO
+Custom - use this if you want to authenticate against any other identity management or want to use OTDS SSO. you will have to customise the the authentication service for this
+3. UI framework - select one from the options. This will install and configure the selected UI framework in the project
+
 This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a component for the service in angular.
 
 The idea is only code generation, to reduce the time required to write the code required to work with AppWorks webservices. 
