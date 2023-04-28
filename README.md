@@ -18,8 +18,18 @@ Now we are ready to add components to the project.
 ## Add component with the following command
 Provide the following inputs
 1. WSDL url - the url of the WSDL containing the service to be used in the component. Only one service needs to be present in the WSDL. If there are more than one service, like you provided the methodset WSDL, you will get error
+2. Name - name of the component
+3. Module - if you want to create the component in a module
 
-This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a component for the service in angular.
+Once you provide the inputs the following things will be done,
+1. WSDL will be downloaded
+2 A types file will be created with all the types in the WSDL
+3. A service file will be created, which will be responsible for calling the service from AppWorks
+4. A UI component will be created with the fields available in the WSDL. If the service is returning an array of objects, then a grid and details type of UI will be created for the selected UI framework while setting up the project. If the service is returning a single object, then a form will be created with the service fields. 
+5. The generated UI will be ready for both reading the data from the service, display it in the grid/form and update data as well.
+6. If your service is like composite service, the above component may not be created properly. it's your responsibility to modify the component to work.
+
+This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a componlent for the service in angular.
 
 The idea is only code generation, to reduce the time required to write the code required to work with AppWorks webservices. 
 
