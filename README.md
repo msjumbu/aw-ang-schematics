@@ -2,11 +2,14 @@
 Add AppWorks with the following command
 Provide the following inputs
 1. AppWorks gateway url
-2. What authentication do you want to use
+2. Organization dn - the dn of the organization
+3. Date format - select from the options provided 
+4. What authentication do you want to use
 AppWorks - this will authenticate user against AppWorks
-OTDS - this will authenticate against OTDS, using the OTDS rest API, not the SSO
+OTDS - this will authenticate against OTDS, using the OTDS rest API, not the SSO. You will have to provide the OTDS rest url also
 Custom - use this if you want to authenticate against any other identity management or want to use OTDS SSO. you will have to customise the the authentication service for this
-3. UI framework - select one from the options. This will install and configure the selected UI framework in the project
+5. UI framework - select one from the options. This will install and configure the selected UI framework in the project
+6. Config path - all the above provided inputs will be written to config.json. This file will be created in the assets folder of the project. If you are planning to move this file to some other location, you can provide it here. Later also you can move it and modify the app.module file to update the location.
 
 This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a component for the service in angular.
 
