@@ -1,5 +1,5 @@
 # AppWorks Angular startup kit - in the foot steps of schematics 
-Add AppWorks with the following command
+##Add AppWorks with the following command
 Provide the following inputs
 1. AppWorks gateway url
 2. Organization dn - the dn of the organization
@@ -10,6 +10,10 @@ OTDS - this will authenticate against OTDS, using the OTDS rest API, not the SSO
 Custom - use this if you want to authenticate against any other identity management or want to use OTDS SSO. you will have to customise the the authentication service for this
 5. UI framework - select one from the options. This will install and configure the selected UI framework in the project
 6. Config path - all the above provided inputs will be written to config.json. This file will be created in the assets folder of the project. If you are planning to move this file to some other location, you can provide it here. Later also you can move it and modify the app.module file to update the location.
+
+Once the command completes without any errors, the project is setup.
+
+
 
 This will read the given WSDL url, generate ts interfaces for the messages and elements in the WSDL. Then generate angular services to call the web services, and a component for the service in angular.
 
