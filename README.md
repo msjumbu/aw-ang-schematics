@@ -1,15 +1,29 @@
 # AppWorks Angular startup kit - in the foot steps of schematics 
 ## Add AppWorks with the following command
+`ng add @msjumbu/app-works`
+
 Provide the following inputs
-1. AppWorks gateway url
-2. Organization dn - the dn of the organization
-3. Date format - select from the options provided 
-4. What authentication do you want to use
-AppWorks - this will authenticate user against AppWorks
-OTDS - this will authenticate against OTDS, using the OTDS rest API, not the SSO. You will have to provide the OTDS rest url also
-Custom - use this if you want to authenticate against any other identity management or want to use OTDS SSO. you will have to customise the the authentication service for this
-5. UI framework - select one from the options. This will install and configure the selected UI framework in the project
-6. Config path - all the above provided inputs will be written to config.json. This file will be created in the assets folder of the project. If you are planning to move this file to some other location, you can provide it here. Later also you can move it and modify the app.module file to update the location.
+1. Please enter your AppWorks Gateway URL (`http://{IP}:{Port}/home/{organization}/com.eibus.web.soap.Gateway.wcp`)
+2. Please enter your organization DN (Ex: `o=system,cn=cordys,cn=defaultInst,o=opentext.com`)
+3. Which UI Framework would you like to use? (Use arrow keys)
+    - Angular Material 
+    - Clarity Design 
+    - PrimeNG
+4. Which Date Format would you like to use? (Use arrow keys) *This can be changed later in config.json*
+    - dd/MM/yyyy 
+    - MM/dd/yyyy 
+    - yyyy/MM/dd 
+    - short - 'M/d/yy, h:mm a' 
+    - medium - 'MMM d, y, h:mm:ss a' 
+    - long - 'MMMM d, y, h:mm:ss a z'
+5. Please enter the relative path to config.json *The relative path to the config.json in the web server. After the aw schema is successfully initialized, you need to copy the assets/config.json from this project to config path in the web server. If no path is provided, default assets/config.json will be used. Later also you can move it and modify the app.module file to update the location.*
+
+**If you have selected Angular Material, at this point there will be options to select for the Angular Material framework**
+
+6. Which authentication would you like to use? (Use arrow keys)
+    - OTDS *this will authenticate against OTDS, using the OTDS rest API, not the SSO*
+    - AppWorks *AppWork authentication API will be used*
+    - Custom *use this if you want to authenticate against any other identity management or want to use OTDS SSO. you will have to customise the the authentication service for this*
 
 Once the command completes without any errors, the project is setup.
 
