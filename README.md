@@ -25,7 +25,19 @@ Provide the following inputs
     - AppWorks *AppWork authentication API will be used*
     - Custom *use this if you want to authenticate against any other identity management or want to use OTDS SSO. you will have to customise the the authentication service for this*
 
+This command will initialise the angular project to be ready for working with AppWorks services and install the selected UI framework.
+
 Once the command completes without any errors, the project is setup.
+
+The following files are generated,
+
+The following files are modified,
+
+If you need to change the config.json file path at any later point of time, you have to change it here.
+
+While you are able to change almost all of the chosen configuration anytime, it will be difficult to change the UI framework if you have already created components with the selected UI framework. Changing the UI framework is not impossible, but you may have to do lot of changes to the components or recreate them again. 
+
+One of the guiding principles of this utility is NOT to abstract anything from the developer or to provide a reusable component. The developer will be able to change any of the generated code without having to depend on the utility for any application functionality. 
 
 Now we are ready to add components to the project.
 
@@ -39,7 +51,7 @@ Once you provide the inputs the following things will be done,
 1. WSDL will be downloaded
 2. A types file will be created with all the types in the WSDL
 3. A service file will be created, which will be responsible for calling the service from AppWorks
-4. A UI component will be created with the fields available in the WSDL. If the service is returning an array of objects, then a grid and details type of UI will be created for the selected UI framework while setting up the project. If the service is returning a single object, then a form will be created with the service fields. 
+4. A UI component will be created with the fields available in the WSDL. If the service is returning an array of objects, then a grid and details type of UI. If the service is returning a single object, then a form will be created with the service fields. 
 5. The generated UI will be ready for both reading the data from the service, display it in the grid/form and update data as well.
 6. If your service is like composite service, the above component may not be created properly. it's your responsibility to modify the component to work.
 
@@ -48,6 +60,11 @@ Array guarantee - if the service is returning an array of objects (as per WSDL) 
 Reactive forms - the forms generated will always be reactive forms.
 
 Required fields - if the WSDL mentions any field as required (minoccurs = 1), then a required validator is added to the field.
+
+The following files are generated,
+
+The following files are modified,
+
 
 
 
