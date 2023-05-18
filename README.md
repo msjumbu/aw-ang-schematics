@@ -1,7 +1,7 @@
-# AppWorks Angular startup kit - in the foot steps of schematics 
+# AppWorks Angular schematics 
 ***While creating the new angular project, it will help if you include routing and select stylesheet as css***
 ## Add AppWorks with the following command
-`ng add @msjumbu/app-works`
+`ng add @otaw/app-works`
 
 Provide the following inputs
 1. Please enter your AppWorks Gateway URL (`http://{IP}:{Port}/home/{organization}/com.eibus.web.soap.Gateway.wcp`)
