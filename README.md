@@ -92,6 +92,7 @@ This creates a simple login page. Add the generated component to the routing wit
         return true;
     }
 ```
+![login page](./src/screenshots/login.png)
 
 ## Add component
 `ng g @otaw/app-works:component --module=<module_name>`
@@ -128,6 +129,9 @@ The following files are generated,
 - src/app/entities-list/services/get-entity-master-details.types.ts
 - src/app/entities-list/services/get-entity-master-details.service.ts
 </pre>
+
+*List component*
+![list component](./src/screenshots/list%20component.png)
 
 ## Add service
 `ng g @otaw/app-works:service`
