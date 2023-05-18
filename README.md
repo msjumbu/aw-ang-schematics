@@ -133,6 +133,9 @@ The following files are generated,
 *List component*
 ![list component](./src/screenshots/list%20component.png)
 
+*Form component*
+![list component](./src/screenshots/form%20component.png)
+
 ## Add service
 `ng g @otaw/app-works:service`
 
