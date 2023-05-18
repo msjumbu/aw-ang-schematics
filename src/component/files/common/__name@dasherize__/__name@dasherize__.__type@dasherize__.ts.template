@@ -44,7 +44,7 @@ export class <%= classify(name) %><%= classify(type) %> {
               this.records.push(element.old.<%= tableName %>)
           }
         }<% if(uiFramework=='material') { %>
-        this.dataSource = new MatTableDataSource<ICOM_COUNTRY>(this.records); <% } %><% } %><% if(!createGrid) { %>
+        this.dataSource = new MatTableDataSource<I<%= tableName %>>(this.records); <% } %><% } %><% if(!createGrid) { %>
         if (g.tuple && g.tuple.old && g.tuple.old.<%= tableName %>) {
           this.record = g.tuple.old.<%= tableName %>;
           this.outputForm.patchValue(this.record);
