@@ -131,7 +131,7 @@ The following files are generated,
 </pre>
 
 *List component*
-![list component](./src/screenshots/list%20component.png)
+
 
 *Form component*
 ![list component](./src/screenshots/form%20component.png)
